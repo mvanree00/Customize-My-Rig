@@ -1,0 +1,8 @@
+A - Using webscraper to get prices or use an API that does this for us
+  - Hold prices in a database
+  - Each type of item (CPU, GPU, etc.) will have its own db schema (i.e. GPU - power draw, price, performance ratio)
+  - Write an algorithm to match together compatible parts with most performance
+B - Update price regularly (preferably at least once an hour)
+  - User inputs desired features ( RGB, Gaming vs Workstation vs Streaming, etc.) 
+C - User friendly interface / clean layout
+  - Add support for upgrading a pc, user enters their current parts and gets suggested upgrade parts
