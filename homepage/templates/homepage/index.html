@@ -23,12 +23,12 @@
           <li class="barlist"><a href="">Contact</a></li>
           <li class="barlist" style="float:right"><a href="">About</a></li>
         </ul>
-    <h1 style="text-align: center; margin-top: 40px;">Customize My Rig</h1>
+    <img src="https://i.ibb.co/sCjQdZF/logo.png" style="display: block; margin-left: auto; margin-right: auto;" alt="logo" border="0">
     <h4 style="text-align: center; margin-top: 60px;">How much do you want to spend on your new PC?</h4>
     <div class="slidecontainer" style="margin-top: 40px;">
         <form>
-            <input type="range" min="1" max="2500" value="1250" class="slider" id="myRange" onchange="updateTextInput(this.value);">
-            <input type="text" class="amount" id="amount" name="amount"><br><br>
+            <input type="range" min="1" max="2500" value="1250" class="slider" id="myRange" oninput="amount.value=myRange.value" />
+            <input type="text" class="amount" id="amount" name="amount" oninput="myRange.value=amount.value"><br><br>
             <button class="button button1">Show me my PC!</button>
         </form>
     </div>
@@ -38,6 +38,7 @@
         function updateTextInput(val) {
           document.getElementById('amount').value=val;
         }
+
     </script>
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
