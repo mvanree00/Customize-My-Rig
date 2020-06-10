@@ -7,6 +7,8 @@ class CPU(models.Model):
     platform = models.CharField(max_length=50,null=True)
     price = models.FloatField()
     gaming_perf = models.PositiveSmallIntegerField(null=True)
+    desktop_perf = models.PositiveSmallIntegerField(null=True)
+    workstation_perf = models.PositiveSmallIntegerField(null=True)
     tdp = models.PositiveSmallIntegerField()
     links = models.CharField(max_length=50,null=True)
     img = models.CharField(max_length=100, null=True)
