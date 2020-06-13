@@ -11,13 +11,13 @@ from buildpc import getBuild
 def index(request):
     if (request.method == 'GET' and 'amount' in request.GET):
         print('Budget:', request.GET['amount'])
-        getBuild(float(request.GET['amount']))
-        return render(request, 'homepage/results.html')
+        build = getBuild(float(request.GET['amount']))
+        return results(request, build)
 
 
     return render(request, 'homepage/index.html')
 
-def results(request):
+def results(request, build):
     
     data = CPU.objects.all()
 
