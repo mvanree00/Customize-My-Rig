@@ -37,7 +37,7 @@ class MEM(models.Model):
         return self.name
 class STORAGE(models.Model):
     name =  models.CharField(max_length=20)
-    capacity = models.CharField(max_length=20)
+    capacity = models.PositiveSmallIntegerField()
     price = models.FloatField()
     form = models.CharField(max_length=20)
     kind = models.CharField(max_length=10)
