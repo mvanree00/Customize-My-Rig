@@ -11,7 +11,9 @@ from buildpc import getBuild
 def index(request):
     if (request.method == 'GET' and 'amount' in request.GET):
         print('Budget:', request.GET['amount'])
-        print(getBuild(float(request.GET['amount'])))
+        getBuild(float(request.GET['amount']))
+        return results(request, 'homepage/results.html')
+
 
     return render(request, 'homepage/index.html')
 
