@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from .models import CPU
 from buildpc import getBuild
 
 from homepage.models import *
@@ -13,3 +14,13 @@ def index(request):
         print(getBuild(float(request.GET['amount'])))
 
     return render(request, 'homepage/index.html')
+
+def results(request):
+    
+    data = CPU.objects.all()
+
+    cpu = {
+        "cpu_data": data
+    }
+    return render(request, 'homepage/results.html', cpu)
+    

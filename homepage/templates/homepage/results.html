@@ -1,0 +1,17 @@
+<table>
+    <tr>
+        <th>Name</th>
+        <th>CPU Fan</th>
+        <th>Cores</th>
+        <th>Platform</th>
+    </tr>
+    {% for cpu in cpu_data %}
+    <tr> 
+        <td>{{  cpu.name }}</td>
+        <td>{{ cpu.cpu_fan }}</td>
+        <td>{{ cpu.cores }}</td>
+        <td>{{ cpu.platform }}</td>
+        <td></td>
+    </tr>
+    {% endfor %}
+</table>
