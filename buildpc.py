@@ -2,9 +2,8 @@ from homepage.models import *
 from django.db.models import Max
 from links import getLink
 
-def getBuild(startingBudget=900):
+def getBuild(startingBudget):
     #links = {} <<<<<<<<<<<<<<<<< NOTE THAT LINKS DOESN'T WORK COMPLETELY WITH NON-UPDATED PRICES >>>>>>>>>>>>>>>>>>
-    startingBudget = 900
     budget = startingBudget
     temp = CPU.objects.filter(price__lte=startingBudget*.2).aggregate(mx = Max('gaming_perf'))
     CPUobj = CPU.objects.filter(price__lte=startingBudget*.2,gaming_perf=temp['mx']).order_by('price')[0]
