@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
+    {% block styles %}
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -10,19 +11,28 @@
     integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" 
     crossorigin="anonymous">
 
+    <link rel="stylesheet" type="text/css" href="{% static 'homepage/style.css' %}">   
+    
+    {% endblock %}
+    
+    {% block title %}
     <title>Customize My Rig</title>
-
+    {% endblock %}
     {% load static %}
 
-    <link rel="stylesheet" type="text/css" href="{% static 'homepage/style.css' %}">   
   </head>
   <body>
+    
+     {% block navbar %}
         <ul class="bar">
           <li class="barlist"><a href="" class="active">Home</a></li>
           <li class="barlist"><a href="">News</a></li>
           <li class="barlist"><a href="">Contact</a></li>
           <li class="barlist" style="float:right"><a href="">About</a></li>
         </ul>
+    {% endblock %}
+    
+    {% block content %}
     <img src="https://i.ibb.co/sCjQdZF/logo.png" style="display: block; margin-left: auto; margin-right: auto;" alt="logo" border="0">
     <h4 style="text-align: center; margin-top: 60px;">How much do you want to spend on your new PC?</h4>
     <div class="slidecontainer" style="margin-top: 40px;">
@@ -32,5 +42,7 @@
             <button class="button button1">Show me my PC!</button>
         </form>
     </div>
+    {% endblock %}
+    
   </body>
 </html>
