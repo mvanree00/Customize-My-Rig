@@ -26,4 +26,8 @@ def results(request, build):
     full = {
         'build_info': build
     }
+
+    if full['build_info'] is None:
+        return render(request, 'homepage/index.html')
+
     return render(request, 'homepage/results.html', full)
