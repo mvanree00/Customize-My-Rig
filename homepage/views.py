@@ -12,7 +12,10 @@ def index(request):
     if (request.method == 'GET' and 'amount' in request.GET):
         print('Budget:', request.GET['amount'])
         try:
-            build = getBuild(float(request.GET['amount']))
+            budget = float(request.GET['amount'])
+            if (budget < 0):
+                raise ValueError
+            build = getBuild(budget)
             return results(request, build)
         except ValueError:
             return render(request, 'homepage/index.html')
