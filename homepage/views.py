@@ -11,9 +11,11 @@ from buildpc import getBuild
 def index(request):
     if (request.method == 'GET' and 'amount' in request.GET):
         print('Budget:', request.GET['amount'])
-        build = getBuild(float(request.GET['amount']))
-        return results(request, build)
-
+        try:
+            build = getBuild(float(request.GET['amount']))
+            return results(request, build)
+        except ValueError:
+            return render(request, 'homepage/index.html')
 
     return render(request, 'homepage/index.html')
 
