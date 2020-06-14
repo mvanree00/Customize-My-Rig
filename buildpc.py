@@ -4,6 +4,7 @@ from links import getLink
 
 def getBuild(startingBudget):
     #links = {} <<<<<<<<<<<<<<<<< NOTE THAT LINKS DOESN'T WORK COMPLETELY WITH NON-UPDATED PRICES >>>>>>>>>>>>>>>>>>
+    objects = {}
     budget = startingBudget
     temp = CPU.objects.filter(price__lte=startingBudget*.2).aggregate(mx = Max('gaming_perf'))
     CPUobj = CPU.objects.filter(price__lte=startingBudget*.2,gaming_perf=temp['mx']).order_by('price')[0]
@@ -31,12 +32,14 @@ def getBuild(startingBudget):
     temp = STORAGE.objects.filter(price__lte=budget,kind='SSD').aggregate(mx = Max('capacity'))
     STORAGEobj = STORAGE.objects.filter(price__lte=budget,kind='SSD',capacity__gte=temp['mx']*.95).order_by('price')[0]
     budget-=STORAGEobj.price
+    objects.update({'CPU': CPUobj,'GPU':GPUobj,'MOBO':MOBOobj,'MEM':MEMobj,'CASE':CASEobj,'STORAGE':STORAGEobj,'PWR':PWRobj})
     if budget>30: # extra storage (HDD)
         temp = STORAGE.objects.filter(price__lte=budget).aggregate(mx = Max('capacity'))
         EXTRAobj = STORAGE.objects.filter(price__lte=budget,capacity__gte=temp['mx']*.95).order_by('price')[0]
         budget-=EXTRAobj.price
         print(EXTRAobj,EXTRAobj.capacity,EXTRAobj.price)
         #links.update({'EXTRA' : getLink(EXTRAobj.links)})
+        objects.update({'EXTRA' :EXTRAobj})
     print(CPUobj,CPUobj.price)
     print(MOBOobj,MOBOobj.price)
     print(MEMobj,MEMobj.price)
@@ -48,5 +51,8 @@ def getBuild(startingBudget):
     if CPUobj.cpu_fan == False:
         print(FANobj,FANobj.price)
         #links.update({'FAN' : getLink(FANobj.links)})
+        objects.update({'FAN' : FANobj})
     print('Total Build:',startingBudget-round(budget,2))
-    #print(links)
+    objects.update({'BUILD COST' : startingBudget-round(budget,2)})
+    #print(objects)
+    return objects

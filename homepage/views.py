@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import CPU
+from .models import *
 from buildpc import getBuild
 
 from homepage.models import *
@@ -18,11 +18,7 @@ def index(request):
     return render(request, 'homepage/index.html')
 
 def results(request, build):
-    
-    data = CPU.objects.all()
-
-    cpu = {
-        "cpu_data": data
+    full = {
+        'build_info': build
     }
-    return render(request, 'homepage/results.html', cpu)
-    
+    return render(request, 'homepage/results.html', full)
