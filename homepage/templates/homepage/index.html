@@ -1,3 +1,10 @@
+<!--
+Homepage
+
+References:
+- favicon: https://learndjango.com/tutorials/django-favicon-tutorial
+-->
+
 {% load static %}
 <!doctype html>
 <html lang="en">
@@ -18,15 +25,15 @@
     
     {% block title %}
     <title>Customize My Rig</title>
+    <link rel="shortcut icon" type="image/png" href="{% static 'homepage/website logo.png' %}">
     {% endblock %}
-    {% load static %}
 
   </head>
   <body>
     
      {% block navbar %}
         <ul class="bar">
-          <li class="barlist"><a href="" class="active">Home</a></li>
+          <li class="barlist"><a href="/" class="active">Home</a></li>
           <li class="barlist"><a href="">News</a></li>
           <li class="barlist"><a href="">Contact</a></li>
           <li class="barlist" style="float:right"><a href="">About</a></li>

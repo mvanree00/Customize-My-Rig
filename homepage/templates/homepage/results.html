@@ -1,10 +1,21 @@
+<!--
+PC Parts List Webpage
+
+References:
+- blocks and extends: https://simpleisbetterthancomplex.com/series/2017/09/25/a-complete-beginners-guide-to-django-part-4.html
+-->
+{% extends 'homepage/index.html' %}
+{% load static %}
+
+{% block content %}
 <table>
     <tr>
         <th>Name</th>
     </tr>
     {% for part,obj in build_info.items %}
-    <tr> 
+    <tr>
         <td>{{ part }}: {{ obj }} - {{ obj.price }}</td>
     </tr>
     {% endfor %}
 </table>
+{% endblock %}
