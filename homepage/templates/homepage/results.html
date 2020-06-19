@@ -8,14 +8,127 @@ References:
 {% load static %}
 
 {% block content %}
-<table>
+
+<br><h1 style="text-align: center">Heres your new PC!</h1><br>
+<table class="resultstable">
     <tr>
-        <th>Name</th>
+        <th></th>
+        <th>Part</th>
+        <th>Model</th>
+        <th>Specifications</th>
+        <th>Price</th>
     </tr>
     {% for part,obj in build_info.items %}
-    <tr>
-        <td>{{ part }}: {{ obj }} - {{ obj.price }}</td>
-    </tr>
+        {% if part == "CPU"%}
+            <tr>
+                <td><img src={{obj.img}} alt="CPU_Image" style="width:250px;height:200px;"></td>
+                <td>CPU</td>
+                <td>{{obj}}</td>
+                <td>
+                    CPU Fan: {{obj.cpu_fan}}<br>
+                    Cores: {{obj.cores}}<br>
+                    Platform: {{obj.platform}}<br>
+                </td>
+                <td><a href="https://pcpartpicker.com/product/{{obj.links}}" target="_blank">${{obj.price}}</a></td>
+            </tr>
+        {%endif%}
+
+        {% if part == "FAN"%}
+            <tr>
+                <td><img src="https://i.ibb.co/FVQhVh9/fan.png" alt="Fan_Image" style="width:250px;height:200px;"></td>
+                <td>Fan</td>
+                <td>{{obj}}</td>
+                <td>
+                    Type: {{obj.kind}}<br>
+                </td>
+                <td><a href="https://pcpartpicker.com/product/{{obj.links}}" target="_blank">${{obj.price}}</a></td>
+            </tr>
+        {%endif%}
+
+
+        {% if part == "GPU"%}
+            <tr>
+                <td><img src={{obj.img}} alt="GPU_Image" style="width:250px;height:200px;"></td>
+                <td>GPU</td>
+                <td>{{obj}}</td>
+                <td>
+                    Manufacturer: {{obj.manufacturer}}<br>
+                    Chipset: {{obj.chipset}}<br>
+                </td>
+                <td><a href="https://pcpartpicker.com/product/{{obj.links}}" target="_blank">${{obj.price}}</a></td>
+            </tr>
+        {%endif%}
+
+
+        {% if part == "MEM"%}
+            <tr>
+                <td><img src={{obj.img}} alt="Memory_Image" style="width:250px;height:200px;"></td>
+                <td>Memory</td>
+                <td>{{obj}}</td>
+                <td>
+                    Speed: {{obj.speed}} MHz<br>
+                    CAS Latency: {{obj.cas}}<br>
+                    Modules: {{obj.modules}}<br>
+                    Color: {{obj.color}}<br>
+                </td>
+                <td><a href="https://pcpartpicker.com/product/{{obj.links}}" target="_blank">${{obj.price}}</a></td>
+            </tr>
+        {%endif%}
+
+
+        {% if part == "MOBO"%}
+            <tr>
+                <td><img src={{obj.img}} alt="Mobo_Image" style="width:250px;height:200px;"></td>
+                <td>Motherboard</td>
+                <td>{{obj}}</td>
+                <td>
+                    Chipset: {{obj.chipset}}<br>
+                </td>
+                <td><a href="https://pcpartpicker.com/product/{{obj.links}}" target="_blank">${{obj.price}}</a></td>
+            </tr>
+        {%endif%}
+
+
+        {% if part == "CASE"%}
+            <tr>
+                <td><img src={{obj.img}} alt="Case_Image" style="width:250px;height:200px;"></td>
+                <td>Case</td>
+                <td>{{obj}}</td>
+                <td>
+                    Size: {{obj.size}}<br>
+                </td>
+                <td><a href="https://pcpartpicker.com/product/{{obj.links}}" target="_blank">${{obj.price}}</a></td>
+            </tr>
+        {%endif%}
+
+
+        {% if part == "STORAGE"%}
+            <tr>
+                <td><img src={{obj.img}} alt="Storage_Image" style="width:250px;height:200px;"></td>
+                <td>Storage</td>
+                <td>{{obj}}</td>
+                <td>
+                    Capacity: {{obj.capacity}} GB<br>
+                    Form: {{obj.form}}<br>
+                    Type: {{obj.kind}}<br>
+                </td>
+                <td><a href="https://pcpartpicker.com/product/{{obj.links}}">${{obj.price}}</a></td>
+            </tr>
+        {%endif%}
+
+
+        {% if part == "PWR"%}
+            <tr>
+                <td><img src={{obj.img}} alt="PSU_Image" style="width:250px;height:200px;"></td>
+                <td>Power supply</td>
+                <td>{{obj}}</td>
+                <td>
+                    Wattage: {{obj.wattage}}W<br>
+                    Rating: {{obj.rating}}<br>
+                </td>
+                <td><a href="https://pcpartpicker.com/product/{{obj.links}}">${{obj.price}}</a></td>
+            </tr>
+        {%endif%}
     {% endfor %}
 </table>
 {% endblock %}
