@@ -5,7 +5,7 @@ class CPU(models.Model): # add in core/boost clocks?
     cpu_fan = models.BooleanField(default=True)
     cores = models.PositiveSmallIntegerField()
     platform = models.CharField(max_length=50,null=True)
-    price = models.FloatField()
+    price = models.FloatField(null=True)
     gaming_perf = models.PositiveSmallIntegerField(null=True)
     desktop_perf = models.PositiveSmallIntegerField(null=True)
     workstation_perf = models.PositiveSmallIntegerField(null=True)
@@ -15,7 +15,7 @@ class CPU(models.Model): # add in core/boost clocks?
     def __str__(self):
         return self.name
 class GPU(models.Model): # add in core/boost clocks?
-    price = models.FloatField()
+    price = models.FloatField(null=True)
     mem = models.PositiveSmallIntegerField(null=True)
     gaming_perf = models.PositiveSmallIntegerField(null=True)
     manufacturer = models.CharField(max_length=50)
@@ -30,7 +30,7 @@ class MEM(models.Model):
     speed = models.PositiveSmallIntegerField()
     cas = models.PositiveSmallIntegerField()
     modules = models.CharField(max_length=25)
-    price = models.FloatField()
+    price = models.FloatField(null=True)
     links = models.CharField(max_length=50,null=True)
     img = models.CharField(max_length=100, null=True)
     color = models.CharField(max_length=30, null = True)
@@ -39,7 +39,7 @@ class MEM(models.Model):
 class STORAGE(models.Model):
     name =  models.CharField(max_length=20)
     capacity = models.PositiveSmallIntegerField()
-    price = models.FloatField()
+    price = models.FloatField(null=True)
     form = models.CharField(max_length=20)
     kind = models.CharField(max_length=10)
     links = models.CharField(max_length=50,null=True)
@@ -49,7 +49,7 @@ class STORAGE(models.Model):
 class PWR(models.Model):
     name =  models.CharField(max_length=20)
     wattage = models.PositiveSmallIntegerField()
-    price = models.FloatField()
+    price = models.FloatField(null=True)
     rating = models.CharField(max_length=10)
     links = models.CharField(max_length=50,null=True)
     img = models.CharField(max_length=100, null=True)
@@ -57,7 +57,7 @@ class PWR(models.Model):
         return self.name
 class CASE(models.Model):
     name =  models.CharField(max_length=20)
-    price = models.FloatField()
+    price = models.FloatField(null=True)
     size = models.CharField(max_length=10)
     links = models.CharField(max_length=50,null=True)
     img = models.CharField(max_length=100, null=True)
@@ -66,7 +66,7 @@ class CASE(models.Model):
         return self.name
 class MOBO(models.Model):
     name =  models.CharField(max_length=20)
-    price = models.FloatField()
+    price = models.FloatField(null=True)
     chipset = models.CharField(max_length=50)
     links = models.CharField(max_length=50,null=True)
     img = models.CharField(max_length=100, null=True)
@@ -74,7 +74,7 @@ class MOBO(models.Model):
         return self.name
 class FAN(models.Model):
     name =  models.CharField(max_length=20)
-    price = models.FloatField()
+    price = models.FloatField(null=True)
     links = models.CharField(max_length=50,null=True)
     img = models.CharField(max_length=110, null=True)
     kind = models.CharField(max_length=20)

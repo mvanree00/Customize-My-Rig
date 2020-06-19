@@ -36,7 +36,6 @@ def getBuild(starting_budget, type_='gaming', case='default'):
             gpu_weight = 0.2
         parts = {}
         budget_remaining = starting_budget
-
         ########
         # CASE #
         ########
@@ -51,11 +50,11 @@ def getBuild(starting_budget, type_='gaming', case='default'):
         # CPU, FAN, MOTHERBOARD #
         #########################
         # finds best CPU Motherboard combo based on overall performance AND performance ratios (performance divided by total cost)
-        cpu_objs = CPU.objects.filter(price__lte=cpu_weight * starting_budget)
+        cpu_objs = CPU.objects.filter(price__isnull = False, price__lte=cpu_weight * starting_budget)
         cpu_best_desktop_perf = cpu_objs.order_by('desktop_perf').reverse()[0].desktop_perf
         cpu_best_gaming_perf = cpu_objs.order_by('gaming_perf').reverse()[0].gaming_perf
         cpu_best_workstation_perf = cpu_objs.order_by('workstation_perf').reverse()[0].workstation_perf
-        mobo_objs = MOBO.objects.filter(price__lte=cpu_weight * starting_budget)
+        mobo_objs = MOBO.objects.filter(price__isnull = False, price__lte=cpu_weight * starting_budget)
         best_cpu = None
         best_mobo = None
         best_fan = None
@@ -93,13 +92,12 @@ def getBuild(starting_budget, type_='gaming', case='default'):
         budget_remaining -= best_cpu.price
         budget_remaining -= best_mobo.price
         budget_remaining -= best_fan_price
-
         #######
         # GPU #
         #######
         # for desktops/gaming PCs, gaming performance benchmark used with performance ratio
         # for workstations, video memory important so considered here (https://nerdtechy.com/workstation-vs-gaming-pc)
-        gpu_objs = GPU.objects.filter(price__lte=gpu_weight * starting_budget)
+        gpu_objs = GPU.objects.filter(price__isnull = False, price__lte=gpu_weight * starting_budget)
         best_gpu_perf = gpu_objs.order_by('gaming_perf').reverse()[0].gaming_perf
         best_gpu = None
         best_gpu_mem = 0
@@ -112,23 +110,21 @@ def getBuild(starting_budget, type_='gaming', case='default'):
                 best_gpu = gpu
                 best_gpu_perf_ratio = gpu.gaming_perf / gpu.price > best_gpu_perf_ratio
         budget_remaining -= best_gpu.price
-
         ##########
         # MEMORY #
         ##########
         if starting_budget >= 1200:
-            mem = MEM.objects.filter(modules='32 GB').order_by('price')[0]
+            mem = MEM.objects.filter(price__isnull = False, modules='32 GB').order_by('price')[0]
         elif starting_budget >= 700:
-            mem = MEM.objects.filter(modules='16 GB').order_by('price')[0]
+            mem = MEM.objects.filter(price__isnull = False, modules='16 GB').order_by('price')[0]
         else:
-            mem = MEM.objects.filter(modules=' 8 GB').order_by('price')[0]
+            mem = MEM.objects.filter(price__isnull = False, modules=' 8 GB').order_by('price')[0]
         budget_remaining -= mem.price
-
         #########
         # POWER #
         #########
         pwr_required = best_cpu.tdp + best_gpu.tdp + 175
-        pwr = PWR.objects.filter(wattage__gte=pwr_required).order_by('price')[0]
+        pwr = PWR.objects.filter(price__isnull = False, wattage__gte=pwr_required).order_by('price')[0]
         budget_remaining -= pwr.price
 
         # Adding CPU, fan, GPU, motherboard, memory, case, and power to parts list
@@ -140,7 +136,6 @@ def getBuild(starting_budget, type_='gaming', case='default'):
         # Spending remaining money on storage
         # if budget remaining is lower than cheapest part, they need the part anyways so have to add
         cheapest_storage = STORAGE.objects.order_by('price')[0]
-        print(budget_remaining)
         if budget_remaining <= cheapest_storage.price:
             parts.update({'STORAGE' : cheapest_storage})
             budget_remaining -= cheapest_storage.price
