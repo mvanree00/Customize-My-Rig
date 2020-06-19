@@ -48,11 +48,12 @@ li a:hover:not(.active) {
 
 /* The slider itself */
 .slider {
+  display: block;
   margin-left: auto;
   margin-right: auto;
   -webkit-appearance: none;
   appearance: none;
-  width: 90%;
+  width: 70%;
   height: 50px;
   background: #FFFFFF;
   opacity: 0.7; /* transparency */
