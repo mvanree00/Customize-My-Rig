@@ -15,14 +15,14 @@ References:
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" 
-    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" 
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
     crossorigin="anonymous">
 
     <link rel="stylesheet" type="text/css" href="{% static 'homepage/style.css' %}">
-    
+
     {% endblock %}
-    
+
     {% block title %}
     <title>Customize My Rig</title>
     <link rel="shortcut icon" type="image/png" href="{% static 'homepage/website logo.png' %}">
@@ -30,7 +30,7 @@ References:
 
   </head>
   <body>
-    
+
      {% block navbar %}
         <ul class="bar">
           <li class="barlist"><a href="/" class="active">Home</a></li>
@@ -39,18 +39,24 @@ References:
           <li class="barlist" style="float:right"><a href="">About</a></li>
         </ul>
     {% endblock %}
-    
+
     {% block content %}
     <img src="https://i.ibb.co/PhSyS7j/logo.png" style="display: block; margin-left: auto; margin-right: auto;" alt="logo" border="0">
-    <h4 style="text-align: center; margin-top: 60px;">How much do you want to spend on your new PC?</h4>
+    <br><br><div class="form">
+    <h2 style="text-align: center; margin-top: 60px;">How much do you want to spend on your new PC?</h2>
     <div class="slidecontainer" style="margin-top: 40px;">
         <form>
-            $525 &emsp; <input type="range" min="525" max="2500" value="1250" class="slider" id="myRange" oninput="amount.value=myRange.value" /> &emsp; $2500
+            <input type="range" min="525" max="2500" value="1250" class="slider" id="myRange" oninput="amount.value=myRange.value" />
+            <div style="overflow: hidden;">
+                <h3 style="float: left; margin-left: 15%">$525</h3>
+                <h3 style="float: right; margin-right: 15%">$2500</h3>
+            </div>
             <input type="text" class="amount" id="amount" name="amount" oninput="myRange.value=amount.value"><br>
             <button class="button button1">Show me my PC!</button>
         </form>
     </div>
+    </div><br><br>
     {% endblock %}
-    
+
   </body>
 </html>
