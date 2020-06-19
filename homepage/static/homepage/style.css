@@ -2,6 +2,15 @@ body {
     background-color: #C8C8C8;
 }
 
+.form {
+  background-color: lightgrey;
+  width: 90%;
+  border: #1bc5da;
+  border-style: solid;
+  margin: auto;
+  padding: 10px;
+}
+
 /************ Nav Bar *****************/
 .bar {
   list-style-type: none;
@@ -39,15 +48,14 @@ li a:hover:not(.active) {
 
 /* The slider itself */
 .slider {
-  display: block;
   margin-left: auto;
   margin-right: auto;
-  -webkit-appearance: none;  /* Override default CSS styles */
+  -webkit-appearance: none;
   appearance: none;
-  width: 70%; /* Full-width */
-  height: 50px; /* Specified height */
-  background: #d3d3d3; /* Grey background */
-  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  width: 90%;
+  height: 50px;
+  background: #FFFFFF;
+  opacity: 0.7; /* transparency */
   -webkit-transition: .2s; /* 0.2 seconds transition on hover */
   transition: opacity .2s;
 }
@@ -110,3 +118,75 @@ li a:hover:not(.active) {
   color: white;
 }
 /************* END BUTTON ****************/
+
+/************* PC TYPE **************/
+.pctype{
+  text-align: center;
+}
+.pctype img{
+  display:inline-block;
+  width: 100%;
+  border: #1bc5da;
+  border-style: solid;
+}
+
+.typetable {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/**********************************/
+
+/******** More info **************/
+.dropdown {
+  position: relative;
+  display: flow;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 300px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  padding: 8px 8px;
+  z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.colorpicker {
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+input[type="color"] {
+	-webkit-appearance: none;
+	border: none;
+	width: 70px;
+	height: 70px;
+}
+input[type="color"]::-webkit-color-swatch-wrapper {
+	padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+	border: none;
+}
+/*********** END MORE INFO *************/
+
+/*********** RESULTS TABLE *************/
+.resultstable {
+    margin: 30px auto;
+    border: 3px #1bc5da;
+}
+
+.resultstable th, td {
+    padding: 10px;
+    text-align: center;
+    background-color: white;
+    border: 3px solid #1bc5da;
+}
+/**************** END RESULTS TABLE **************/
