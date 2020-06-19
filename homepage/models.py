@@ -1,6 +1,6 @@
 from django.db import models
 
-class CPU(models.Model):
+class CPU(models.Model): # add in core/boost clocks?
     name =  models.CharField(max_length=50)
     cpu_fan = models.BooleanField(default=True)
     cores = models.PositiveSmallIntegerField()
@@ -14,7 +14,7 @@ class CPU(models.Model):
     img = models.CharField(max_length=100, null=True)
     def __str__(self):
         return self.name
-class GPU(models.Model):
+class GPU(models.Model): # add in core/boost clocks?
     price = models.FloatField()
     mem = models.PositiveSmallIntegerField(null=True)
     gaming_perf = models.PositiveSmallIntegerField(null=True)
@@ -76,7 +76,7 @@ class FAN(models.Model):
     name =  models.CharField(max_length=20)
     price = models.FloatField()
     links = models.CharField(max_length=50,null=True)
-    img = models.CharField(max_length=100, null=True)
+    img = models.CharField(max_length=110, null=True)
     kind = models.CharField(max_length=20)
     def __str__(self):
         return self.name

@@ -25,7 +25,6 @@ References:
                 <td>CPU</td>
                 <td>{{obj}}</td>
                 <td>
-                    CPU Fan: {{obj.cpu_fan}}<br>
                     Cores: {{obj.cores}}<br>
                     Platform: {{obj.platform}}<br>
                 </td>
@@ -35,8 +34,8 @@ References:
 
         {% if part == "FAN"%}
             <tr>
-                <td><img src="https://i.ibb.co/FVQhVh9/fan.png" alt="Fan_Image" style="width:250px;height:200px;"></td>
-                <td>Fan</td>
+                <td><img src={{obj.img}} alt="Fan_Image" style="width:250px;height:200px;"></td>
+                <td>CPU Fan</td>
                 <td>{{obj}}</td>
                 <td>
                     Type: {{obj.kind}}<br>
@@ -54,6 +53,7 @@ References:
                 <td>
                     Manufacturer: {{obj.manufacturer}}<br>
                     Chipset: {{obj.chipset}}<br>
+                    VRAM: {{obj.mem}} GB<br>
                 </td>
                 <td><a href="https://pcpartpicker.com/product/{{obj.links}}" target="_blank">${{obj.price}}</a></td>
             </tr>
@@ -108,7 +108,11 @@ References:
                 <td>Storage</td>
                 <td>{{obj}}</td>
                 <td>
-                    Capacity: {{obj.capacity}} GB<br>
+                    {% if obj.capacity >= 1000 %}
+                        Capacity: {% widthratio obj.capacity 1000 1 %} TB<br>
+                    {% else %}
+                        Capacity: {{obj.capacity}} GB<br>
+                    {%endif%}
                     Form: {{obj.form}}<br>
                     Type: {{obj.kind}}<br>
                 </td>
@@ -116,6 +120,23 @@ References:
             </tr>
         {%endif%}
 
+        {% if part == "EXTRA"%}
+            <tr>
+                <td><img src={{obj.img}} alt="Extra_Image" style="width:250px;height:200px;"></td>
+                <td>Storage</td>
+                <td>{{obj}}</td>
+                <td>
+                    {% if obj.capacity >= 1000 %}
+                        Capacity: {% widthratio obj.capacity 1000 1 %} TB<br>
+                    {% else %}
+                        Capacity: {{obj.capacity}} GB<br>
+                    {%endif%}
+                    Form: {{obj.form}}<br>
+                    Type: {{obj.kind}}<br>
+                </td>
+                <td><a href="https://pcpartpicker.com/product/{{obj.links}}">${{obj.price}}</a></td>
+            </tr>
+        {%endif%}
 
         {% if part == "PWR"%}
             <tr>
@@ -127,6 +148,12 @@ References:
                     Rating: {{obj.rating}}<br>
                 </td>
                 <td><a href="https://pcpartpicker.com/product/{{obj.links}}">${{obj.price}}</a></td>
+            </tr>
+        {%endif%}
+
+        {% if part == "BUILD COST"%}
+            <tr>
+                <td>Total Build Cost: ${{obj}}</td>
             </tr>
         {%endif%}
     {% endfor %}
