@@ -9,7 +9,7 @@ References:
 
 {% block content %}
 
-<br><h1 style="text-align: center">Heres your new PC!</h1><br>
+<br><h1 style="text-align: center">Here's your new PC!</h1><br>
 <table class="resultstable">
     <tr>
         <th></th>
@@ -34,13 +34,21 @@ References:
 
         {% if part == "FAN"%}
             <tr>
-                <td><img src={{obj.img}} alt="Fan_Image" style="width:250px;height:200px;"></td>
-                <td>CPU Fan</td>
-                <td>{{obj}}</td>
-                <td>
-                    Type: {{obj.kind}}<br>
-                </td>
-                <td><a href="https://pcpartpicker.com/product/{{obj.links}}" target="_blank">${{obj.price}}</a></td>
+                {% if obj == "Built-in" %}
+                    <td> </td>
+                    <td>CPU Fan</td>
+                    <td>{{obj}}</td>
+                    <td> </td>
+                    <td> </td>
+                {% else %}
+                    <td><img src={{obj.img}} alt="Fan_Image" style="width:250px;height:200px;"></td>
+                    <td>CPU Fan</td>
+                    <td>{{obj}}</td>
+                    <td>
+                        Type: {{obj.kind}}<br>
+                    </td>
+                    <td><a href="https://pcpartpicker.com/product/{{obj.links}}" target="_blank">${{obj.price}}</a></td>
+                {%endif%}
             </tr>
         {%endif%}
 
@@ -102,7 +110,7 @@ References:
         {%endif%}
 
 
-        {% if part == "STORAGE"%}
+        {% if "STORAGE" in part %}
             <tr>
                 <td><img src={{obj.img}} alt="Storage_Image" style="width:250px;height:200px;"></td>
                 <td>Storage</td>

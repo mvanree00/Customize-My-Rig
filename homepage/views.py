@@ -1,8 +1,10 @@
+"""
+Django Views
+"""
+
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import *
-from buildpc import getBuild
-
 from homepage.models import *
 from django.db.models import Max
 from links import getLink
