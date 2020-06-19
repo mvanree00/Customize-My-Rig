@@ -55,14 +55,14 @@ def getBuild(starting_budget, type='gaming', case='default'):
         best_perf_ratio = 0.0
         best_perf = 0
         for cpu in cpu_objs:
-            for mobo in mobo_objs:
-                # considers fan price
-                fan = 'Built-in'
-                fan_price = 0
-                if cpu.cpu_fan == False:
-                    fan = FAN.objects.order_by('price')[0]
-                    fan_price = fan.price
+            # considers fan price
+            fan = 'Built-in'
+            fan_price = 0
+            if cpu.cpu_fan == False:
+                fan = FAN.objects.order_by('price')[0]
+                fan_price = fan.price
 
+            for mobo in mobo_objs:
                 if cpu.platform == mobo.chipset:
                     if (type == 'desktop' and cpu.desktop_perf > cpu_best_desktop_perf - 2 and
                         cpu.desktop_perf / (cpu.price+mobo.price+fan_price) > best_perf_ratio): # desktop perf ratio
