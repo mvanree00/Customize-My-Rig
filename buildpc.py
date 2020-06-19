@@ -15,19 +15,25 @@ from homepage.models import *
 from django.db.models import Max
 from links import getLink
 
-def getBuild(starting_budget, type='gaming', case='default'):
+def getBuild(starting_budget, type_='gaming', case='default'):
     try:
         # weighting pc parts based upon pc type selection
-        if type == 'desktop':
-            cpu_weight = 0.3
-            gpu_weight = 0.3
-        elif type == 'gaming':
-            cpu_weight = 0.3
-            gpu_weight = 0.4
+        if type_ == 'desktop':
+            cpu_weight = 0.25
+            gpu_weight = 0.15
+        elif type_ == 'gaming':
+            if starting_budget <= 850:
+                cpu_weight = 0.25
+                gpu_weight = 0.375
+            elif starting_budget < 1650:
+                cpu_weight = 0.3
+                gpu_weight = 0.4
+            else:
+                cpu_weight = .315
+                gpu_weight = .44
         else: # workstation
-            cpu_weight = 0.3
-            gpu_weight = 0.5
-
+            cpu_weight = 0.45
+            gpu_weight = 0.2
         parts = {}
         budget_remaining = starting_budget
 
@@ -54,7 +60,6 @@ def getBuild(starting_budget, type='gaming', case='default'):
         best_mobo = None
         best_fan = None
         best_perf_ratio = 0.0
-        best_perf = 0
         for cpu in cpu_objs:
             # considers fan price
             fan = 'Built-in'
@@ -64,22 +69,21 @@ def getBuild(starting_budget, type='gaming', case='default'):
                 fan_price = fan.price
             for mobo in mobo_objs:
                 if cpu.platform == mobo.chipset:
-                    if (type == 'desktop' and cpu.desktop_perf > cpu_best_desktop_perf - 2 and
+                    if (type_ == 'desktop' and cpu.desktop_perf > cpu_best_desktop_perf - 2 and
                         cpu.desktop_perf / (cpu.price+mobo.price+fan_price) > best_perf_ratio): # desktop perf ratio
                         best_perf_ratio = cpu.desktop_perf / (cpu.price+mobo.price+fan_price)
-                        best_perf = cpu.desktop_perf
                         best_cpu = cpu
                         best_mobo = mobo
                         best_fan = fan
                         best_fan_price = fan_price
-                    elif (type == 'gaming' and cpu.gaming_perf > cpu_best_gaming_perf - 2 and
+                    elif (type_ == 'gaming' and cpu.gaming_perf > cpu_best_gaming_perf - 2 and
                         cpu.gaming_perf / (cpu.price+mobo.price+fan_price) > best_perf_ratio): # gaming perf ratio
                         best_perf_ratio = cpu.gaming_perf / (cpu.price + mobo.price + fan_price)
                         best_cpu = cpu
                         best_mobo = mobo
                         best_fan = fan
                         best_fan_price = fan_price
-                    elif (type == 'workstation' and cpu.workstation_perf > cpu_best_workstation_perf - 2 and
+                    elif (type_ == 'workstation' and cpu.workstation_perf > cpu_best_workstation_perf - 2 and
                         cpu.workstation_perf / (cpu.price+mobo.price+fan_price) > best_perf_ratio): # workstation perf ratio
                         best_perf_ratio = cpu.workstation_perf / (cpu.price + mobo.price + fan_price)
                         best_cpu = cpu
@@ -101,10 +105,10 @@ def getBuild(starting_budget, type='gaming', case='default'):
         best_gpu_mem = 0
         best_gpu_perf_ratio = 0
         for gpu in gpu_objs:
-            if type == 'workstation' and gpu.mem > best_gpu_mem and gpu.gaming_perf > best_gpu_perf - 10:
+            if type_ == 'workstation' and gpu.mem > best_gpu_mem and gpu.gaming_perf > best_gpu_perf - 10:
                 best_gpu = gpu
                 best_gpu_mem = gpu.mem
-            elif (type == 'desktop' or type == 'gaming') and gpu.gaming_perf > best_gpu_perf - 5 and gpu.gaming_perf / gpu.price > best_gpu_perf_ratio:
+            elif (type_ == 'desktop' or type_ == 'gaming') and gpu.gaming_perf > best_gpu_perf - 5 and gpu.gaming_perf / gpu.price > best_gpu_perf_ratio:
                 best_gpu = gpu
                 best_gpu_perf_ratio = gpu.gaming_perf / gpu.price > best_gpu_perf_ratio
         budget_remaining -= best_gpu.price
@@ -142,12 +146,20 @@ def getBuild(starting_budget, type='gaming', case='default'):
             budget_remaining -= cheapest_storage.price
         else:
             i = 1
-            while STORAGE.objects.filter(price__lte=budget_remaining).exists() and i <= 3:
-                best_ssd_objs = STORAGE.objects.filter(kind='SSD',price__lte=budget_remaining).order_by('-capacity','price')
-                if best_ssd_objs.exists():
-                    storage = best_ssd_objs[0]
+            while STORAGE.objects.filter(price__lte=budget_remaining).exists() and i <= 2:
+                if i == 1:
+                    """ this one didnt account for .1% gb difference and huge price difference, and only did ssd
+                    best_ssd_objs = STORAGE.objects.filter(kind='SSD',price__lte=budget_remaining).order_by('-capacity','price')
+                    if best_ssd_objs.exists():
+                        storage = best_ssd_objs[0]
+                    else:
+                        storage = STORAGE.objects.order_by('capacity','price')[0]
+                    """
+                    temp = STORAGE.objects.filter(price__lte=budget_remaining,kind='SSD').aggregate(mx = Max('capacity'))
+                    storage = STORAGE.objects.filter(price__lte=budget_remaining,kind='SSD',capacity__gte=temp['mx']*.95).order_by('price')[0]
                 else:
-                    storage = STORAGE.objects.order_by('capacity','price')[0]
+                    temp = STORAGE.objects.filter(price__lte=budget_remaining).aggregate(mx = Max('capacity'))
+                    storage = STORAGE.objects.filter(price__lte=budget_remaining,capacity__gte=temp['mx']*.95).order_by('price')[0]
                 budget_remaining -= storage.price
                 parts.update({('STORAGE' + str(i) + " " + str(storage.capacity) + " GB " + storage.kind) : storage})
                 i += 1
