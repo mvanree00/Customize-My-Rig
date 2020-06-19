@@ -52,6 +52,7 @@ def getBuild(starting_budget, type='gaming', case='default'):
         mobo_objs = MOBO.objects.filter(price__lte=cpu_weight * starting_budget)
         best_cpu = None
         best_mobo = None
+        best_fan = None
         best_perf_ratio = 0.0
         best_perf = 0
         for cpu in cpu_objs:
@@ -61,7 +62,6 @@ def getBuild(starting_budget, type='gaming', case='default'):
             if cpu.cpu_fan == False:
                 fan = FAN.objects.order_by('price')[0]
                 fan_price = fan.price
-
             for mobo in mobo_objs:
                 if cpu.platform == mobo.chipset:
                     if (type == 'desktop' and cpu.desktop_perf > cpu_best_desktop_perf - 2 and
@@ -70,19 +70,25 @@ def getBuild(starting_budget, type='gaming', case='default'):
                         best_perf = cpu.desktop_perf
                         best_cpu = cpu
                         best_mobo = mobo
+                        best_fan = fan
+                        best_fan_price = fan_price
                     elif (type == 'gaming' and cpu.gaming_perf > cpu_best_gaming_perf - 2 and
                         cpu.gaming_perf / (cpu.price+mobo.price+fan_price) > best_perf_ratio): # gaming perf ratio
                         best_perf_ratio = cpu.gaming_perf / (cpu.price + mobo.price + fan_price)
                         best_cpu = cpu
                         best_mobo = mobo
+                        best_fan = fan
+                        best_fan_price = fan_price
                     elif (type == 'workstation' and cpu.workstation_perf > cpu_best_workstation_perf - 2 and
                         cpu.workstation_perf / (cpu.price+mobo.price+fan_price) > best_perf_ratio): # workstation perf ratio
                         best_perf_ratio = cpu.workstation_perf / (cpu.price + mobo.price + fan_price)
                         best_cpu = cpu
                         best_mobo = mobo
+                        best_fan = fan
+                        best_fan_price = fan_price
         budget_remaining -= best_cpu.price
         budget_remaining -= best_mobo.price
-        budget_remaining -= fan_price
+        budget_remaining -= best_fan_price
 
         #######
         # GPU #
@@ -122,7 +128,7 @@ def getBuild(starting_budget, type='gaming', case='default'):
         budget_remaining -= pwr.price
 
         # Adding CPU, fan, GPU, motherboard, memory, case, and power to parts list
-        parts.update({'CPU' : best_cpu, 'FAN' : fan, 'GPU' : best_gpu, 'MOBO' : best_mobo, 'MEM' : mem, 'CASE': case_obj, 'PWR' : pwr})
+        parts.update({'CPU' : best_cpu, 'FAN' : best_fan, 'GPU' : best_gpu, 'MOBO' : best_mobo, 'MEM' : mem, 'CASE': case_obj, 'PWR' : pwr})
 
         ###########
         # STORAGE #
