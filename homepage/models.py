@@ -16,8 +16,9 @@ class CPU(models.Model):
         return self.name
 class GPU(models.Model):
     price = models.FloatField()
+    mem = models.PositiveSmallIntegerField(null=True)
     gaming_perf = models.PositiveSmallIntegerField(null=True)
-    manufacturer = models.CharField(max_length=30)
+    manufacturer = models.CharField(max_length=50)
     chipset = models.CharField(max_length=50)
     tdp = models.PositiveSmallIntegerField(null=True)
     links = models.CharField(max_length=50,null=True)
