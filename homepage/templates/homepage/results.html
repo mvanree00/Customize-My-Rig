@@ -28,7 +28,7 @@ References:
                     Cores: {{obj.cores}}<br>
                     Platform: {{obj.platform}}<br>
                 </td>
-                <td><a href="https://pcpartpicker.com/product/{{obj.links}}" target="_blank">${{obj.price}}</a></td>
+                <td><a href={{link_vals.0}} target="_blank">${{obj.price}}</a></td>
             </tr>
         {%endif%}
 
@@ -47,7 +47,7 @@ References:
                     <td>
                         Type: {{obj.kind}}<br>
                     </td>
-                    <td><a href="https://pcpartpicker.com/product/{{obj.links}}" target="_blank">${{obj.price}}</a></td>
+                    <td><a href={{link_vals.1}} target="_blank">${{obj.price}}</a></td>
                 {%endif%}
             </tr>
         {%endif%}
@@ -63,7 +63,7 @@ References:
                     Chipset: {{obj.chipset}}<br>
                     VRAM: {{obj.mem}} GB<br>
                 </td>
-                <td><a href="https://pcpartpicker.com/product/{{obj.links}}" target="_blank">${{obj.price}}</a></td>
+                <td><a href={{link_vals.2}} target="_blank">${{obj.price}}</a></td>
             </tr>
         {%endif%}
 
@@ -79,7 +79,7 @@ References:
                     Modules: {{obj.modules}}<br>
                     Color: {{obj.color}}<br>
                 </td>
-                <td><a href="https://pcpartpicker.com/product/{{obj.links}}" target="_blank">${{obj.price}}</a></td>
+                <td><a href={{link_vals.4}} target="_blank">${{obj.price}}</a></td>
             </tr>
         {%endif%}
 
@@ -92,7 +92,7 @@ References:
                 <td>
                     Chipset: {{obj.chipset}}<br>
                 </td>
-                <td><a href="https://pcpartpicker.com/product/{{obj.links}}" target="_blank">${{obj.price}}</a></td>
+                <td><a href={{link_vals.3}} target="_blank">${{obj.price}}</a></td>
             </tr>
         {%endif%}
 
@@ -105,12 +105,12 @@ References:
                 <td>
                     Size: {{obj.size}}<br>
                 </td>
-                <td><a href="https://pcpartpicker.com/product/{{obj.links}}" target="_blank">${{obj.price}}</a></td>
+                <td><a href={{link_vals.5}} target="_blank">${{obj.price}}</a></td>
             </tr>
         {%endif%}
 
 
-        {% if "STORAGE" in part %}
+        {% if part == "STORAGE"%}
             <tr>
                 <td><img src={{obj.img}} alt="Storage_Image" style="width:250px;height:200px;"></td>
                 <td>Storage</td>
@@ -124,7 +124,7 @@ References:
                     Form: {{obj.form}}<br>
                     Type: {{obj.kind}}<br>
                 </td>
-                <td><a href="https://pcpartpicker.com/product/{{obj.links}}">${{obj.price}}</a></td>
+                <td><a href={{link_vals.7}}>${{obj.price}}</a></td>
             </tr>
         {%endif%}
 
@@ -142,7 +142,7 @@ References:
                     Form: {{obj.form}}<br>
                     Type: {{obj.kind}}<br>
                 </td>
-                <td><a href="https://pcpartpicker.com/product/{{obj.links}}">${{obj.price}}</a></td>
+                <td><a href={{link_vals.8}}>${{obj.price}}</a></td>
             </tr>
         {%endif%}
 
@@ -155,7 +155,7 @@ References:
                     Wattage: {{obj.wattage}}W<br>
                     Rating: {{obj.rating}}<br>
                 </td>
-                <td><a href="https://pcpartpicker.com/product/{{obj.links}}">${{obj.price}}</a></td>
+                <td><a href={{link_vals.6}}>${{obj.price}}</a></td>
             </tr>
         {%endif%}
 

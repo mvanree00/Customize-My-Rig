@@ -35,6 +35,7 @@ def getBuild(starting_budget, type_='gaming', case='default'):
             cpu_weight = 0.45
             gpu_weight = 0.2
         parts = {}
+        links = []
         budget_remaining = starting_budget
         ########
         # CASE #
@@ -129,7 +130,11 @@ def getBuild(starting_budget, type_='gaming', case='default'):
 
         # Adding CPU, fan, GPU, motherboard, memory, case, and power to parts list
         parts.update({'CPU' : best_cpu, 'FAN' : best_fan, 'GPU' : best_gpu, 'MOBO' : best_mobo, 'MEM' : mem, 'CASE': case_obj, 'PWR' : pwr})
-
+        #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        # NOTE NEED TO ADJUST BUILD BASED ON THE getLink OUTPUTS, and make it so that views.py doesn't have to wait on it to load,(async?) 
+        # if not same price as in db getLink returns the float of the actual price (we should maybe update it), if not in stock it returns 'OOS'
+        #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        links.extend([getLink(best_cpu.links, best_cpu.price),getLink(best_fan.links, best_fan.price), getLink(best_gpu.links, best_gpu.price), getLink(best_mobo.links, best_mobo.price), getLink(mem.links, mem.price), getLink(case_obj.links, case_obj.price), getLink(pwr.links, pwr.price)])
         ###########
         # STORAGE #
         ###########
@@ -138,6 +143,7 @@ def getBuild(starting_budget, type_='gaming', case='default'):
         cheapest_storage = STORAGE.objects.order_by('price')[0]
         if budget_remaining <= cheapest_storage.price:
             parts.update({'STORAGE' : cheapest_storage})
+            links.append(getLink(cheapest_storage.links, cheapest_storage.price))
             budget_remaining -= cheapest_storage.price
         else:
             i = 1
@@ -152,14 +158,17 @@ def getBuild(starting_budget, type_='gaming', case='default'):
                     """
                     temp = STORAGE.objects.filter(price__lte=budget_remaining,kind='SSD').aggregate(mx = Max('capacity'))
                     storage = STORAGE.objects.filter(price__lte=budget_remaining,kind='SSD',capacity__gte=temp['mx']*.95).order_by('price')[0]
+                    parts.update({'STORAGE' : storage})
                 else:
                     temp = STORAGE.objects.filter(price__lte=budget_remaining).aggregate(mx = Max('capacity'))
                     storage = STORAGE.objects.filter(price__lte=budget_remaining,capacity__gte=temp['mx']*.95).order_by('price')[0]
+                    parts.update({'EXTRA' : storage})
                 budget_remaining -= storage.price
-                parts.update({('STORAGE' + str(i) + " " + str(storage.capacity) + " GB " + storage.kind) : storage})
+                links.append(getLink(storage.links, storage.price))
                 i += 1
 
         parts.update({'BUILD COST' : round(starting_budget-budget_remaining,2)})
+        parts.update({'LINKS' : links})
         return parts
     except AttributeError:  # if there is no part at budget given, won't cause crash due to none being found when part.price
         return None
