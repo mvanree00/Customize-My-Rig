@@ -1,6 +1,8 @@
 import requests
 import bs4
-def getLink(extension, price): # extension is the object 'links' attribute
+def getLink(extension): # extension is the object 'links' attribute
+    #proxies = {"https": "http://140.227.175.225:1000"}
+    #res = requests.get('https://pcpartpicker.com/product/'+extension+'/',proxies=proxies)
     res = requests.get('https://pcpartpicker.com/product/'+extension+'/')
     soup = bs4.BeautifulSoup(res.text,'html.parser')
     sels = soup.findAll('tr')
@@ -13,12 +15,9 @@ def getLink(extension, price): # extension is the object 'links' attribute
                 val = float(val.strip()[1:])
             except ValueError:
                 continue
-            if val != price: # if price was not accurate
-                return val # adjust curr price
             link = 'http://pcpartpicker.com'+sels[i].find("td").find("a").attrs['href'] #gets link ext
             res = requests.get(link)
             output = res.url
             output = output[:output.find('?')]
-            return output
+            return [output,val]
     return 'OOS' # set null
-print(getLink('rwfhP6',100))

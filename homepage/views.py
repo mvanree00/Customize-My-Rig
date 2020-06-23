@@ -25,10 +25,8 @@ def index(request):
     return render(request, 'homepage/index.html')
 
 def results(request, build):
-    links = build['LINKS']
     full = {
-        'build_info': build,
-        'link_vals' : links
+        'build_info': build
     }
 
     if full['build_info'] is None:
