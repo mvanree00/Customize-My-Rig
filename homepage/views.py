@@ -33,3 +33,11 @@ def results(request, build):
         return render(request, 'homepage/index.html')
 
     return render(request, 'homepage/results.html', full)
+
+
+def info(request):
+    return render(request, 'homepage/info.html')
+
+
+def about(request):
+    return render(request, 'homepage/about.html')
