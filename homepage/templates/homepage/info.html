@@ -1,0 +1,25 @@
+{% extends 'homepage/index.html' %}
+{% load static %}
+
+     {% block navbar %}
+
+        <ul class="bar">
+          <li class="barlist"><a href="/" >Home</a></li>
+          <li class="barlist"><a href="info.html" class="active">More Info</a></li>
+          <li class="barlist" style="float:right"><a href="{% url 'about' %}">About</a></li>
+        </ul>
+
+    {% endblock %}
+
+    {% block content %}
+
+        <br><br><div class="form2">
+            <h2 style="text-align: center"><b>Customize My Rig gives you a free PC build optimized to your budget in seconds!</b></h2>
+            <br><br><h2 style="text-align: left">How it works:</h2><br>
+            <h4 style="text-align: left">1. <b>Tell us your budget:</b> Let us know the total amount you are willing to spend on your PC</h4><br>
+            <h4 style="text-align: left">2. <b>We do the work:</b> We scour the web for the best, highest rated parts that can fit in your budget</h4><br>
+            <h4 style="text-align: left">3. <b>View your new PC:</b> We show you the components we found for you, their price and other information, and where to buy them</h4><br>
+        </div>
+        <h6 style="position: fixed; bottom: 0; width:100%; text-align: center">Mostly Michaels Copyright © 2020, Customize My Rig. All Rights Reserved</h6>
+
+    {% endblock %}
