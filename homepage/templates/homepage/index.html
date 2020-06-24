@@ -31,18 +31,19 @@ References:
   </head>
   <body>
 
-     {% block navbar %}
+    {% block navbar %}
         <ul class="bar">
           <li class="barlist"><a href="/" class="active">Home</a></li>
-          <li class="barlist"><a href="">News</a></li>
-          <li class="barlist"><a href="">Contact</a></li>
-          <li class="barlist" style="float:right"><a href="">About</a></li>
+          <li class="barlist"><a href="{% url 'info' %}">More Info</a></li>
+          <li class="barlist" style="float:right"><a href="{% url 'about' %}">About</a></li>
         </ul>
     {% endblock %}
 
     {% block content %}
     <img src="https://i.ibb.co/PhSyS7j/logo.png" style="display: block; margin-left: auto; margin-right: auto;" alt="logo" border="0">
-    <br><br><div class="form">
+    <br><br>
+    <!--Begin Form-->
+    <div class="form">
     <h2 style="text-align: center; margin-top: 60px;">How much do you want to spend on your new PC?</h2>
     <div class="slidecontainer" style="margin-top: 40px;">
         <form>
