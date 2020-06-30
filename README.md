@@ -13,7 +13,7 @@ virtualenv .
 
 .\scripts\activate
 
-
+<br />
 
 IN PYCHARM:
 
