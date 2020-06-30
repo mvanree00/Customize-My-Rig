@@ -1,12 +1,12 @@
 # Customize-My-Rig
 https://github.com/mvanree00/Customize-My-Rig
 
-In terminal:
-git clone https://github.com/mvanree00/Customize-My-Rig
-cd Customize-My-Rig
-pip install virtualenv (if necessary)
-virtualenv .
-.\scripts\activate
+In terminal: <br />
+git clone https://github.com/mvanree00/Customize-My-Rig <br />
+cd Customize-My-Rig <br />
+pip install virtualenv (if necessary) <br />
+virtualenv . <br />
+.\scripts\activate <br />
 
 In Pycharm:
 pip inatall django
