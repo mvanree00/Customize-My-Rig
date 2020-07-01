@@ -1,31 +1,18 @@
 # Customize-My-Rig
 https://github.com/mvanree00/Customize-My-Rig
 
-IN TERMINAL 
+1. Activate, or create and activate, a virtual environment.
 
-git clone https://github.com/mvanree00/Customize-My-Rig 
+Activation:
+source /path/to/venv/bin/activate
+Creation:
+python3 -m venv newenv
+source newenv/bin/activate
 
-cd Customize-My-Rig 
+2. Place .tar.gz file and .py file in the same folder
 
-pip install virtualenv (if necessary) 
+3. Setup Customize My Rig!
+./run_me
 
-virtualenv . 
-
-.\scripts\activate
-
-<br />
-
-IN PYCHARM:
-
-pip inatall django
-
-pip install requests 
-
-pip install bs4
-
-python manage.py runserver
-
-Go to: http://127.0.0.1:8000/
-
-
-  
+4. Customize your PC!
+Open your browser and navigate to http://127.0.0.1:8000/
