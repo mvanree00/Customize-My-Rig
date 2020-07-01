@@ -5,5 +5,5 @@ setup(
     version='0.1',
     packages=['customize-my-rig',],
     description='Automatic PC Creator',
-    install_requires=['Django','requests','bs4'],
+    install_requires=['Django'],
 )

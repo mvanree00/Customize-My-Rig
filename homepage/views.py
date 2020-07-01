@@ -7,7 +7,6 @@ from django.http import HttpResponse
 from .models import *
 from homepage.models import *
 from django.db.models import Max
-from links import getLink
 from buildpc import getBuild
 
 def index(request):
