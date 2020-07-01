@@ -13,7 +13,7 @@ Creation:
     
     source newenv/bin/activate
 
-#### 2. Place .tar.gz file and .py file in the same folder
+#### 2. Place .tar.gz file and executable file in the same folder
 
 #### 3. Setup Customize My Rig!
 
