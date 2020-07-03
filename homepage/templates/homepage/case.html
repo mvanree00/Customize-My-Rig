@@ -1,0 +1,59 @@
+<!--
+Case Picking
+
+References:
+- Checkboxes https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
+- Checkbox Sizing https://www.geeksforgeeks.org/how-to-set-checkbox-size-in-html-css/
+-->
+
+{% extends 'homepage/index.html' %}
+{% load static %}
+
+{% block navbar %}
+
+<ul class="bar">
+  <li class="barlist"><a href="/" class="active">Home</a></li>
+  <li class="barlist"><a href="info.html">More Info</a></li>
+  <li class="barlist" style="float:right"><a href="{% url 'about' %}">About</a></li>
+</ul>
+
+{% endblock %}
+
+{% block content %}
+
+<br>
+<h1 style="text-align: center"><b>Computer Case</b></h1>
+<h4 style="text-align: center">Choose the styles that best suit you.</h4>
+
+<br>
+<form class="form3">
+    <list>
+        <div>
+            <input type="checkbox" id="solid" name="solid" style="transform:scale(1.3)">
+                <label style="margin: 20px" for="solid"><h5><b>Solid Color</b></h5></label>
+        </div>
+        <div>
+            <input type="checkbox" id="glass" name="glass" style="transform:scale(1.3)">
+                <label style="margin: 20px" for="glass"><h5><b>Glass Panel</b></h5></label>
+        </div>
+        <div>
+            <input type="checkbox" id="white" name="white" style="transform:scale(1.3)">
+                <label style="margin: 20px" for="white"><h5><b>White</b></h5></label>
+        </div>
+        <div>
+            <input type="checkbox" id="black" name="black" style="transform:scale(1.3)">
+                <label style="margin: 20px" for="black"><h5><b>Black</b></h5></label>
+        </div>
+        <div>
+            <input type="checkbox" id="idc" name="idc" style="transform:scale(1.3)">
+                <label style="margin: 20px" for="idc"><h5><b>Don't Care</b></h5></label>
+        </div>
+
+        <button class="button button2" type="submit">Continue</button>
+    </list>
+</form>
+
+
+<h6 style="position: fixed; bottom: 0; width:100%; text-align: center">Mostly Michaels Copyright © 2020, Customize My Rig. All Rights Reserved</h6>
+
+{% endblock %}

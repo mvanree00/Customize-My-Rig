@@ -13,8 +13,9 @@ TODO:
 
 from homepage.models import *
 from django.db.models import Max
+from django.db.models import Q
 
-def getBuild(starting_budget, type_='gaming', case='default'):
+def getBuild(starting_budget, type_='gaming', case=[]):
     try:
         # weighting pc parts based upon pc type selection
         if type_ == 'desktop':
@@ -40,10 +41,47 @@ def getBuild(starting_budget, type_='gaming', case='default'):
         # CASE #
         ########
         # if no case chosen, assume no preference on look and choose lowest price
-        if case == 'default':
+        if 'idc' in case:
             case_obj = CASE.objects.filter(price__isnull = False).order_by('price')[0]
         else:
-            case_obj = CASE.objects.filter(name=case)[0]
+            case_objs = CASE.objects.filter(price__isnull = False).filter(price__lte=starting_budget*0.10)\
+                .order_by('price')
+
+            # Narrow by color selections
+            if 'white' in case and 'black' in case: # White AND/OR black case
+                case_objs = case_objs.filter(Q(color__contains='White') | Q(color__contains='Black'))
+            elif 'white' in case:
+                case_objs = case_objs.filter(color__contains = 'White')
+            elif 'black' in case:
+                case_objs = case_objs.filter(color__contains = 'Black')
+
+            # Narrow by solid colors
+            if 'solid' in case:
+                case_objs = case_objs.exclude(color__contains='/')
+
+            # Narrow by panel
+            if 'glass' in case:
+                case_objs = case_objs.filter(panel = True)
+
+            if case_objs.exists():
+                case_obj = case_objs[0]
+            else:
+                case_obj = None
+
+            # If all options cannot be fulfilled, at the bare minimum get the color correct
+            if case_obj is None:
+                case_objs = CASE.objects.filter(price__isnull=False).order_by('price')
+
+                if 'white' in case and 'black' in case:
+                    case_objs = case_objs.filter(Q(color__contains='White') | Q(color__contains='Black'))\
+                        .filter(price__lte=starting_budget * 0.10)
+                elif 'white' in case:
+                    case_objs = case_objs.filter(color__contains='White').filter(price__lte=starting_budget * 0.10)
+                elif 'black' in case:
+                    case_objs = case_objs.filter(color__contains='Black').filter(price__lte=starting_budget * 0.10)
+
+                case_obj = case_objs.order_by('price')[0]
+
         budget_remaining -= case_obj.price
 
         #########################
@@ -161,9 +199,11 @@ def getBuild(starting_budget, type_='gaming', case='default'):
 
         parts.update({'BUILD COST' : round(starting_budget-budget_remaining,2)})
         return parts
-    except AttributeError:  # if there is no part at budget given, won't cause crash due to none being found when part.price
+    except AttributeError as e:  # if there is no part at budget given, won't cause crash due to none being found when part.price
+        print(e)
         return None
-    except IndexError: # if there is no part at budget given, won't cause error due to indexing empty list
+    except IndexError as e: # if there is no part at budget given, won't cause error due to indexing empty list
+        print(e)
         return None
 
     """
