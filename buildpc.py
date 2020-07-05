@@ -188,7 +188,11 @@ def getBuild(starting_budget, type_='gaming', case=[]):
                         storage = STORAGE.objects.order_by('capacity','price')[0]
                     """
                     temp = STORAGE.objects.filter(price__lte=budget_remaining,kind='SSD').aggregate(mx = Max('capacity'))
-                    storage = STORAGE.objects.filter(price__lte=budget_remaining,kind='SSD',capacity__gte=temp['mx']*.95).order_by('price')[0]
+                    if temp['mx'] is not None:
+                        storage = STORAGE.objects.filter(price__lte=budget_remaining,kind='SSD',capacity__gte=temp['mx']*.95).order_by('price')[0]
+                    else: # if no SSD at price, gets HDD
+                        temp = STORAGE.objects.filter(price__lte=budget_remaining).aggregate(mx=Max('capacity'))
+                        storage = STORAGE.objects.filter(price__lte=budget_remaining, capacity__gte=temp['mx'] * .95).order_by('price')[0]
                     parts.update({'STORAGE' : storage})
                 else:
                     temp = STORAGE.objects.filter(price__lte=budget_remaining).aggregate(mx = Max('capacity'))

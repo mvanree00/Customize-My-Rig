@@ -4,6 +4,9 @@ Django Views
 References:
 - Redirect https://docs.djangoproject.com/en/3.0/topics/http/shortcuts/
 - Sessions https://stackoverflow.com/questions/7763115/django-passing-data-between-views, https://docs.djangoproject.com/en/3.0/topics/http/sessions/
+
+TODO:
+- Redirect upon error to a page explaining why
 """
 
 from django.shortcuts import render
@@ -18,15 +21,15 @@ def index(request):
     if (request.method == 'GET' and 'amount' in request.GET):
         try:
             budget = float(request.GET['amount'])
-            if (budget < 0):
+            if (budget < 550):
                 raise ValueError
 
             request.session['budget'] = budget
             return redirect('/case')
         except ValueError:
-            return render(request, 'homepage/index.html')
-    else:
-        return render(request, 'homepage/index.html')
+            return redirect('index')
+
+    return render(request, 'homepage/index.html')
 
 def case(request):
     if (request.method == 'GET' and ('solid' in request.GET or 'glass' in request.GET or 'white' in request.GET
@@ -56,7 +59,7 @@ def results(request):
     }
 
     if full['build_info'] is None:
-        return render(request, 'homepage/index.html')
+        return redirect('index')
 
     return render(request, 'homepage/results.html', full)
 
