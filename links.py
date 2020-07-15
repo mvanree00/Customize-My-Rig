@@ -1,5 +1,7 @@
 import requests
 import bs4
+from datetime import datetime,timezone
+from homepage.models import *
 def getLink(extension): # extension is the object 'links' attribute
     #proxies = {"https": "http://140.227.175.225:1000"}
     #res = requests.get('https://pcpartpicker.com/product/'+extension+'/',proxies=proxies)
@@ -21,3 +23,32 @@ def getLink(extension): # extension is the object 'links' attribute
             output = output[:output.find('?')]
             return [output,val]
     return 'OOS' # set null
+def checkPart(obj): # makes sure price is actually correct and in stock
+    if obj.last_updated:
+        duration = datetime.now(timezone.utc) - obj.last_updated
+        duration_in_s = duration.total_seconds()
+        hours = divmod(duration_in_s, 3600)[0]
+        if hours < 6: # less than 6 hours since price last updated
+            return True
+        else:
+            obj.last_updated=datetime.now(timezone.utc)
+            obj.save()
+    else:
+        obj.last_updated=datetime.now(timezone.utc)
+        obj.save()
+    output = getLink(obj.links)
+    if output == 'OOS':
+        obj.price=None
+        obj.webpage=None
+        obj.save()
+    elif output[1] != obj.price: # if not same price as updated
+        obj.webpage=output[0]
+        if output[1]<obj.price:
+            obj.price=output[1]
+            obj.save()
+            return True
+        obj.price=output[1]
+        obj.save()
+    else:
+        return True
+    return False

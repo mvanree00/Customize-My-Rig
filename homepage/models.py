@@ -13,6 +13,7 @@ class CPU(models.Model): # add in core/boost clocks?
     links = models.CharField(max_length=50,null=True)
     img = models.CharField(max_length=100, null=True)
     webpage = models.CharField(max_length=100,null=True)
+    last_updated = models.DateTimeField(null=True)
     def __str__(self):
         return self.name
 class GPU(models.Model): # add in core/boost clocks?
@@ -25,6 +26,7 @@ class GPU(models.Model): # add in core/boost clocks?
     links = models.CharField(max_length=50,null=True)
     img = models.CharField(max_length=100, null=True)
     webpage = models.CharField(max_length=100,null=True)
+    last_updated = models.DateTimeField(null=True)
     def __str__(self):
         return self.manufacturer+' '+self.chipset
 class MEM(models.Model):
@@ -37,6 +39,7 @@ class MEM(models.Model):
     img = models.CharField(max_length=100, null=True)
     color = models.CharField(max_length=30, null = True)
     webpage = models.CharField(max_length=100,null=True)
+    last_updated = models.DateTimeField(null=True)
     def __str__(self):
         return self.name
 class STORAGE(models.Model):
@@ -48,6 +51,7 @@ class STORAGE(models.Model):
     links = models.CharField(max_length=50,null=True)
     img = models.CharField(max_length=100, null=True)
     webpage = models.CharField(max_length=100,null=True)
+    last_updated = models.DateTimeField(null=True)
     def __str__(self):
         return self.name
 class PWR(models.Model):
@@ -58,6 +62,7 @@ class PWR(models.Model):
     links = models.CharField(max_length=50,null=True)
     img = models.CharField(max_length=100, null=True)
     webpage = models.CharField(max_length=100,null=True)
+    last_updated = models.DateTimeField(null=True)
     def __str__(self):
         return self.name
 class CASE(models.Model):
@@ -69,6 +74,7 @@ class CASE(models.Model):
     color = models.CharField(max_length=30, null = True)
     panel = models.BooleanField(default=False)
     webpage = models.CharField(max_length=100,null=True)
+    last_updated = models.DateTimeField(null=True)
     def __str__(self):
         return self.name
 class MOBO(models.Model):
@@ -78,6 +84,7 @@ class MOBO(models.Model):
     links = models.CharField(max_length=50,null=True)
     img = models.CharField(max_length=100, null=True)
     webpage = models.CharField(max_length=100,null=True)
+    last_updated = models.DateTimeField(null=True)
     def __str__(self):
         return self.name
 class FAN(models.Model):
@@ -87,5 +94,6 @@ class FAN(models.Model):
     img = models.CharField(max_length=110, null=True)
     kind = models.CharField(max_length=20)
     webpage = models.CharField(max_length=100,null=True)
+    last_updated = models.DateTimeField(null=True)
     def __str__(self):
         return self.name
