@@ -3,210 +3,244 @@ body {
 }
 
 .form {
-  background-color: lightgrey;
-  width: 90%;
-  border: #1bc5da;
-  border-style: solid;
-  margin: auto;
-  padding: 10px;
+    background-color: lightgrey;
+    width: 90%;
+    border: #1bc5da;
+    border-style: solid;
+    margin: auto;
+    padding: 10px;
 }
 
 .form2 {
-  background-color: floralwhite;
-  width: 75%;
-  border: #1bc5da;
-  border-style: solid;
-  margin: auto;
-  padding: 10px;
+    background-color: lightgrey;
+    width: 75%;
+    border: #1bc5da;
+    border-style: solid;
+    margin: auto;
+    padding: 10px;
 }
 
 .form3 {
-  align-content: left;
-  background-color: floralwhite;
-  width: 20%;
-  border: #1bc5da;
-  border-style: solid;
-  margin: auto;
-  padding: 10px;
+    background-color: floralwhite;
+    width: 20%;
+    border: #1bc5da;
+    border-style: solid;
+    margin: auto;
+    padding: 10px;
+}
+
+.form4 {
+    background-color: floralwhite;
+    width: 50%;
+    border: #1bc5da;
+    border-style: solid;
+    margin: auto;
+    padding: 10px;
 }
 
 /************ Nav Bar *****************/
 .bar {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #333;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
 }
 
 .barlist {
-  float: left;
+    float: left;
 }
 
 li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
 }
 
 li a:hover:not(.active) {
-  background-color: #111;
+    background-color: #111;
 }
 
 .active {
-  background-color: #1bc5da;
+    background-color: #1bc5da;
 }
+
 /*************** End Nav Bar *********************/
 
 /*************** Slider **********************/
 .slidecontainer {
-  width: 100%;
+    width: 100%;
 }
 
 /* The slider itself */
 .slider {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  -webkit-appearance: none;
-  appearance: none;
-  width: 70%;
-  height: 50px;
-  background: #FFFFFF;
-  opacity: 0.7; /* transparency */
-  -webkit-transition: .2s;
-  transition: opacity .2s;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 70%;
+    height: 50px;
+    background: #FFFFFF;
+    opacity: 0.7; /* transparency */
+    -webkit-transition: .2s;
+    transition: opacity .2s;
 }
 
 .slider:hover {
-  opacity: 1; /* Fully shown on mouse-over */
+    opacity: 1; /* Fully shown on mouse-over */
 }
 
 .slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 50px; /* slider handle width */
-  height: 50px; /* Slider handle height */
-  background: #1bc5da;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 50px; /* slider handle width */
+    height: 50px; /* Slider handle height */
+    background: #1bc5da;
 }
 
 .slider::-moz-range-thumb {
-  width: 50px; /* slider handle width */
-  height: 50px; /* Slider handle height */
-  background: #1bc5da;
+    width: 50px; /* slider handle width */
+    height: 50px; /* Slider handle height */
+    background: #1bc5da;
 }
 
 .amount {
-  margin-top: 30px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+    margin-top: 30px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
+
 /************* END SLIDER *******************/
 
 /************* SUBMIT BUTTON ******************/
 .button {
-  border: none;
-  color: white;
-  padding: 16px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  transition-duration: 0.4s;
-  cursor: pointer;
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
 }
 
 .button1 {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  font-size : 20px;
-  background-color: white;
-  color: black;
-  border: 2px solid #1bc5da;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 20px;
+    background-color: white;
+    color: black;
+    border: 2px solid #1bc5da;
 }
 
 .button1:hover {
-  background-color: #1bc5da;
-  color: white;
+    background-color: #1bc5da;
+    color: white;
 }
 
 .button2 {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  font-size : 20px;
-  background-color: #333;
-  color: floralwhite;
-  border: 2px solid #1bc5da;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 20px;
+    background-color: #333;
+    color: floralwhite;
+    border: 2px solid #1bc5da;
 }
 
 .button2:hover {
-  background-color: #1bc5da;
-  color: #333;
+    background-color: #1bc5da;
+    color: #333;
 }
+
 /************* END SUBMIT BUTTON ****************/
 
 /************* PC TYPE **************/
-.pctype{
-  text-align: center;
+.pctype {
+    text-align: center;
 }
-.pctype img{
-  display:inline-block;
-  width: 100%;
-  border: #1bc5da;
-  border-style: solid;
+
+.pctype img {
+    display: inline-block;
+    width: 100%;
+    border: none;
 }
 
 .typetable {
-  margin-left: auto;
-  margin-right: auto;
+    margin-left: auto;
+    margin-right: auto;
+    border: none;
+}
+
+.typetable th, td {
+    padding: 10px;
+    text-align: center;
+    border: none;
+}
+
+.pctype {
+    cursor: pointer;
+    filter: grayscale(100%);
+}
+
+.pctype:hover {
+    filter: grayscale(0);
+}
+
+.sr-only:checked + label {
+    filter: grayscale(0);
 }
 
 /**********************************/
 
 /******** More info **************/
 .dropdown {
-  position: relative;
-  display: flow;
+    position: relative;
+    display: flow;
 }
 
 .dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 300px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  padding: 8px 8px;
-  z-index: 1;
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 300px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    padding: 8px 8px;
+    z-index: 1;
 }
 
 .dropdown:hover .dropdown-content {
-  display: block;
+    display: block;
 }
 
 .colorpicker {
-  display: inline-block;
-  margin-left: auto;
-  margin-right: auto;
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 input[type="color"] {
-	-webkit-appearance: none;
-	border: none;
-	width: 70px;
-	height: 70px;
+    -webkit-appearance: none;
+    border: none;
+    width: 70px;
+    height: 70px;
 }
+
 input[type="color"]::-webkit-color-swatch-wrapper {
-	padding: 0;
+    padding: 0;
 }
+
 input[type="color"]::-webkit-color-swatch {
-	border: none;
+    border: none;
 }
+
 /*********** END MORE INFO *************/
 
 /*********** RESULTS TABLE *************/
@@ -221,4 +255,146 @@ input[type="color"]::-webkit-color-swatch {
     background-color: white;
     border: 3px solid #1bc5da;
 }
+
 /**************** END RESULTS TABLE **************/
+
+/**************** Hardware Radio Buttons ******************/
+.hardware:checked,
+.hardware:not(:checked) {
+    position: absolute;
+    left: -9999px;
+}
+
+.hardware:checked + label,
+.hardware:not(:checked) + label {
+    position: relative;
+    padding-left: 28px;
+    cursor: pointer;
+    line-height: 20px;
+    display: inline-block;
+    color: #666;
+}
+
+.hardware:checked + label:before,
+.hardware:not(:checked) + label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 18px;
+    height: 18px;
+    border: 1px solid #ddd;
+    border-radius: 100%;
+    background: #fff;
+}
+
+.hardware:checked + label:after,
+.hardware:not(:checked) + label:after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    background: #1bc5da;
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    border-radius: 100%;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+
+.hardware:not(:checked) + label:after {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+}
+
+.hardware:checked + label:after {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+}
+
+.radio-wrapper div {
+    float: inside;
+    clear: both;
+}
+
+/************ END RADIO BUTTONS ***********/
+/************ BRAND CHECKLIST  https://codepen.io/quinlo/pen/ReMRXz *************/
+.container {
+    max-width: 640px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 25px;
+    border: 2px #1bc5da;
+}
+
+ul.ks-cboxtags {
+    list-style: none;
+    padding: 20px;
+}
+
+ul.ks-cboxtags li {
+    display: inline;
+}
+
+ul.ks-cboxtags li label {
+    display: inline-block;
+    background-color: rgba(255, 255, 255, .9);
+    border: 2px solid rgba(139, 139, 139, .3);
+    color: #adadad;
+    border-radius: 25px;
+    white-space: nowrap;
+    margin: 3px 0px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: all .2s;
+}
+
+ul.ks-cboxtags li label {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+ul.ks-cboxtags li label::before {
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 25px;
+    padding: 2px 6px 2px 2px;
+    content: "\f067";
+    transition: transform .3s ease-in-out;
+}
+
+ul.ks-cboxtags li input[type="checkbox"]:checked + label::before {
+    content: "\f00c";
+    transform: rotate(-360deg);
+    transition: transform .3s ease-in-out;
+}
+
+ul.ks-cboxtags li input[type="checkbox"]:checked + label {
+    border: 2px solid #1bdbf8;
+    background-color: #12bbd4;
+    color: #fff;
+    transition: all .2s;
+}
+
+ul.ks-cboxtags li input[type="checkbox"] {
+    position: absolute;
+}
+
+ul.ks-cboxtags li input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+}
+
+ul.ks-cboxtags li input[type="checkbox"]:focus + label {
+    border: 1px solid black;
+}
