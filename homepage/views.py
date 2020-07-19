@@ -55,8 +55,6 @@ def case(request):
 def type(request):
     if (request.method == 'GET' and ('type-group' in request.GET)):
         preferences = []
-        if request.GET['type-group'].value == 1:
-            x =5
         return redirect('/brand')
     else:
         return render(request, 'homepage/type.html')
