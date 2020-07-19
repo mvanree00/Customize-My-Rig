@@ -1,0 +1,83 @@
+<!--
+Case Picking
+
+References:
+- Checkboxes https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
+- Checkbox Sizing https://www.geeksforgeeks.org/how-to-set-checkbox-size-in-html-css/
+-->
+
+{% extends 'homepage/index.html' %}
+{% load static %}
+
+{% block navbar %}
+
+<ul class="bar">
+  <li class="barlist"><a href="/" class="active">Home</a></li>
+  <li class="barlist"><a href="info.html">More Info</a></li>
+  <li class="barlist" style="float:right"><a href="{% url 'about' %}">About</a></li>
+</ul>
+
+{% endblock %}
+
+{% block content %}
+
+    <!--Begin Form-->
+<form class="form2" style="text-align: center">
+<h2 style="text-align: center; margin-top: 30px;">What type of PC are you interested in?</h2><br><br>
+    <table class="typetable" style="border: none">
+        <tr>
+            <th>
+                <div class="dropdown">
+                    <span><h5 style="text-align: center;">Gaming PC</h5></span>
+                    <div class="dropdown-content">
+                        <p>If you plan on using your computer primarily for video games, you will want to spend
+                            more on the GPU and CPU</p>
+                    </div>
+                </div>
+                <br></th>
+            <th>
+                <div class="dropdown">
+                    <span><h5 style="text-align: center;">Streaming PC</h5></span>
+                    <div class="dropdown-content">
+                        <p>Similar to a gaming PC with more of an emphasis on CPU quality and RAM quantity</p>
+                    </div>
+                </div>
+                <br></th>
+            <th>
+                <div class="dropdown">
+                    <span><h5 style="text-align: center;">Production PC</h5></span>
+                    <div class="dropdown-content">
+                        <p>If you plan on doing processor heavy tasks like video editing, 3D modeling, or game
+                            development. You will want to spend more on CPU, RAM, and GPU</p>
+                    </div>
+                </div>
+                <br></th>
+        </tr>
+        <tr>
+            <td style="background-color: lightgrey; border: none">
+                <input type="radio" name="type-group" class="sr-only" id="Gaming" value="1">
+                <label for="Gaming" class="pctype">
+                    <img src="{% static 'homepage/gamepcselect.png' %}" alt="Gaming PC">
+                </label>
+            </td>
+            <td style="background-color: lightgrey; border: none">
+                <input type="radio" name="type-group" class="sr-only" id="Streaming">
+                <label for="Streaming" class="pctype">
+                    <img src="{% static 'homepage/streampcselect.png' %}" alt="Streaming PC">
+                </label>
+            </td>
+            <td style="background-color: lightgrey; border: none">
+                <input type="radio" name="type-group" class="sr-only" id="Production">
+                <label for="Production" class="pctype">
+                    <img src="{% static 'homepage/editpcselect.png' %}" alt="Production PC">
+                </label>
+            </td></tr>
+    </table>
+<button class="button button2" type="submit">Continue</button>
+</form>
+
+<br>
+<h6 style="position: relative; bottom: 0; width:100%; text-align: center">Mostly Michaels Copyright © 2020, Customize My Rig. All Rights Reserved</h6>
+
+
+{% endblock %}

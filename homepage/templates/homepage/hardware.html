@@ -1,0 +1,61 @@
+<!--
+Case Picking
+
+References:
+- Checkboxes https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
+- Checkbox Sizing https://www.geeksforgeeks.org/how-to-set-checkbox-size-in-html-css/
+-->
+
+{% extends 'homepage/index.html' %}
+{% load static %}
+
+{% block navbar %}
+
+<ul class="bar">
+  <li class="barlist"><a href="/" class="active">Home</a></li>
+  <li class="barlist"><a href="info.html">More Info</a></li>
+  <li class="barlist" style="float:right"><a href="{% url 'about' %}">About</a></li>
+</ul>
+
+{% endblock %}
+
+{% block content %}
+    <img src="https://i.ibb.co/PhSyS7j/logo.png" style="display: block; margin-left: auto; margin-right: auto;" alt="logo" border="0">
+    <br><br>
+    <!--Begin Form-->
+    <div class="form">
+    <h2 style="text-align: center; margin-top: 60px;">How much storage space do you want on your new PC? (GB)</h2>
+    <div class="slidecontainer" style="margin-top: 40px;">
+        <form>
+            <input type="range" min="250" max="2000" value="1525" class="slider" id="storage" oninput="amount.value=storage.value" step = "5" />
+            <div style="overflow: hidden;">
+                <h3 style="float: left; margin-left: 15%">250 GB</h3>
+                <h3 style="float: right; margin-right: 15%">2000 GB</h3>
+            </div>
+            <input type="text" class="amount" id="amount" name="amount" oninput="storage.value=amount.value"><br>
+
+            <h4 style="text-align: center; margin-top: 60px;">What type of storage?</h4>
+            <div class="radio-wrapper">
+            <p style="text-align: center">
+                <input type="radio" class="hardware" id="SSD" name="radio-group" checked style="vertical-align: middle; margin: 0px;">
+                <label for="SSD">SSD</label>&nbsp;&nbsp;&nbsp;
+
+                <input type="radio" class="hardware" id="HD" name="radio-group" style="vertical-align: middle; margin: 0px;">
+                <label for="HD">HD</label>&nbsp;&nbsp;&nbsp;
+
+                <input type="radio" class="hardware" id="both" name="radio-group" style="vertical-align: middle; margin: 0px;">
+                <label for="both">Both</label>&nbsp;&nbsp;&nbsp;
+
+                <input type="radio" class="hardware" id="either" name="radio-group" style="vertical-align: middle; margin: 0px;">
+                <label for="either">I don't care</label>
+            </p>
+            </div>
+            <button class="button button1">Show me my PC!</button>
+        </form>
+    </div>
+    </div><br><br>
+
+
+<h6 style="position: relative; bottom: 0; width:100%; text-align: center">Mostly Michaels Copyright © 2020, Customize My Rig. All Rights Reserved</h6>
+
+{% endblock %}

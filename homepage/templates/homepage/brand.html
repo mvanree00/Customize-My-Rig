@@ -1,0 +1,41 @@
+<!--
+Case Picking
+
+References:
+- Checkboxes https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
+- Checkbox Sizing https://www.geeksforgeeks.org/how-to-set-checkbox-size-in-html-css/
+-->
+
+{% extends 'homepage/index.html' %}
+{% load static %}
+
+{% block navbar %}
+
+<ul class="bar">
+  <li class="barlist"><a href="/" class="active">Home</a></li>
+  <li class="barlist"><a href="info.html">More Info</a></li>
+  <li class="barlist" style="float:right"><a href="{% url 'about' %}">About</a></li>
+</ul>
+
+{% endblock %}
+
+{% block content %}
+
+<br>
+<h1 style="text-align: center"><b>Brand Preference?</b></h1>
+<h4 style="text-align: center">Do you have a brand you prefer over others?</h4>
+
+<br>
+<form class="form4">
+    <div class="container">
+      <ul class="ks-cboxtags" style="text-align: center">
+        <li><input type="checkbox" name="intel" id="intel" value="intel"><label for="intel">Intel</label></li>
+        <li><input type="checkbox" name="nvidia" id="nvidia" value="nvidia"><label for="nvidia">Nvidia</label></li>
+        <li><input type="checkbox" name="AMD" id="AMD" value="AMD"><label for="AMD">AMD</label></li>
+      </ul>
+        <button class="button button2" type="submit">Continue</button>
+    </div>
+</form>
+<h6 style="position: fixed; bottom: 0; width:100%; text-align: center">Mostly Michaels Copyright © 2020, Customize My Rig. All Rights Reserved</h6>
+
+{% endblock %}
