@@ -7,6 +7,7 @@ References:
 
 TODO:
 - Redirect upon error to a page explaining why
+- Properly link new questions to database
 """
 
 from django.shortcuts import render
@@ -47,9 +48,32 @@ def case(request):
             preferences.append('idc')
         request.session['preferences'] = preferences
 
-        return redirect('/results')
+        return redirect('/type')
     else:
         return render(request, 'homepage/case.html')
+
+def type(request):
+    if (request.method == 'GET' and ('type-group' in request.GET)):
+        preferences = []
+        if request.GET['type-group'].value == 1:
+            x =5
+        return redirect('/brand')
+    else:
+        return render(request, 'homepage/type.html')
+
+def brand(request):
+    if (request.method == 'GET' and ('intel' in request.GET or 'nvidia' in request.GET or  'AMD' in request.GET )):
+        preferences = []
+        return redirect('/hardware')
+    else:
+        return render(request, 'homepage/brand.html')
+
+def hardware(request):
+    if (request.method == 'GET' and ('radio-group' in request.GET)):
+        preferences = []
+        return redirect('/results')
+    else:
+        return render(request, 'homepage/hardware.html')
 
 def results(request):
     build = getBuild(request.session['budget'], 'gaming', request.session['preferences'])
