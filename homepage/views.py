@@ -35,26 +35,33 @@ def index(request):
 def case(request):
     if (request.method == 'GET' and ('solid' in request.GET or 'glass' in request.GET or 'white' in request.GET
                                      or 'black' in request.GET or 'idc' in request.GET)):
-        preferences = []
+        case_preferences = []
         if ('solid' in request.GET and request.GET['solid'] == 'on'):
-            preferences.append('solid')
+            case_preferences.append('solid')
         if ('glass' in request.GET and request.GET['glass'] == 'on'):
-            preferences.append('glass')
+            case_preferences.append('glass')
         if ('white' in request.GET and request.GET['white'] == 'on'):
-            preferences.append('white')
+            case_preferences.append('white')
         if ('black' in request.GET and request.GET['black'] == 'on'):
-            preferences.append('black')
+            case_preferences.append('black')
         if ('idc' in request.GET and request.GET['idc'] == 'on'):
-            preferences.append('idc')
-        request.session['preferences'] = preferences
+            case_preferences.append('idc')
+        request.session['case_preferences'] = case_preferences
 
         return redirect('/type')
     else:
         return render(request, 'homepage/case.html')
 
 def type(request):
-    if (request.method == 'GET' and ('type-group' in request.GET)):
-        preferences = []
+    if (request.method == 'GET' and ('type-gaming' in request.GET or 'type-streaming' in request.GET
+                                     or 'type-production' in request.GET)):
+        if ('type-gaming' in request.GET and request.GET['type-gaming'] == 'on'):
+            request.session['pc_type'] = 'gaming'
+        elif ('type-streaming' in request.GET and request.GET['type-streaming'] == 'on'):
+            request.session['pc_type'] = 'streaming'
+        else:
+            request.session['pc_type'] = 'production'
+
         return redirect('/brand')
     else:
         return render(request, 'homepage/type.html')
@@ -74,7 +81,7 @@ def hardware(request):
         return render(request, 'homepage/hardware.html')
 
 def results(request):
-    build = getBuild(request.session['budget'], 'gaming', request.session['preferences'])
+    build = getBuild(request.session['budget'], request.session['pc_type'], request.session['case_preferences'])
 
     full = {
         'build_info': build

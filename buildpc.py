@@ -17,10 +17,15 @@ from django.db.models import Q
 from links import checkPart
 def getBuild(starting_budget, type_='gaming', case=[]):
     try:
+        print('PC Type:', type_)
         # weighting pc parts based upon pc type selection
-        if type_ == 'desktop':
-            cpu_weight = 0.25
-            gpu_weight = 0.15
+        if type_ == 'streaming': #FIXME: weights
+            if starting_budget <= 850:
+                cpu_weight = 0.25
+                gpu_weight = 0.375
+            else:
+                cpu_weight = 0.25
+                gpu_weight = 0.15
         elif type_ == 'gaming':
             if starting_budget <= 850:
                 cpu_weight = 0.25
@@ -31,9 +36,13 @@ def getBuild(starting_budget, type_='gaming', case=[]):
             else:
                 cpu_weight = .315
                 gpu_weight = .44
-        else: # workstation
-            cpu_weight = 0.45
-            gpu_weight = 0.2
+        else: #FIXME: weights, production
+            if starting_budget <= 850:
+                cpu_weight = 0.25
+                gpu_weight = 0.375
+            else:
+                cpu_weight = 0.3
+                gpu_weight = 0.2
         parts = {}
         budget_remaining = starting_budget
         ########
@@ -92,45 +101,65 @@ def getBuild(starting_budget, type_='gaming', case=[]):
         # finds best CPU Motherboard combo based on overall performance AND performance ratios (performance divided by total cost)
         while True:
             cpu_objs = CPU.objects.filter(price__isnull = False, price__lte=cpu_weight * starting_budget)
-            cpu_best_desktop_perf = cpu_objs.order_by('desktop_perf').reverse()[0].desktop_perf
-            cpu_best_gaming_perf = cpu_objs.order_by('gaming_perf').reverse()[0].gaming_perf
-            cpu_best_workstation_perf = cpu_objs.order_by('workstation_perf').reverse()[0].workstation_perf
-            mobo_objs = MOBO.objects.filter(price__isnull = False, price__lte=cpu_weight * starting_budget)
-            best_cpu = None
-            best_mobo = None
-            best_fan = None
-            best_perf_ratio = 0.0
-            for cpu in cpu_objs:
-                # considers fan price
-                fan = 'Built-in'
-                fan_price = 0
-                if cpu.cpu_fan == False:
-                    fan = FAN.objects.order_by('price')[0]
-                    fan_price = fan.price
-                for mobo in mobo_objs:
-                    if cpu.platform == mobo.chipset:
-                        if (type_ == 'desktop' and cpu.desktop_perf > cpu_best_desktop_perf - 2 and
-                            cpu.desktop_perf / (cpu.price+mobo.price+fan_price) > best_perf_ratio): # desktop perf ratio
-                            best_perf_ratio = cpu.desktop_perf / (cpu.price+mobo.price+fan_price)
+            mobo_objs = MOBO.objects.filter(price__isnull=False, price__lte=cpu_weight * starting_budget)
+            if cpu_objs and mobo_objs: # if query returned results
+                cpu_best_desktop_perf = cpu_objs.order_by('desktop_perf').reverse()[0].desktop_perf
+                cpu_best_gaming_perf = cpu_objs.order_by('gaming_perf').reverse()[0].gaming_perf
+                cpu_best_workstation_perf = cpu_objs.order_by('workstation_perf').reverse()[0].workstation_perf
+                best_cpu = None
+                best_mobo = None
+                best_fan = None
+                best_perf_ratio = 0.0
+                for cpu in cpu_objs:
+                    # considers fan price
+                    fan = 'Built-in'
+                    fan_price = 0
+                    if cpu.cpu_fan == False:
+                        fan = FAN.objects.filter(price__isnull = False).order_by('price')[0]
+                        fan_price = fan.price
+                    for mobo in mobo_objs:
+                        if cpu.platform == mobo.chipset:
+                            if (type_ == 'streaming' and cpu.desktop_perf > cpu_best_desktop_perf - 2 and
+                                cpu.desktop_perf / (cpu.price+mobo.price+fan_price) > best_perf_ratio): # desktop perf ratio
+                                best_perf_ratio = cpu.desktop_perf / (cpu.price+mobo.price+fan_price)
+                                best_cpu = cpu
+                                best_mobo = mobo
+                                best_fan = fan
+                                best_fan_price = fan_price
+                            elif (type_ == 'gaming' and cpu.gaming_perf > cpu_best_gaming_perf - 2 and
+                                cpu.gaming_perf / (cpu.price+mobo.price+fan_price) > best_perf_ratio): # gaming perf ratio
+                                best_perf_ratio = cpu.gaming_perf / (cpu.price + mobo.price + fan_price)
+                                best_cpu = cpu
+                                best_mobo = mobo
+                                best_fan = fan
+                                best_fan_price = fan_price
+                            elif (type_ == 'production' and cpu.workstation_perf > cpu_best_workstation_perf - 2 and
+                                cpu.workstation_perf / (cpu.price+mobo.price+fan_price) > best_perf_ratio): # workstation perf ratio
+                                best_perf_ratio = cpu.workstation_perf / (cpu.price + mobo.price + fan_price)
+                                best_cpu = cpu
+                                best_mobo = mobo
+                                best_fan = fan
+                                best_fan_price = fan_price
+            else:
+                cpu_objs = CPU.objects.filter(price__isnull=False).order_by('price')[0:10]
+                mobo_objs = MOBO.objects.filter(price__isnull=False)
+                lowest_price = 0
+                for cpu in cpu_objs:
+                    # considers fan price
+                    fan = 'Built-in'
+                    fan_price = 0
+                    if cpu.cpu_fan == False:
+                        fan = FAN.objects.filter(price__isnull=False).order_by('price')[0]
+                        fan_price = fan.price
+                    for mobo in mobo_objs:
+                        if cpu.platform == mobo.chipset and cpu.price + mobo.price + fan_price < lowest_price:
                             best_cpu = cpu
                             best_mobo = mobo
                             best_fan = fan
                             best_fan_price = fan_price
-                        elif (type_ == 'gaming' and cpu.gaming_perf > cpu_best_gaming_perf - 2 and
-                            cpu.gaming_perf / (cpu.price+mobo.price+fan_price) > best_perf_ratio): # gaming perf ratio
-                            best_perf_ratio = cpu.gaming_perf / (cpu.price + mobo.price + fan_price)
-                            best_cpu = cpu
-                            best_mobo = mobo
-                            best_fan = fan
-                            best_fan_price = fan_price
-                        elif (type_ == 'workstation' and cpu.workstation_perf > cpu_best_workstation_perf - 2 and
-                            cpu.workstation_perf / (cpu.price+mobo.price+fan_price) > best_perf_ratio): # workstation perf ratio
-                            best_perf_ratio = cpu.workstation_perf / (cpu.price + mobo.price + fan_price)
-                            best_cpu = cpu
-                            best_mobo = mobo
-                            best_fan = fan
-                            best_fan_price = fan_price
-            if checkPart(best_cpu) and checkPart(best_mobo) and checkPart(best_fan):
+                            lowest_price = cpu.price + mobo.price + fan_price
+
+            if checkPart(best_cpu) and checkPart(best_mobo) and (best_fan == 'Built-in' or checkPart(best_fan)):
                 break
         budget_remaining -= best_cpu.price
         budget_remaining -= best_mobo.price
@@ -138,21 +167,26 @@ def getBuild(starting_budget, type_='gaming', case=[]):
         #######
         # GPU #
         #######
-        # for desktops/gaming PCs, gaming performance benchmark used with performance ratio
-        # for workstations, video memory important so considered here (https://nerdtechy.com/workstation-vs-gaming-pc)
+        # for streaming/gaming PCs, gaming performance benchmark used with performance ratio
+        # for production, video memory important so considered here (https://nerdtechy.com/workstation-vs-gaming-pc)
         while True:
             gpu_objs = GPU.objects.filter(price__isnull = False, price__lte=gpu_weight * starting_budget)
-            best_gpu_perf = gpu_objs.order_by('gaming_perf').reverse()[0].gaming_perf
-            best_gpu = None
-            best_gpu_mem = 0
-            best_gpu_perf_ratio = 0
-            for gpu in gpu_objs:
-                if type_ == 'workstation' and gpu.mem > best_gpu_mem and gpu.gaming_perf > best_gpu_perf - 10:
-                    best_gpu = gpu
-                    best_gpu_mem = gpu.mem
-                elif (type_ == 'desktop' or type_ == 'gaming') and gpu.gaming_perf > best_gpu_perf - 5 and gpu.gaming_perf / gpu.price > best_gpu_perf_ratio:
-                    best_gpu = gpu
-                    best_gpu_perf_ratio = gpu.gaming_perf / gpu.price > best_gpu_perf_ratio
+            if gpu_objs: # if gpus in price range
+                best_gpu_perf = gpu_objs.order_by('gaming_perf').reverse()[0].gaming_perf
+                best_gpu = None
+                best_gpu_mem = 0
+                best_gpu_perf_ratio = 0
+                for gpu in gpu_objs:
+                    if type_ == 'production' and gpu.mem > best_gpu_mem and gpu.gaming_perf > best_gpu_perf - 10:
+                        best_gpu = gpu
+                        best_gpu_mem = gpu.mem
+                    elif (
+                            type_ == 'streaming' or type_ == 'gaming') and gpu.gaming_perf > best_gpu_perf - 5 and gpu.gaming_perf / gpu.price > best_gpu_perf_ratio:
+                        best_gpu = gpu
+                        best_gpu_perf_ratio = gpu.gaming_perf / gpu.price > best_gpu_perf_ratio
+            else:
+                best_gpu = GPU.objects.filter(price__isnull = False).order_by('price')[0]
+
             if checkPart(best_gpu):
                 break
         budget_remaining -= best_gpu.price
@@ -186,7 +220,7 @@ def getBuild(starting_budget, type_='gaming', case=[]):
         ###########
         # Spending remaining money on storage
         # if budget remaining is lower than cheapest part, they need the part anyways so have to add
-        cheapest_storage = STORAGE.objects.order_by('price')[0]
+        cheapest_storage = STORAGE.objects.filter(price__isnull=False).order_by('price')[0]
         if budget_remaining <= cheapest_storage.price:
             parts.update({'STORAGE' : cheapest_storage})
             budget_remaining -= cheapest_storage.price
@@ -289,4 +323,4 @@ def getBuild(starting_budget, type_='gaming', case=[]):
         return None
     except IndexError: # if there is no CPU, motherboard, etc. at budget given, won't cause crash due to indexing error
         return None
-    #"""
+    """
