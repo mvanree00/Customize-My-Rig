@@ -6,7 +6,7 @@ References:
 
 TODO:
 - account for PSU power ratings
-- adjust weights? have only tested 'gaming' which appears reasonable
+- adjust weights
 - pick fan based upon power needs (more power = more heat)
 - brainstorm better methodology for picking RAM
 """
@@ -15,8 +15,12 @@ from homepage.models import *
 from django.db.models import Max
 from django.db.models import Q
 from links import checkPart
-def getBuild(starting_budget, type_='gaming', case=[]):
+
+def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[]):
     try:
+        ###########
+        # WEIGHTS #
+        ###########
         print('PC Type:', type_)
         # weighting pc parts based upon pc type selection
         if type_ == 'streaming': #FIXME: weights
@@ -45,14 +49,14 @@ def getBuild(starting_budget, type_='gaming', case=[]):
                 gpu_weight = 0.2
         parts = {}
         budget_remaining = starting_budget
+
         ########
         # CASE #
         ########
-        # if no case chosen, assume no preference on look and choose lowest price
         while True:
-            if 'idc' in case:
+            if 'idc' in case: # no case preference, lowest price case chosen
                 case_obj = CASE.objects.filter(price__isnull = False).order_by('price')[0]
-            else:
+            else: # case preferences, spending no more than 10% of budget
                 case_objs = CASE.objects.filter(price__isnull = False).filter(price__lte=starting_budget*0.10)\
                     .order_by('price')
 
@@ -99,17 +103,35 @@ def getBuild(starting_budget, type_='gaming', case=[]):
         # CPU, FAN, MOTHERBOARD #
         #########################
         # finds best CPU Motherboard combo based on overall performance AND performance ratios (performance divided by total cost)
+        cpu_brand_attempts = 0
         while True:
-            cpu_objs = CPU.objects.filter(price__isnull = False, price__lte=cpu_weight * starting_budget)
             mobo_objs = MOBO.objects.filter(price__isnull=False, price__lte=cpu_weight * starting_budget)
-            if cpu_objs and mobo_objs: # if query returned results
+
+            # filters cpus based on brand preferences (only sees if possible twice)
+            if cpu_brand_attempts <= 1:
+                print('Brand preferences:',brand_preferences)
+                cpu_objs = CPU.objects.none()
+
+                for brand in brand_preferences: # creates query set of ALL CPUs with the preferred brands
+                    cpu_objs = cpu_objs.union(CPU.objects.filter(price__isnull=False,
+                                                                 name__icontains=brand,
+                                                                 price__lte=cpu_weight * starting_budget))
+
+                if cpu_objs:
+                    cpu_brand_attempts += 1
+                else: # if brand preference is always gonna be empty, no point in doing it again
+                    cpu_brand_attempts = 2
+            else: # brand preference attempts failed
+                cpu_objs = CPU.objects.filter(price__isnull=False, price__lte=cpu_weight * starting_budget)
+
+            best_cpu = None
+            best_mobo = None
+            best_fan = None
+            best_perf_ratio = 0.0
+            if cpu_objs and mobo_objs: # if query returned results, find best CPU + MOBO combo
                 cpu_best_desktop_perf = cpu_objs.order_by('desktop_perf').reverse()[0].desktop_perf
                 cpu_best_gaming_perf = cpu_objs.order_by('gaming_perf').reverse()[0].gaming_perf
                 cpu_best_workstation_perf = cpu_objs.order_by('workstation_perf').reverse()[0].workstation_perf
-                best_cpu = None
-                best_mobo = None
-                best_fan = None
-                best_perf_ratio = 0.0
                 for cpu in cpu_objs:
                     # considers fan price
                     fan = 'Built-in'
@@ -140,37 +162,36 @@ def getBuild(starting_budget, type_='gaming', case=[]):
                                 best_mobo = mobo
                                 best_fan = fan
                                 best_fan_price = fan_price
-            else:
-                cpu_objs = CPU.objects.filter(price__isnull=False).order_by('price')[0:10]
-                mobo_objs = MOBO.objects.filter(price__isnull=False)
-                lowest_price = 0
-                for cpu in cpu_objs:
-                    # considers fan price
-                    fan = 'Built-in'
-                    fan_price = 0
-                    if cpu.cpu_fan == False:
-                        fan = FAN.objects.filter(price__isnull=False).order_by('price')[0]
-                        fan_price = fan.price
-                    for mobo in mobo_objs:
-                        if cpu.platform == mobo.chipset and cpu.price + mobo.price + fan_price < lowest_price:
-                            best_cpu = cpu
-                            best_mobo = mobo
-                            best_fan = fan
-                            best_fan_price = fan_price
-                            lowest_price = cpu.price + mobo.price + fan_price
 
-            if checkPart(best_cpu) and checkPart(best_mobo) and (best_fan == 'Built-in' or checkPart(best_fan)):
+            # ensures CPU + MOBO combination creator did not fail before checking parts
+            if not(best_cpu is None or best_mobo is None or best_fan is None) and \
+                checkPart(best_cpu) and checkPart(best_mobo) and (best_fan == 'Built-in' or checkPart(best_fan)):
                 break
         budget_remaining -= best_cpu.price
         budget_remaining -= best_mobo.price
         budget_remaining -= best_fan_price
+
         #######
         # GPU #
         #######
         # for streaming/gaming PCs, gaming performance benchmark used with performance ratio
         # for production, video memory important so considered here (https://nerdtechy.com/workstation-vs-gaming-pc)
+        gpu_brand_attempts = 0
         while True:
-            gpu_objs = GPU.objects.filter(price__isnull = False, price__lte=gpu_weight * starting_budget)
+            # filters gpus based on brand preferences (attempts finding brand matches maximum of twice)
+            if gpu_brand_attempts <= 1:
+                gpu_objs = GPU.objects.none()
+                for brand in brand_preferences:
+                    gpu_objs = gpu_objs.union(GPU.objects.filter(price__isnull = False,
+                                                                 manufacturer__icontains=brand,
+                                                                 price__lte=gpu_weight * starting_budget))
+                if gpu_objs:
+                    gpu_brand_attempts += 1
+                else:
+                    gpu_brand_attempts = 2
+            else:
+                gpu_objs = GPU.objects.filter(price__isnull=False, price__lte=gpu_weight * starting_budget)
+
             if gpu_objs: # if gpus in price range
                 best_gpu_perf = gpu_objs.order_by('gaming_perf').reverse()[0].gaming_perf
                 best_gpu = None
@@ -190,6 +211,7 @@ def getBuild(starting_budget, type_='gaming', case=[]):
             if checkPart(best_gpu):
                 break
         budget_remaining -= best_gpu.price
+
         ##########
         # MEMORY #
         ##########
@@ -203,6 +225,7 @@ def getBuild(starting_budget, type_='gaming', case=[]):
             if checkPart(mem):
                 break
         budget_remaining -= mem.price
+
         #########
         # POWER #
         #########
@@ -215,6 +238,7 @@ def getBuild(starting_budget, type_='gaming', case=[]):
 
         # Adding CPU, fan, GPU, motherboard, memory, case, and power to parts list
         parts.update({'CPU' : best_cpu, 'FAN' : best_fan, 'GPU' : best_gpu, 'MOBO' : best_mobo, 'MEM' : mem, 'CASE': case_obj, 'PWR' : pwr})
+
         ###########
         # STORAGE #
         ###########
@@ -228,13 +252,6 @@ def getBuild(starting_budget, type_='gaming', case=[]):
             i = 1
             while STORAGE.objects.filter(price__lte=budget_remaining).exists() and i <= 2:
                 if i == 1:
-                    """ this one didnt account for .1% gb difference and huge price difference, and only did ssd
-                    best_ssd_objs = STORAGE.objects.filter(kind='SSD',price__lte=budget_remaining).order_by('-capacity','price')
-                    if best_ssd_objs.exists():
-                        storage = best_ssd_objs[0]
-                    else:
-                        storage = STORAGE.objects.order_by('capacity','price')[0]
-                    """
                     while True:
                         temp = STORAGE.objects.filter(price__lte=budget_remaining,kind='SSD').aggregate(mx = Max('capacity'))
                         if temp['mx'] is not None:
@@ -263,64 +280,3 @@ def getBuild(starting_budget, type_='gaming', case=[]):
     except IndexError as e: # if there is no part at budget given, won't cause error due to indexing empty list
         print(e)
         return None
-
-    """
-    #links = {} <<<<<<<<<<<<<<<<< NOTE THAT LINKS DOESN'T WORK COMPLETELY WITH NON-UPDATED PRICES >>>>>>>>>>>>>>>>>>
-    objects = {}
-    budget = starting_budget
-    try:
-        temp = CPU.objects.filter(price__lte=starting_budget*.2).aggregate(mx = Max('gaming_perf'))
-        CPUobj = CPU.objects.filter(price__lte=starting_budget*.2,gaming_perf=temp['mx']).order_by('price')[0]
-        if CPUobj.cpu_fan == False:
-            FANobj = FAN.objects.filter()[0]
-            budget-=FANobj.price
-        budget-=CPUobj.price
-        temp = GPU.objects.filter(price__lte=starting_budget*.4).aggregate(mx = Max('gaming_perf'))
-        GPUobj = GPU.objects.filter(price__lte=starting_budget*.4,gaming_perf=temp['mx']).order_by('price')[0]
-        budget-=GPUobj.price
-        minPwr = (CPUobj.tdp + GPUobj.tdp + 175)
-        PWRobj = PWR.objects.filter(wattage__gte=minPwr).order_by('price')[0]
-        budget-=PWRobj.price
-        MOBOobj = MOBO.objects.filter(chipset=CPUobj.platform).order_by('price')[0]
-        budget-=MOBOobj.price
-        CASEobj = CASE.objects.order_by('price')[0]
-        budget-=CASEobj.price
-        if starting_budget>=1200:
-            MEMobj = MEM.objects.filter(modules='32 GB').order_by('price')[0]
-        elif starting_budget>=700:
-            MEMobj = MEM.objects.filter(modules='16 GB').order_by('price')[0]
-        else:
-            MEMobj = MEM.objects.filter(modules=' 8 GB').order_by('price')[0]
-        budget-=MEMobj.price
-        temp = STORAGE.objects.filter(price__lte=budget,kind='SSD').aggregate(mx = Max('capacity'))
-        STORAGEobj = STORAGE.objects.filter(price__lte=budget,kind='SSD',capacity__gte=temp['mx']*.95).order_by('price')[0]
-        budget-=STORAGEobj.price
-        objects.update({'CPU': CPUobj,'GPU':GPUobj,'MOBO':MOBOobj,'MEM':MEMobj,'CASE':CASEobj,'STORAGE':STORAGEobj,'PWR':PWRobj})
-        if budget>30: # extra storage (HDD)
-            temp = STORAGE.objects.filter(price__lte=budget).aggregate(mx = Max('capacity'))
-            EXTRAobj = STORAGE.objects.filter(price__lte=budget,capacity__gte=temp['mx']*.95).order_by('price')[0]
-            budget-=EXTRAobj.price
-            print(EXTRAobj,EXTRAobj.capacity,EXTRAobj.price)
-            #links.update({'EXTRA' : getLink(EXTRAobj.links)})
-            objects.update({'EXTRA' :EXTRAobj})
-        print(CPUobj,CPUobj.price)
-        print(MOBOobj,MOBOobj.price)
-        print(MEMobj,MEMobj.price)
-        print(STORAGEobj,STORAGEobj.capacity,STORAGEobj.price)
-        print(GPUobj,GPUobj.price)
-        print(CASEobj,CASEobj.price)
-        print(PWRobj,PWRobj.price,PWRobj.wattage)
-        #links.update({'CPU': getLink(CPUobj.links),'GPU':getLink(GPUobj.links),'MOBO':getLink(MOBOobj.links),'MEM':getLink(MEMobj.links),'CASE':getLink(CASEobj.links),'STORAGE':getLink(STORAGEobj.links),'PWR':getLink(PWRobj.links)})
-        if CPUobj.cpu_fan == False:
-            print(FANobj,FANobj.price)
-            #links.update({'FAN' : getLink(FANobj.links)})
-            objects.update({'FAN' : FANobj})
-        print('Total Build:',starting_budget-round(budget,2))
-        objects.update({'BUILD COST' : starting_budget-round(budget,2)})
-        #print(objects)
-        return objects
-    except TypeError: # if there is no CPU, motherboard, etc. at budget given, won't cause crash due to None * float
-        return None
-    except IndexError: # if there is no CPU, motherboard, etc. at budget given, won't cause crash due to indexing error
-        return None
-    """

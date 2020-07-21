@@ -67,21 +67,30 @@ def type(request):
         return render(request, 'homepage/type.html')
 
 def brand(request):
-    if (request.method == 'GET' and ('intel' in request.GET or 'nvidia' in request.GET or  'AMD' in request.GET )):
-        preferences = []
+    if (request.method == 'GET' and ('intel' in request.GET or 'nvidia' in request.GET or 'AMD' in request.GET
+                                     or 'no_brand' in request.GET)):
+        brand_preferences = []
+        if ('intel' in request.GET and request.GET['intel'] == 'on'):
+            brand_preferences.append('intel')
+        if ('nvidia' in request.GET and request.GET['nvidia'] == 'on'):
+            brand_preferences.append('nvidia')
+        if ('AMD' in request.GET and request.GET['AMD'] == 'on'):
+            brand_preferences.append('AMD')
+        request.session['brand_preferences'] = brand_preferences
+
         return redirect('/hardware')
     else:
         return render(request, 'homepage/brand.html')
 
 def hardware(request):
     if (request.method == 'GET' and ('radio-group' in request.GET)):
-        preferences = []
         return redirect('/results')
     else:
         return render(request, 'homepage/hardware.html')
 
 def results(request):
-    build = getBuild(request.session['budget'], request.session['pc_type'], request.session['case_preferences'])
+    build = getBuild(request.session['budget'], request.session['pc_type'], request.session['case_preferences'],
+                     request.session['brand_preferences'])
 
     full = {
         'build_info': build
