@@ -260,7 +260,7 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
                         storage = STORAGE.objects.filter(price__lte=budget_remaining,kind=storage_type,
                                                          capacity__gte=storage_amount*.95).order_by('price')
                     else: # no type filtered
-                        storage = STORAGE.objects.filter(price__lte=budget_remaining,
+                        storage = STORAGE.objects.filter(price__lte=budget_remaining,kind='SSD',
                                                          capacity__gte=storage_amount * .95).order_by('price')
 
                     if not storage: # if no preferred disk type at price, gets whatever with at least storage needed
