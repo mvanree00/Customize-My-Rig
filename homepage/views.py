@@ -83,8 +83,13 @@ def brand(request):
         return render(request, 'homepage/brand.html')
 
 def hardware(request):
-    if (request.method == 'GET' and ('radio-group' in request.GET)):
-        return redirect('/results')
+    if (request.method == 'GET' and ('storage_type' in request.GET)):
+        try:
+            request.session['storage_amount'] = float(request.GET['amount'])
+            request.session['storage'] = request.GET['storage_type']
+            return redirect('/results')
+        except ValueError:
+            return redirect('/hardware')
     else:
         return render(request, 'homepage/hardware.html')
 
