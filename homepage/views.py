@@ -53,15 +53,8 @@ def case(request):
         return render(request, 'homepage/case.html')
 
 def type(request):
-    if (request.method == 'GET' and ('type-gaming' in request.GET or 'type-streaming' in request.GET
-                                     or 'type-production' in request.GET)):
-        if ('type-gaming' in request.GET and request.GET['type-gaming'] == 'on'):
-            request.session['pc_type'] = 'gaming'
-        elif ('type-streaming' in request.GET and request.GET['type-streaming'] == 'on'):
-            request.session['pc_type'] = 'streaming'
-        else:
-            request.session['pc_type'] = 'production'
-
+    if request.method == 'GET' and 'pc-type' in request.GET:
+        request.session['pc_type'] = request.GET['pc-type']
         return redirect('/brand')
     else:
         return render(request, 'homepage/type.html')
