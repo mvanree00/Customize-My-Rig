@@ -24,6 +24,8 @@ def index(request):
             budget = float(request.GET['amount'])
             if (budget < 550):
                 raise ValueError
+            elif (budget > 2500):
+                budget = 2500
 
             request.session['budget'] = budget
             return redirect('/case')
@@ -81,7 +83,7 @@ def hardware(request):
             storage_space = float(request.GET['amount'])
             if storage_space < 0.5:
                 raise ValueError
-            
+
             request.session['storage_amount'] = storage_space
             request.session['storage'] = request.GET['storage_type']
             return redirect('/results')
