@@ -78,7 +78,11 @@ def brand(request):
 def hardware(request):
     if (request.method == 'GET' and ('storage_type' in request.GET)):
         try:
-            request.session['storage_amount'] = float(request.GET['amount'])
+            storage_space = float(request.GET['amount'])
+            if storage_space < 0.5:
+                raise ValueError
+            
+            request.session['storage_amount'] = storage_space
             request.session['storage'] = request.GET['storage_type']
             return redirect('/results')
         except ValueError:
@@ -88,7 +92,8 @@ def hardware(request):
 
 def results(request):
     build = getBuild(request.session['budget'], request.session['pc_type'], request.session['case_preferences'],
-                     request.session['brand_preferences'])
+                     request.session['brand_preferences'], request.session['storage_amount'],
+                     request.session['storage'])
 
     full = {
         'build_info': build

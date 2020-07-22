@@ -16,7 +16,7 @@ from django.db.models import Max
 from django.db.models import Q
 from links import checkPart
 
-def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[]):
+def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], storage_amount=0.5, storage_type='either'):
     try:
         ###########
         # WEIGHTS #
@@ -244,32 +244,45 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[]):
         ###########
         # Spending remaining money on storage
         # if budget remaining is lower than cheapest part, they need the part anyways so have to add
+        storage_amount *= 1000
+
         cheapest_storage = STORAGE.objects.filter(price__isnull=False).order_by('price')[0]
         if budget_remaining <= cheapest_storage.price:
             parts.update({'STORAGE' : cheapest_storage})
             budget_remaining -= cheapest_storage.price
         else:
             i = 1
-            while STORAGE.objects.filter(price__lte=budget_remaining).exists() and i <= 2:
-                if i == 1:
-                    while True:
-                        temp = STORAGE.objects.filter(price__lte=budget_remaining,kind='SSD').aggregate(mx = Max('capacity'))
-                        if temp['mx'] is not None:
-                            storage = STORAGE.objects.filter(price__lte=budget_remaining,kind='SSD',capacity__gte=temp['mx']*.95).order_by('price')[0]
-                        else: # if no SSD at price, gets HDD
+            total_storage = 0
+            while STORAGE.objects.filter(price__lte=budget_remaining).exists() and total_storage < storage_amount and i <= 2:
+                while True:
+                    storage = None
+                    if storage_type == 'SSD' or storage_type == 'HDD': # specific type filtered
+                        storage = STORAGE.objects.filter(price__lte=budget_remaining,kind=storage_type,
+                                                         capacity__gte=storage_amount*.95).order_by('price')
+                    else: # no type filtered
+                        storage = STORAGE.objects.filter(price__lte=budget_remaining,
+                                                         capacity__gte=storage_amount * .95).order_by('price')
+
+                    if not storage: # if no preferred disk type at price, gets whatever with at least storage needed
+                        storage = STORAGE.objects.filter(price__lte=budget_remaining,
+                                                         capacity__gte=storage_amount*.95).order_by('price')
+                    if storage and checkPart(storage[0]):
+                        break
+                    elif not storage: # can't find drive at this price and capacity, choose highest capacity of any drive type
+                        while True:
                             temp = STORAGE.objects.filter(price__lte=budget_remaining).aggregate(mx=Max('capacity'))
-                            storage = STORAGE.objects.filter(price__lte=budget_remaining, capacity__gte=temp['mx'] * .95).order_by('price')[0]
-                        if storage and checkPart(storage):
-                            break
-                    parts.update({'STORAGE' : storage})
+                            storage = STORAGE.objects.filter(price__lte=budget_remaining,
+                                                             capacity__gte=temp['mx'] * .95).order_by('price')
+                            if storage and checkPart(storage[0]):
+                                break
+                        break
+                if i == 1:
+                    parts.update({'STORAGE' : storage[0]})
+                    budget_remaining -= storage[0].price
+                    total_storage += storage[0].capacity
                 else:
-                    while True:
-                        temp = STORAGE.objects.filter(price__lte=budget_remaining).aggregate(mx = Max('capacity'))
-                        storage = STORAGE.objects.filter(price__lte=budget_remaining,capacity__gte=temp['mx']*.95).order_by('price')[0]
-                        if storage and checkPart(storage):
-                            break
-                    parts.update({'EXTRA' : storage})
-                budget_remaining -= storage.price
+                    parts.update({'EXTRA': storage[0]})
+                    budget_remaining -= storage[0].price
                 i += 1
 
         parts.update({'BUILD COST' : round(starting_budget-budget_remaining,2)})
