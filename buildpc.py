@@ -179,8 +179,8 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
         gpu_brand_attempts = 0
         while True:
             # filters gpus based on brand preferences (attempts finding brand matches maximum of twice)
+            gpu_objs = GPU.objects.filter(price__isnull=False, price__lte=gpu_weight * starting_budget)
             if gpu_brand_attempts <= 1:
-                gpu_objs = GPU.objects.none()
                 for brand in brand_preferences:
                     gpu_objs = gpu_objs.union(GPU.objects.filter(price__isnull = False,
                                                                  manufacturer__icontains=brand,
@@ -189,8 +189,6 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
                     gpu_brand_attempts += 1
                 else:
                     gpu_brand_attempts = 2
-            else:
-                gpu_objs = GPU.objects.filter(price__isnull=False, price__lte=gpu_weight * starting_budget)
 
             if gpu_objs: # if gpus in price range
                 best_gpu_perf = gpu_objs.order_by('gaming_perf').reverse()[0].gaming_perf
@@ -201,8 +199,7 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
                     if type_ == 'production' and gpu.mem > best_gpu_mem and gpu.gaming_perf > best_gpu_perf - 10:
                         best_gpu = gpu
                         best_gpu_mem = gpu.mem
-                    elif (
-                            type_ == 'streaming' or type_ == 'gaming') and gpu.gaming_perf > best_gpu_perf - 5 and gpu.gaming_perf / gpu.price > best_gpu_perf_ratio:
+                    elif (type_ == 'streaming' or type_ == 'gaming') and gpu.gaming_perf > best_gpu_perf - 5 and gpu.gaming_perf / gpu.price > best_gpu_perf_ratio:
                         best_gpu = gpu
                         best_gpu_perf_ratio = gpu.gaming_perf / gpu.price > best_gpu_perf_ratio
             else:
