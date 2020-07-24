@@ -86,12 +86,14 @@ def hardware(request):
 
             request.session['storage_amount'] = storage_space
             request.session['storage'] = request.GET['storage_type']
-            build = BUILD.objects
-            if not build:
-                ID = 1
-            else:
+            try:
+                build = BUILD.objects.filter()[0]
                 ID = BUILD.objects.latest('build_ID').build_ID + 1
                 path = '/results/' + str(ID)
+            except IndexError:
+                path = '/results'
+                
+                    
             return redirect(path)
         except ValueError:
             return redirect('/hardware')
@@ -100,7 +102,9 @@ def hardware(request):
 
 def results(request, build_ID=0):
     # for new build
-    if(build_ID == BUILD.objects.latest('build_ID').build_ID + 1 or build_ID == 0):
+    if(build_ID == 0 or build_ID == BUILD.objects.latest('build_ID').build_ID + 1):
+        if build_ID == 0:
+            ID = 1
         build = getBuild(request.session['budget'], request.session['pc_type'], request.session['case_preferences'],
                         request.session['brand_preferences'], request.session['storage_amount'],
                         request.session['storage'])

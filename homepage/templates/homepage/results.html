@@ -12,7 +12,11 @@ References:
 <br><h1 style="text-align: center">Here's your new PC!</h1><br>
 <table class="resultstable">
     <tr>
-        <th colspan=5 style="background-color:#1bc5da; color:white;">Share your results: {{ request.build_absolute_uri }}{{ object.get_absolute_url }}</th>
+        {%if build_ID != 1%}
+            <th colspan=5 style="background-color:#1bc5da; color:white;">Share your results: {{ request.build_absolute_uri }}{{ object.get_absolute_url }}</th>
+        {%else%}
+            <th colspan=5 style="background-color:#1bc5da; color:white;">Share your results: {{ request.build_absolute_uri }}/1</th>
+        {%endif%}
     </tr>
     <tr>
         <th></th>
