@@ -86,12 +86,14 @@ def hardware(request):
 
             request.session['storage_amount'] = storage_space
             request.session['storage'] = request.GET['storage_type']
-            build = BUILD.objects
-            if not build:
-                ID = 1
-            else:
+            try:
+                build = BUILD.objects.filter()[0]
                 ID = BUILD.objects.latest('build_ID').build_ID + 1
                 path = '/results/' + str(ID)
+            except IndexError:
+                path = '/results'
+                
+                    
             return redirect(path)
         except ValueError:
             return redirect('/hardware')
@@ -100,7 +102,7 @@ def hardware(request):
 
 def results(request, build_ID=0):
     # for new build
-    if(build_ID == BUILD.objects.latest('build_ID').build_ID + 1 or build_ID == 0):
+    if(build_ID == 0 or build_ID == BUILD.objects.latest('build_ID').build_ID + 1):
         build = getBuild(request.session['budget'], request.session['pc_type'], request.session['case_preferences'],
                         request.session['brand_preferences'], request.session['storage_amount'],
                         request.session['storage'])
@@ -115,7 +117,11 @@ def results(request, build_ID=0):
             if(part == 'MEM'):
                 Mem_link = obj.links
             if(part == 'FAN'):
-                Fan_link = obj.links
+                try:
+                    obj.links
+                    Fan_link = obj.links
+                except AttributeError:
+                    Fan_link = obj
             if(part == 'STORAGE'):
                 S_link = obj.links
             if(part == 'EXTRA'):
@@ -131,23 +137,42 @@ def results(request, build_ID=0):
             ID = 1
         else:
             ID = build_ID
-
-        b = BUILD(
-            build_ID = ID,
-            build_Cost = cost,
-            CPU_links = Cpu_link,
-            GPU_links = Gpu_link,
-            MEM_links = Mem_link,
-            STORAGE_links = S_link,
-            PWR_links = Pwr_link,
-            CASE_links = Case_link,
-            MOBO_links = Mobo_link,
-            FAN_links = Fan_link
-        )
-        b.save()
+            if(build_ID == 0):
+                ID += 1
+        try:
+            E_link
+            b = BUILD(
+                build_ID = ID,
+                build_Cost = cost,
+                CPU_links = Cpu_link,
+                GPU_links = Gpu_link,
+                MEM_links = Mem_link,
+                STORAGE_links = S_link,
+                EXTRA_links = E_link,
+                PWR_links = Pwr_link,
+                CASE_links = Case_link,
+                MOBO_links = Mobo_link,
+                FAN_links = Fan_link
+            )
+        except NameError:
+            b = BUILD(
+                build_ID = ID,
+                build_Cost = cost,
+                CPU_links = Cpu_link,
+                GPU_links = Gpu_link,
+                MEM_links = Mem_link,
+                STORAGE_links = S_link,
+                PWR_links = Pwr_link,
+                CASE_links = Case_link,
+                MOBO_links = Mobo_link,
+                FAN_links = Fan_link
+            )
+        numBuilds = BUILD.objects.filter(build_ID = ID).count()
+        if numBuilds == 0:
+            b.save()
         full = {
             'build_info': build,
-            'build_ID': b.build_ID
+            'build_ID': build_ID
         }
         if full['build_info'] is None:
             return redirect('index')
@@ -159,10 +184,15 @@ def results(request, build_ID=0):
             return redirect('index')
         else:
             # makes a different build based on whether it has Extra_links defined or not
+            Fan_links = pastBuild.FAN_links
+            try:
+                Fan_links = FAN.objects.filter(links=Fan_links)[0]
+            except IndexError:
+                Fan_links = pastBuild.FAN_links
             if pastBuild.EXTRA_links:
                 build = {
                     'CPU': CPU.objects.filter(links=pastBuild.CPU_links)[0],
-                    'FAN': FAN.objects.filter(links=pastBuild.FAN_links)[0],
+                    'FAN': Fan_links,
                     'GPU': GPU.objects.filter(links=pastBuild.GPU_links)[0],
                     'MOBO': MOBO.objects.filter(links=pastBuild.MOBO_links)[0],
                     'MEM': MEM.objects.filter(links=pastBuild.MEM_links)[0],
@@ -175,7 +205,7 @@ def results(request, build_ID=0):
             else:
                 build = {
                     'CPU': CPU.objects.filter(links=pastBuild.CPU_links)[0],
-                    'FAN': FAN.objects.filter(links=pastBuild.FAN_links)[0],
+                    'FAN': Fan_links,
                     'GPU': GPU.objects.filter(links=pastBuild.GPU_links)[0],
                     'MOBO': MOBO.objects.filter(links=pastBuild.MOBO_links)[0],
                     'MEM': MEM.objects.filter(links=pastBuild.MEM_links)[0],
