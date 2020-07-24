@@ -115,7 +115,11 @@ def results(request, build_ID=0):
             if(part == 'MEM'):
                 Mem_link = obj.links
             if(part == 'FAN'):
-                Fan_link = obj.links
+                try:
+                    obj.links
+                    Fan_link = obj.links
+                except AttributeError:
+                    Fan_link = obj
             if(part == 'STORAGE'):
                 S_link = obj.links
             if(part == 'EXTRA'):
@@ -131,19 +135,34 @@ def results(request, build_ID=0):
             ID = 1
         else:
             ID = build_ID
-
-        b = BUILD(
-            build_ID = ID,
-            build_Cost = cost,
-            CPU_links = Cpu_link,
-            GPU_links = Gpu_link,
-            MEM_links = Mem_link,
-            STORAGE_links = S_link,
-            PWR_links = Pwr_link,
-            CASE_links = Case_link,
-            MOBO_links = Mobo_link,
-            FAN_links = Fan_link
-        )
+        try:
+            E_link
+            b = BUILD(
+                build_ID = ID,
+                build_Cost = cost,
+                CPU_links = Cpu_link,
+                GPU_links = Gpu_link,
+                MEM_links = Mem_link,
+                STORAGE_links = S_link,
+                EXTRA_links = E_link,
+                PWR_links = Pwr_link,
+                CASE_links = Case_link,
+                MOBO_links = Mobo_link,
+                FAN_links = Fan_link
+            )
+        except NameError:
+            b = BUILD(
+                build_ID = ID,
+                build_Cost = cost,
+                CPU_links = Cpu_link,
+                GPU_links = Gpu_link,
+                MEM_links = Mem_link,
+                STORAGE_links = S_link,
+                PWR_links = Pwr_link,
+                CASE_links = Case_link,
+                MOBO_links = Mobo_link,
+                FAN_links = Fan_link
+            )
         b.save()
         full = {
             'build_info': build,
