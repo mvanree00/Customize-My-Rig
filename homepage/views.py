@@ -139,6 +139,7 @@ def results(request, build_ID=0):
             GPU_links = Gpu_link,
             MEM_links = Mem_link,
             STORAGE_links = S_link,
+            EXTRA_links = E_link,
             PWR_links = Pwr_link,
             CASE_links = Case_link,
             MOBO_links = Mobo_link,
