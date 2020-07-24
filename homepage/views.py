@@ -86,25 +86,112 @@ def hardware(request):
 
             request.session['storage_amount'] = storage_space
             request.session['storage'] = request.GET['storage_type']
-            return redirect('/results')
+            build = BUILD.objects
+            if not build:
+                ID = 1
+            else:
+                ID = BUILD.objects.latest('build_ID').build_ID + 1
+                path = '/results/' + str(ID)
+            return redirect(path)
         except ValueError:
             return redirect('/hardware')
     else:
         return render(request, 'homepage/hardware.html')
 
-def results(request):
-    build = getBuild(request.session['budget'], request.session['pc_type'], request.session['case_preferences'],
-                     request.session['brand_preferences'], request.session['storage_amount'],
-                     request.session['storage'])
+def results(request, build_ID=0):
+    # for new build
+    if(build_ID == BUILD.objects.latest('build_ID').build_ID + 1 or build_ID == 0):
+        build = getBuild(request.session['budget'], request.session['pc_type'], request.session['case_preferences'],
+                        request.session['brand_preferences'], request.session['storage_amount'],
+                        request.session['storage'])
+        # takes the links from the build and saves them into the db
+        for part, obj in build.items(): 
+            if(part == 'BUILD COST'):
+                cost = obj
+            if(part == "CPU"):
+                Cpu_link= obj.links
+            if(part == 'GPU'):
+                Gpu_link = obj.links
+            if(part == 'MEM'):
+                Mem_link = obj.links
+            if(part == 'FAN'):
+                Fan_link = obj.links
+            if(part == 'STORAGE'):
+                S_link = obj.links
+            if(part == 'EXTRA'):
+                E_link = obj.links
+            if(part == 'PWR'):
+                Pwr_link = obj.links
+            if(part == 'MOBO'):
+                Mobo_link = obj.links
+            if(part == 'CASE'):
+                Case_link = obj.links
+        temp = BUILD.objects.filter()
+        if not temp:
+            ID = 1
+        else:
+            ID = build_ID
 
-    full = {
-        'build_info': build
-    }
+        b = BUILD(
+            build_ID = ID,
+            build_Cost = cost,
+            CPU_links = Cpu_link,
+            GPU_links = Gpu_link,
+            MEM_links = Mem_link,
+            STORAGE_links = S_link,
+            PWR_links = Pwr_link,
+            CASE_links = Case_link,
+            MOBO_links = Mobo_link,
+            FAN_links = Fan_link
+        )
+        b.save()
+        full = {
+            'build_info': build,
+            'build_ID': b.build_ID
+        }
+        if full['build_info'] is None:
+            return redirect('index')
+        return render(request, 'homepage/results.html', full)
+    # for past builds
+    else:
+        pastBuild = BUILD.objects.filter(build_ID=build_ID)[0]
+        if not pastBuild:
+            return redirect('index')
+        else:
+            # makes a different build based on whether it has Extra_links defined or not
+            if pastBuild.EXTRA_links:
+                build = {
+                    'CPU': CPU.objects.filter(links=pastBuild.CPU_links)[0],
+                    'FAN': FAN.objects.filter(links=pastBuild.FAN_links)[0],
+                    'GPU': GPU.objects.filter(links=pastBuild.GPU_links)[0],
+                    'MOBO': MOBO.objects.filter(links=pastBuild.MOBO_links)[0],
+                    'MEM': MEM.objects.filter(links=pastBuild.MEM_links)[0],
+                    'CASE': CASE.objects.filter(links=pastBuild.CASE_links)[0],
+                    'PWR': PWR.objects.filter(links=pastBuild.PWR_links)[0],
+                    'STORAGE': STORAGE.objects.filter(links=pastBuild.STORAGE_links)[0],
+                    'EXTRA': STORAGE.objects.filter(links=pastBuild.EXTRA_links)[0],
+                    'BUILD COST': pastBuild.build_Cost
+                }
+            else:
+                build = {
+                    'CPU': CPU.objects.filter(links=pastBuild.CPU_links)[0],
+                    'FAN': FAN.objects.filter(links=pastBuild.FAN_links)[0],
+                    'GPU': GPU.objects.filter(links=pastBuild.GPU_links)[0],
+                    'MOBO': MOBO.objects.filter(links=pastBuild.MOBO_links)[0],
+                    'MEM': MEM.objects.filter(links=pastBuild.MEM_links)[0],
+                    'CASE': CASE.objects.filter(links=pastBuild.CASE_links)[0],
+                    'PWR': PWR.objects.filter(links=pastBuild.PWR_links)[0],
+                    'STORAGE': STORAGE.objects.filter(links=pastBuild.STORAGE_links)[0],
+                    'BUILD COST': pastBuild.build_Cost
+                }
 
-    if full['build_info'] is None:
-        return redirect('index')
+            full = {
+                'build_info': build,
+                'build_ID': pastBuild.build_ID
+            }
+        return render(request, 'homepage/results.html', full)
 
-    return render(request, 'homepage/results.html', full)
+    
 
 
 def info(request):
