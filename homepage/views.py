@@ -178,10 +178,15 @@ def results(request, build_ID=0):
             return redirect('index')
         else:
             # makes a different build based on whether it has Extra_links defined or not
+            Fan_links = pastBuild.FAN_links
+            try:
+                Fan_links = FAN.objects.filter(links=Fan_links)[0]
+            except IndexError:
+                Fan_links = pastBuild.FAN_links
             if pastBuild.EXTRA_links:
                 build = {
                     'CPU': CPU.objects.filter(links=pastBuild.CPU_links)[0],
-                    'FAN': FAN.objects.filter(links=pastBuild.FAN_links)[0],
+                    'FAN': Fan_links,
                     'GPU': GPU.objects.filter(links=pastBuild.GPU_links)[0],
                     'MOBO': MOBO.objects.filter(links=pastBuild.MOBO_links)[0],
                     'MEM': MEM.objects.filter(links=pastBuild.MEM_links)[0],
@@ -194,7 +199,7 @@ def results(request, build_ID=0):
             else:
                 build = {
                     'CPU': CPU.objects.filter(links=pastBuild.CPU_links)[0],
-                    'FAN': FAN.objects.filter(links=pastBuild.FAN_links)[0],
+                    'FAN': Fan_links,
                     'GPU': GPU.objects.filter(links=pastBuild.GPU_links)[0],
                     'MOBO': MOBO.objects.filter(links=pastBuild.MOBO_links)[0],
                     'MEM': MEM.objects.filter(links=pastBuild.MEM_links)[0],
