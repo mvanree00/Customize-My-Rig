@@ -103,8 +103,6 @@ def hardware(request):
 def results(request, build_ID=0):
     # for new build
     if(build_ID == 0 or build_ID == BUILD.objects.latest('build_ID').build_ID + 1):
-        if build_ID == 0:
-            ID = 1
         build = getBuild(request.session['budget'], request.session['pc_type'], request.session['case_preferences'],
                         request.session['brand_preferences'], request.session['storage_amount'],
                         request.session['storage'])
@@ -139,6 +137,8 @@ def results(request, build_ID=0):
             ID = 1
         else:
             ID = build_ID
+            if(build_ID == 0):
+                ID += 1
         try:
             E_link
             b = BUILD(
@@ -167,10 +167,12 @@ def results(request, build_ID=0):
                 MOBO_links = Mobo_link,
                 FAN_links = Fan_link
             )
-        b.save()
+        numBuilds = BUILD.objects.filter(build_ID = ID).count()
+        if numBuilds == 0:
+            b.save()
         full = {
             'build_info': build,
-            'build_ID': b.build_ID
+            'build_ID': build_ID
         }
         if full['build_info'] is None:
             return redirect('index')
