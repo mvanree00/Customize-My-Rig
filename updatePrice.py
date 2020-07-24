@@ -49,7 +49,7 @@ def importGPU(browser):
             browser.find_element_by_css_selector('.pagination').find_element_by_link_text(str(i+1)).click()
 def importMEM(browser):
     sleep(.5)
-    MEM.objects.all().update(price=None,last_updated=None)
+    MEM.objects.all().update(last_updated=None)
     for i in range(1,5):
         menu = WebDriverWait(browser,1).until(presence_of_element_located((By.CSS_SELECTOR,'#category_content')))
         sleep(.5)
@@ -79,7 +79,7 @@ def importMEM(browser):
 def importSTORAGE(browser):
     browser.get('https://pcpartpicker.com/products/internal-hard-drive/#page=1')
     sleep(.5)
-    STORAGE.objects.all().update(price=None,last_updated=None)
+    STORAGE.objects.all().update(last_updated=None)
     for i in range(1,5):
         menu = WebDriverWait(browser,1).until(presence_of_element_located((By.CSS_SELECTOR,'#category_content')))
         sleep(.5)
@@ -111,7 +111,7 @@ def importSTORAGE(browser):
 def importPWR(browser):
     browser.get('https://pcpartpicker.com/products/power-supply/#e=6,5,4,3,2&page=1&sort=price')
     sleep(.5)
-    PWR.objects.all().update(price=None,last_updated=None)
+    PWR.objects.all().update(last_updated=None)
     for i in range(1,3):
         menu = WebDriverWait(browser,1).until(presence_of_element_located((By.CSS_SELECTOR,'#category_content')))
         sleep(.5)
@@ -142,6 +142,7 @@ def importCASE(browser):
     sleep(.5)
     items = menu.find_elements_by_tag_name('tr')
     full = CASE.objects.all()
+    full.update(last_updated=None)
     for item in items:
         section = item.find_elements_by_tag_name('td')
         price = section[9].text
@@ -158,7 +159,7 @@ def importMOBO(browser):
     menu = WebDriverWait(browser,1).until(presence_of_element_located((By.CSS_SELECTOR,'#category_content')))
     sleep(.5)
     items = menu.find_elements_by_tag_name('tr')
-    MOBO.objects.all().update(price=None,last_updated=None)
+    MOBO.objects.all().update(last_updated=None)
     for item in items:
         section = item.find_elements_by_tag_name('td')
         if section[8].text[0]=='$': # price has id we can search later
@@ -181,6 +182,7 @@ def importFAN(browser):
     sleep(.5)
     items = menu.find_elements_by_tag_name('tr')
     full = FAN.objects.all()
+    full.update(last_updated=None)
     for item in items:
         section = item.find_elements_by_tag_name('td')
         price = section[7].text
