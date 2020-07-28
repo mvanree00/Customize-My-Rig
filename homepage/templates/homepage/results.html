@@ -35,7 +35,7 @@ References:
                     Cores: {{obj.cores}}<br>
                     Platform: {{obj.platform}}<br>
                 </td>
-                <td><a href={{obj.webpage}} target="_blank">${{obj.price}}</a></td>
+                <td><a href={{obj.webpage}} target="_blank">${{obj.price|floatformat:2}}</a></td>
             </tr>
         {%endif%}
 
@@ -54,7 +54,7 @@ References:
                     <td>
                         Type: {{obj.kind}}<br>
                     </td>
-                    <td><a href={{obj.webpage}} target="_blank">${{obj.price}}</a></td>
+                    <td><a href={{obj.webpage}} target="_blank">${{obj.price|floatformat:2}}</a></td>
                 {%endif%}
             </tr>
         {%endif%}
@@ -70,7 +70,7 @@ References:
                     Chipset: {{obj.chipset}}<br>
                     VRAM: {{obj.mem}} GB<br>
                 </td>
-                <td><a href={{obj.webpage}} target="_blank">${{obj.price}}</a></td>
+                <td><a href={{obj.webpage}} target="_blank">${{obj.price|floatformat:2}}</a></td>
             </tr>
         {%endif%}
 
@@ -86,7 +86,7 @@ References:
                     Modules: {{obj.modules}}<br>
                     Color: {{obj.color}}<br>
                 </td>
-                <td><a href={{obj.webpage}} target="_blank">${{obj.price}}</a></td>
+                <td><a href={{obj.webpage}} target="_blank">${{obj.price|floatformat:2}}</a></td>
             </tr>
         {%endif%}
 
@@ -99,7 +99,7 @@ References:
                 <td>
                     Chipset: {{obj.chipset}}<br>
                 </td>
-                <td><a href={{obj.webpage}} target="_blank">${{obj.price}}</a></td>
+                <td><a href={{obj.webpage}} target="_blank">${{obj.price|floatformat:2}}</a></td>
             </tr>
         {%endif%}
 
@@ -112,7 +112,7 @@ References:
                 <td>
                     Size: {{obj.size}}<br>
                 </td>
-                <td><a href={{obj.webpage}} target="_blank">${{obj.price}}</a></td>
+                <td><a href={{obj.webpage}} target="_blank">${{obj.price|floatformat:2}}</a></td>
             </tr>
         {%endif%}
 
@@ -131,7 +131,7 @@ References:
                     Form: {{obj.form}}<br>
                     Type: {{obj.kind}}<br>
                 </td>
-                <td><a href={{obj.webpage}}>${{obj.price}}</a></td>
+                <td><a href={{obj.webpage}}>${{obj.price|floatformat:2}}</a></td>
             </tr>
         {%endif%}
 
@@ -149,7 +149,7 @@ References:
                     Form: {{obj.form}}<br>
                     Type: {{obj.kind}}<br>
                 </td>
-                <td><a href={{obj.webpage}}>${{obj.price}}</a></td>
+                <td><a href={{obj.webpage}}>${{obj.price|floatformat:2}}</a></td>
             </tr>
         {%endif%}
 
@@ -162,7 +162,7 @@ References:
                     Wattage: {{obj.wattage}}W<br>
                     Rating: {{obj.rating}}<br>
                 </td>
-                <td><a href={{obj.webpage}}>${{obj.price}}</a></td>
+                <td><a href={{obj.webpage}}>${{obj.price|floatformat:2}}</a></td>
             </tr>
         {%endif%}
 
