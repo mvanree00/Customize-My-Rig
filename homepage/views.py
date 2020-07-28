@@ -107,6 +107,17 @@ def results(request, build_ID=0):
         build = getBuild(request.session['budget'], request.session['pc_type'], request.session['case_preferences'],
                         request.session['brand_preferences'], request.session['storage_amount'],
                         request.session['storage'])
+        try:
+            build.items()
+        except AttributeError as e:
+            print(e)
+            full = {
+                'build_info': build,
+                'build_ID': build_ID
+            }
+            if full['build_info'] is None:
+                return redirect('index')
+            return render(request, 'homepage/results.html', full)
         # takes the links from the build and saves them into the db
         for part, obj in build.items(): 
             if(part == 'BUILD COST'):
