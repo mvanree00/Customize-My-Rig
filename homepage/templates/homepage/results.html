@@ -168,7 +168,7 @@ References:
 
         {% if part == "BUILD COST"%}
             <tr>
-                <td>Total Build Cost: ${{obj}}</td>
+                <td>Total Build Cost: ${{obj|floatformat:2}}</td>
             </tr>
         {%endif%}
     {% endfor %}
