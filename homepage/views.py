@@ -17,6 +17,7 @@ from homepage.models import *
 from django.db.models import Max
 from buildpc import getBuild
 from django.shortcuts import redirect
+from links import *
 
 def index(request):
     if (request.method == 'GET' and 'amount' in request.GET):
@@ -202,6 +203,36 @@ def results(request, build_ID=0):
                     'EXTRA': STORAGE.objects.filter(links=pastBuild.EXTRA_links)[0],
                     'BUILD COST': pastBuild.build_Cost
                 }
+                updatedCost = 0
+                for part, obj in build.items():
+                    if(part == 'BUILD COST'):
+                        continue
+                    if(part == 'FAN'):
+                        try:
+                            obj.links
+                            checkPart(obj)
+                            Fan_link = obj.links
+                        except AttributeError:
+                            Fan_link = obj
+                            continue
+                    checkPart(obj)
+                    build[part] = obj
+                    if obj.price:
+                        updatedCost += obj.price
+                
+                build["BUILD COST"] = updatedCost
+                BUILD.objects.filter(build_ID=build_ID).update(
+                    build_Cost = build["BUILD COST"],
+                    CPU_links = build["CPU"].links,
+                    GPU_links = build["GPU"].links,
+                    MEM_links = build["MEM"].links,
+                    STORAGE_links = build["STORAGE"].links,
+                    EXTRA_links = build["EXTRA"].links,
+                    PWR_links = build["PWR"].links,
+                    CASE_links = build["CASE"].links,
+                    MOBO_links = build["MOBO"].links,
+                    FAN_links = Fan_link
+                )
             else:
                 build = {
                     'CPU': CPU.objects.filter(links=pastBuild.CPU_links)[0],
@@ -214,6 +245,36 @@ def results(request, build_ID=0):
                     'STORAGE': STORAGE.objects.filter(links=pastBuild.STORAGE_links)[0],
                     'BUILD COST': pastBuild.build_Cost
                 }
+                
+                updatedCost = 0
+                for part, obj in build.items():
+                    if(part == 'BUILD COST'):
+                        continue
+                    if(part == 'FAN'):
+                        try:
+                            obj.links
+                            checkPart(obj)
+                            Fan_link = obj.links
+                        except AttributeError:
+                            Fan_link = obj
+                            continue
+                    checkPart(obj)
+                    build[part] = obj
+                    if obj.price:
+                        updatedCost += obj.price
+
+                build["BUILD COST"] = updatedCost
+                BUILD.objects.filter(build_ID=build_ID).update(
+                    build_Cost=build["BUILD COST"],
+                    CPU_links=build["CPU"].links,
+                    GPU_links=build["GPU"].links,
+                    MEM_links=build["MEM"].links,
+                    STORAGE_links=build["STORAGE"].links,
+                    PWR_links=build["PWR"].links,
+                    CASE_links=build["CASE"].links,
+                    MOBO_links=build["MOBO"].links,
+                    FAN_links=Fan_link
+                )
 
             full = {
                 'build_info': build,
