@@ -8,169 +8,173 @@ References:
 {% load static %}
 
 {% block content %}
+{%if build_info == default_if_none%}
+    <br><h1 style="text-align: center">Sorry, it looks like we don't have the right parts to meet your current specs. Please try again.</h1><br>
+{%else%}
 
-<br><h1 style="text-align: center">Here's your new PC!</h1><br>
-<table class="resultstable">
-    <tr>
-        {%if build_ID != 0%}
-            <th colspan=5 style="background-color:#1bc5da; color:white;">Share your results: {{ request.build_absolute_uri }}{{ object.get_absolute_url }}</th>
-        {%else%}
-            <th colspan=5 style="background-color:#1bc5da; color:white;">Share your results: {{ request.build_absolute_uri }}{{ object.get_absolute_url }}/1</th>
-        {%endif%}
-    </tr>
-    <tr>
-        <th></th>
-        <th>Part</th>
-        <th>Model</th>
-        <th>Specifications</th>
-        <th>Price</th>
-    </tr>
-    {% for part,obj in build_info.items %}
-        {% if part == "CPU"%}
-            <tr>
-                <td><img src={{obj.img}} alt="CPU_Image" style="width:250px;height:200px;"></td>
-                <td>CPU</td>
-                <td>{{obj}}</td>
-                <td>
-                    Cores: {{obj.cores}}<br>
-                    Platform: {{obj.platform}}<br>
-                </td>
-                <td><a href={{obj.webpage}} target="_blank">${{obj.price|floatformat:2}}</a></td>
-            </tr>
-        {%endif%}
-
-        {% if part == "FAN"%}
-            <tr>
-                {% if obj == "Built-in" %}
-                    <td> </td>
-                    <td>CPU Fan</td>
-                    <td>{{obj}}</td>
-                    <td> </td>
-                    <td> </td>
-                {% else %}
-                    <td><img src={{obj.img}} alt="Fan_Image" style="width:250px;height:200px;"></td>
-                    <td>CPU Fan</td>
+    <br><h1 style="text-align: center">Here's your new PC!</h1><br>
+    <table class="resultstable">
+        <tr>
+            {%if build_ID != 0%}
+                <th colspan=5 style="background-color:#1bc5da; color:white;">Share your results: {{ request.build_absolute_uri }}{{ object.get_absolute_url }}</th>
+            {%else%}
+                <th colspan=5 style="background-color:#1bc5da; color:white;">Share your results: {{ request.build_absolute_uri }}{{ object.get_absolute_url }}/1</th>
+            {%endif%}
+        </tr>
+        <tr>
+            <th></th>
+            <th>Part</th>
+            <th>Model</th>
+            <th>Specifications</th>
+            <th>Price</th>
+        </tr>
+        {% for part,obj in build_info.items %}
+            {% if part == "CPU"%}
+                <tr>
+                    <td><img src={{obj.img}} alt="CPU_Image" style="width:250px;height:200px;"></td>
+                    <td>CPU</td>
                     <td>{{obj}}</td>
                     <td>
-                        Type: {{obj.kind}}<br>
+                        Cores: {{obj.cores}}<br>
+                        Platform: {{obj.platform}}<br>
                     </td>
                     <td><a href={{obj.webpage}} target="_blank">${{obj.price|floatformat:2}}</a></td>
-                {%endif%}
-            </tr>
-        {%endif%}
+                </tr>
+            {%endif%}
 
-
-        {% if part == "GPU"%}
-            <tr>
-                <td><img src={{obj.img}} alt="GPU_Image" style="width:250px;height:200px;"></td>
-                <td>GPU</td>
-                <td>{{obj}}</td>
-                <td>
-                    Manufacturer: {{obj.manufacturer}}<br>
-                    Chipset: {{obj.chipset}}<br>
-                    VRAM: {{obj.mem}} GB<br>
-                </td>
-                <td><a href={{obj.webpage}} target="_blank">${{obj.price|floatformat:2}}</a></td>
-            </tr>
-        {%endif%}
-
-
-        {% if part == "MEM"%}
-            <tr>
-                <td><img src={{obj.img}} alt="Memory_Image" style="width:250px;height:200px;"></td>
-                <td>Memory</td>
-                <td>{{obj}}</td>
-                <td>
-                    Speed: {{obj.speed}} MHz<br>
-                    CAS Latency: {{obj.cas}}<br>
-                    Modules: {{obj.modules}}<br>
-                    Color: {{obj.color}}<br>
-                </td>
-                <td><a href={{obj.webpage}} target="_blank">${{obj.price|floatformat:2}}</a></td>
-            </tr>
-        {%endif%}
-
-
-        {% if part == "MOBO"%}
-            <tr>
-                <td><img src={{obj.img}} alt="Mobo_Image" style="width:250px;height:200px;"></td>
-                <td>Motherboard</td>
-                <td>{{obj}}</td>
-                <td>
-                    Chipset: {{obj.chipset}}<br>
-                </td>
-                <td><a href={{obj.webpage}} target="_blank">${{obj.price|floatformat:2}}</a></td>
-            </tr>
-        {%endif%}
-
-
-        {% if part == "CASE"%}
-            <tr>
-                <td><img src={{obj.img}} alt="Case_Image" style="width:250px;height:200px;"></td>
-                <td>Case</td>
-                <td>{{obj}}</td>
-                <td>
-                    Size: {{obj.size}}<br>
-                </td>
-                <td><a href={{obj.webpage}} target="_blank">${{obj.price|floatformat:2}}</a></td>
-            </tr>
-        {%endif%}
-
-
-        {% if part == "STORAGE"%}
-            <tr>
-                <td><img src={{obj.img}} alt="Storage_Image" style="width:250px;height:200px;"></td>
-                <td>Storage</td>
-                <td>{{obj}}</td>
-                <td>
-                    {% if obj.capacity >= 1000 %}
-                        Capacity: {% widthratio obj.capacity 1000 1 %} TB<br>
+            {% if part == "FAN"%}
+                <tr>
+                    {% if obj == "Built-in" %}
+                        <td> </td>
+                        <td>CPU Fan</td>
+                        <td>{{obj}}</td>
+                        <td> </td>
+                        <td> </td>
                     {% else %}
-                        Capacity: {{obj.capacity}} GB<br>
+                        <td><img src={{obj.img}} alt="Fan_Image" style="width:250px;height:200px;"></td>
+                        <td>CPU Fan</td>
+                        <td>{{obj}}</td>
+                        <td>
+                            Type: {{obj.kind}}<br>
+                        </td>
+                        <td><a href={{obj.webpage}} target="_blank">${{obj.price|floatformat:2}}</a></td>
                     {%endif%}
-                    Form: {{obj.form}}<br>
-                    Type: {{obj.kind}}<br>
-                </td>
-                <td><a href={{obj.webpage}}>${{obj.price|floatformat:2}}</a></td>
-            </tr>
-        {%endif%}
+                </tr>
+            {%endif%}
 
-        {% if part == "EXTRA"%}
-            <tr>
-                <td><img src={{obj.img}} alt="Extra_Image" style="width:250px;height:200px;"></td>
-                <td>Storage</td>
-                <td>{{obj}}</td>
-                <td>
-                    {% if obj.capacity >= 1000 %}
-                        Capacity: {% widthratio obj.capacity 1000 1 %} TB<br>
-                    {% else %}
-                        Capacity: {{obj.capacity}} GB<br>
-                    {%endif%}
-                    Form: {{obj.form}}<br>
-                    Type: {{obj.kind}}<br>
-                </td>
-                <td><a href={{obj.webpage}}>${{obj.price|floatformat:2}}</a></td>
-            </tr>
-        {%endif%}
 
-        {% if part == "PWR"%}
-            <tr>
-                <td><img src={{obj.img}} alt="PSU_Image" style="width:250px;height:200px;"></td>
-                <td>Power supply</td>
-                <td>{{obj}}</td>
-                <td>
-                    Wattage: {{obj.wattage}}W<br>
-                    Rating: {{obj.rating}}<br>
-                </td>
-                <td><a href={{obj.webpage}}>${{obj.price|floatformat:2}}</a></td>
-            </tr>
-        {%endif%}
+            {% if part == "GPU"%}
+                <tr>
+                    <td><img src={{obj.img}} alt="GPU_Image" style="width:250px;height:200px;"></td>
+                    <td>GPU</td>
+                    <td>{{obj}}</td>
+                    <td>
+                        Manufacturer: {{obj.manufacturer}}<br>
+                        Chipset: {{obj.chipset}}<br>
+                        VRAM: {{obj.mem}} GB<br>
+                    </td>
+                    <td><a href={{obj.webpage}} target="_blank">${{obj.price|floatformat:2}}</a></td>
+                </tr>
+            {%endif%}
 
-        {% if part == "BUILD COST"%}
-            <tr>
-                <td>Total Build Cost: ${{obj|floatformat:2}}</td>
-            </tr>
-        {%endif%}
-    {% endfor %}
-</table>
+
+            {% if part == "MEM"%}
+                <tr>
+                    <td><img src={{obj.img}} alt="Memory_Image" style="width:250px;height:200px;"></td>
+                    <td>Memory</td>
+                    <td>{{obj}}</td>
+                    <td>
+                        Speed: {{obj.speed}} MHz<br>
+                        CAS Latency: {{obj.cas}}<br>
+                        Modules: {{obj.modules}}<br>
+                        Color: {{obj.color}}<br>
+                    </td>
+                    <td><a href={{obj.webpage}} target="_blank">${{obj.price|floatformat:2}}</a></td>
+                </tr>
+            {%endif%}
+
+
+            {% if part == "MOBO"%}
+                <tr>
+                    <td><img src={{obj.img}} alt="Mobo_Image" style="width:250px;height:200px;"></td>
+                    <td>Motherboard</td>
+                    <td>{{obj}}</td>
+                    <td>
+                        Chipset: {{obj.chipset}}<br>
+                    </td>
+                    <td><a href={{obj.webpage}} target="_blank">${{obj.price|floatformat:2}}</a></td>
+                </tr>
+            {%endif%}
+
+
+            {% if part == "CASE"%}
+                <tr>
+                    <td><img src={{obj.img}} alt="Case_Image" style="width:250px;height:200px;"></td>
+                    <td>Case</td>
+                    <td>{{obj}}</td>
+                    <td>
+                        Size: {{obj.size}}<br>
+                    </td>
+                    <td><a href={{obj.webpage}} target="_blank">${{obj.price|floatformat:2}}</a></td>
+                </tr>
+            {%endif%}
+
+
+            {% if part == "STORAGE"%}
+                <tr>
+                    <td><img src={{obj.img}} alt="Storage_Image" style="width:250px;height:200px;"></td>
+                    <td>Storage</td>
+                    <td>{{obj}}</td>
+                    <td>
+                        {% if obj.capacity >= 1000 %}
+                            Capacity: {% widthratio obj.capacity 1000 1 %} TB<br>
+                        {% else %}
+                            Capacity: {{obj.capacity}} GB<br>
+                        {%endif%}
+                        Form: {{obj.form}}<br>
+                        Type: {{obj.kind}}<br>
+                    </td>
+                    <td><a href={{obj.webpage}}>${{obj.price|floatformat:2}}</a></td>
+                </tr>
+            {%endif%}
+
+            {% if part == "EXTRA"%}
+                <tr>
+                    <td><img src={{obj.img}} alt="Extra_Image" style="width:250px;height:200px;"></td>
+                    <td>Storage</td>
+                    <td>{{obj}}</td>
+                    <td>
+                        {% if obj.capacity >= 1000 %}
+                            Capacity: {% widthratio obj.capacity 1000 1 %} TB<br>
+                        {% else %}
+                            Capacity: {{obj.capacity}} GB<br>
+                        {%endif%}
+                        Form: {{obj.form}}<br>
+                        Type: {{obj.kind}}<br>
+                    </td>
+                    <td><a href={{obj.webpage}}>${{obj.price|floatformat:2}}</a></td>
+                </tr>
+            {%endif%}
+
+            {% if part == "PWR"%}
+                <tr>
+                    <td><img src={{obj.img}} alt="PSU_Image" style="width:250px;height:200px;"></td>
+                    <td>Power supply</td>
+                    <td>{{obj}}</td>
+                    <td>
+                        Wattage: {{obj.wattage}}W<br>
+                        Rating: {{obj.rating}}<br>
+                    </td>
+                    <td><a href={{obj.webpage}}>${{obj.price|floatformat:2}}</a></td>
+                </tr>
+            {%endif%}
+
+            {% if part == "BUILD COST"%}
+                <tr>
+                    <td>Total Build Cost: ${{obj|floatformat:2}}</td>
+                </tr>
+            {%endif%}
+        {% endfor %}
+    </table>
+{%endif%}
 {% endblock %}

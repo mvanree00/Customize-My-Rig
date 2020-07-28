@@ -115,8 +115,6 @@ def results(request, build_ID=0):
                 'build_info': build,
                 'build_ID': build_ID
             }
-            if full['build_info'] is None:
-                return redirect('index')
             return render(request, 'homepage/results.html', full)
         # takes the links from the build and saves them into the db
         for part, obj in build.items(): 
@@ -186,8 +184,6 @@ def results(request, build_ID=0):
             'build_info': build,
             'build_ID': build_ID
         }
-        if full['build_info'] is None:
-            return redirect('index')
         return render(request, 'homepage/results.html', full)
     # for past builds
     else:
