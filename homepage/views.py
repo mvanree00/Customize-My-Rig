@@ -17,6 +17,7 @@ from homepage.models import *
 from django.db.models import Max
 from buildpc import getBuild
 from django.shortcuts import redirect
+from links import *
 
 def index(request):
     if (request.method == 'GET' and 'amount' in request.GET):
@@ -106,6 +107,15 @@ def results(request, build_ID=0):
         build = getBuild(request.session['budget'], request.session['pc_type'], request.session['case_preferences'],
                         request.session['brand_preferences'], request.session['storage_amount'],
                         request.session['storage'])
+        try:
+            build.items()
+        except AttributeError as e:
+            print(e)
+            full = {
+                'build_info': build,
+                'build_ID': build_ID
+            }
+            return render(request, 'homepage/results.html', full)
         # takes the links from the build and saves them into the db
         for part, obj in build.items(): 
             if(part == 'BUILD COST'):
@@ -174,51 +184,111 @@ def results(request, build_ID=0):
             'build_info': build,
             'build_ID': build_ID
         }
-        if full['build_info'] is None:
-            return redirect('index')
         return render(request, 'homepage/results.html', full)
     # for past builds
     else:
-        pastBuild = BUILD.objects.filter(build_ID=build_ID)[0]
-        if not pastBuild:
+        try:
+            pastBuild = BUILD.objects.filter(build_ID=build_ID)[0]
+        except IndexError as e:
+            print(e)
             return redirect('index')
-        else:
-            # makes a different build based on whether it has Extra_links defined or not
+        pastBuild = BUILD.objects.filter(build_ID=build_ID)[0]
+        # makes a different build based on whether it has Extra_links defined or not
+        Fan_links = pastBuild.FAN_links
+        try:
+            Fan_links = FAN.objects.filter(links=Fan_links)[0]
+        except IndexError:
             Fan_links = pastBuild.FAN_links
-            try:
-                Fan_links = FAN.objects.filter(links=Fan_links)[0]
-            except IndexError:
-                Fan_links = pastBuild.FAN_links
-            if pastBuild.EXTRA_links:
-                build = {
-                    'CPU': CPU.objects.filter(links=pastBuild.CPU_links)[0],
-                    'FAN': Fan_links,
-                    'GPU': GPU.objects.filter(links=pastBuild.GPU_links)[0],
-                    'MOBO': MOBO.objects.filter(links=pastBuild.MOBO_links)[0],
-                    'MEM': MEM.objects.filter(links=pastBuild.MEM_links)[0],
-                    'CASE': CASE.objects.filter(links=pastBuild.CASE_links)[0],
-                    'PWR': PWR.objects.filter(links=pastBuild.PWR_links)[0],
-                    'STORAGE': STORAGE.objects.filter(links=pastBuild.STORAGE_links)[0],
-                    'EXTRA': STORAGE.objects.filter(links=pastBuild.EXTRA_links)[0],
-                    'BUILD COST': pastBuild.build_Cost
-                }
-            else:
-                build = {
-                    'CPU': CPU.objects.filter(links=pastBuild.CPU_links)[0],
-                    'FAN': Fan_links,
-                    'GPU': GPU.objects.filter(links=pastBuild.GPU_links)[0],
-                    'MOBO': MOBO.objects.filter(links=pastBuild.MOBO_links)[0],
-                    'MEM': MEM.objects.filter(links=pastBuild.MEM_links)[0],
-                    'CASE': CASE.objects.filter(links=pastBuild.CASE_links)[0],
-                    'PWR': PWR.objects.filter(links=pastBuild.PWR_links)[0],
-                    'STORAGE': STORAGE.objects.filter(links=pastBuild.STORAGE_links)[0],
-                    'BUILD COST': pastBuild.build_Cost
-                }
-
-            full = {
-                'build_info': build,
-                'build_ID': pastBuild.build_ID
+        if pastBuild.EXTRA_links:
+            build = {
+                'CPU': CPU.objects.filter(links=pastBuild.CPU_links)[0],
+                'FAN': Fan_links,
+                'GPU': GPU.objects.filter(links=pastBuild.GPU_links)[0],
+                'MOBO': MOBO.objects.filter(links=pastBuild.MOBO_links)[0],
+                'MEM': MEM.objects.filter(links=pastBuild.MEM_links)[0],
+                'CASE': CASE.objects.filter(links=pastBuild.CASE_links)[0],
+                'PWR': PWR.objects.filter(links=pastBuild.PWR_links)[0],
+                'STORAGE': STORAGE.objects.filter(links=pastBuild.STORAGE_links)[0],
+                'EXTRA': STORAGE.objects.filter(links=pastBuild.EXTRA_links)[0],
+                'BUILD COST': pastBuild.build_Cost
             }
+            updatedCost = 0
+            for part, obj in build.items():
+                if(part == 'BUILD COST'):
+                    continue
+                if(part == 'FAN'):
+                    try:
+                        obj.links
+                        checkPart(obj)
+                        Fan_link = obj.links
+                    except AttributeError:
+                        Fan_link = obj
+                        continue
+                checkPart(obj)
+                build[part] = obj
+                if obj.price:
+                    updatedCost += obj.price
+            
+            build["BUILD COST"] = updatedCost
+            BUILD.objects.filter(build_ID=build_ID).update(
+                build_Cost = build["BUILD COST"],
+                CPU_links = build["CPU"].links,
+                GPU_links = build["GPU"].links,
+                MEM_links = build["MEM"].links,
+                STORAGE_links = build["STORAGE"].links,
+                EXTRA_links = build["EXTRA"].links,
+                PWR_links = build["PWR"].links,
+                CASE_links = build["CASE"].links,
+                MOBO_links = build["MOBO"].links,
+                FAN_links = Fan_link
+            )
+        else:
+            build = {
+                'CPU': CPU.objects.filter(links=pastBuild.CPU_links)[0],
+                'FAN': Fan_links,
+                'GPU': GPU.objects.filter(links=pastBuild.GPU_links)[0],
+                'MOBO': MOBO.objects.filter(links=pastBuild.MOBO_links)[0],
+                'MEM': MEM.objects.filter(links=pastBuild.MEM_links)[0],
+                'CASE': CASE.objects.filter(links=pastBuild.CASE_links)[0],
+                'PWR': PWR.objects.filter(links=pastBuild.PWR_links)[0],
+                'STORAGE': STORAGE.objects.filter(links=pastBuild.STORAGE_links)[0],
+                'BUILD COST': pastBuild.build_Cost
+            }
+            
+            updatedCost = 0
+            for part, obj in build.items():
+                if(part == 'BUILD COST'):
+                    continue
+                if(part == 'FAN'):
+                    try:
+                        obj.links
+                        checkPart(obj)
+                        Fan_link = obj.links
+                    except AttributeError:
+                        Fan_link = obj
+                        continue
+                checkPart(obj)
+                build[part] = obj
+                if obj.price:
+                    updatedCost += obj.price
+
+            build["BUILD COST"] = updatedCost
+            BUILD.objects.filter(build_ID=build_ID).update(
+                build_Cost=build["BUILD COST"],
+                CPU_links=build["CPU"].links,
+                GPU_links=build["GPU"].links,
+                MEM_links=build["MEM"].links,
+                STORAGE_links=build["STORAGE"].links,
+                PWR_links=build["PWR"].links,
+                CASE_links=build["CASE"].links,
+                MOBO_links=build["MOBO"].links,
+                FAN_links=Fan_link
+            )
+
+        full = {
+            'build_info': build,
+            'build_ID': pastBuild.build_ID
+        }
         return render(request, 'homepage/results.html', full)
 
     
