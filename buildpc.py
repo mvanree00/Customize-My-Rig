@@ -129,7 +129,7 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
             best_fan = None
             best_perf_ratio = 0.0
             if cpu_objs and mobo_objs: # if query returned results, find best CPU + MOBO combo
-                cpu_best_desktop_perf = cpu_objs.order_by('desktop_perf').reverse()[0].desktop_perf
+                cpu_best_combined_perf = cpu_objs.order_by('combined_perf').reverse()[0].combined_perf
                 cpu_best_gaming_perf = cpu_objs.order_by('gaming_perf').reverse()[0].gaming_perf
                 cpu_best_workstation_perf = cpu_objs.order_by('workstation_perf').reverse()[0].workstation_perf
                 for cpu in cpu_objs:
@@ -141,9 +141,9 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
                         fan_price = fan.price
                     for mobo in mobo_objs:
                         if cpu.platform == mobo.chipset:
-                            if (type_ == 'streaming' and cpu.desktop_perf > cpu_best_desktop_perf - 2 and
-                                cpu.desktop_perf / (cpu.price+mobo.price+fan_price) > best_perf_ratio): # desktop perf ratio
-                                best_perf_ratio = cpu.desktop_perf / (cpu.price+mobo.price+fan_price)
+                            if (type_ == 'streaming' and cpu.combined_perf > cpu_best_combined_perf - 2 and
+                                cpu.combined_perf / (cpu.price+mobo.price+fan_price) > best_perf_ratio): # combined perf ratio
+                                best_perf_ratio = cpu.combined_perf / (cpu.price+mobo.price+fan_price)
                                 best_cpu = cpu
                                 best_mobo = mobo
                                 best_fan = fan
