@@ -23,13 +23,16 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
         ###########
         print('PC Type:', type_)
         # weighting pc parts based upon pc type selection
-        if type_ == 'streaming': #FIXME: weights
+        if type_ == 'streaming':
             if starting_budget <= 850:
-                cpu_weight = 0.25
-                gpu_weight = 0.375
+                cpu_weight = 0.3
+                gpu_weight = 0.325
+            elif starting_budget < 1650:
+                cpu_weight = 0.35
+                gpu_weight = 0.35
             else:
-                cpu_weight = 0.25
-                gpu_weight = 0.15
+                cpu_weight = .385
+                gpu_weight = .375
         elif type_ == 'gaming':
             if starting_budget <= 850:
                 cpu_weight = 0.25
@@ -42,11 +45,14 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
                 gpu_weight = .44
         else: #FIXME: weights, production
             if starting_budget <= 850:
-                cpu_weight = 0.25
-                gpu_weight = 0.375
-            else:
-                cpu_weight = 0.3
+                cpu_weight = 0.425
                 gpu_weight = 0.2
+            elif starting_budget < 1650:
+                cpu_weight = 0.475
+                gpu_weight = 0.225
+            else:
+                cpu_weight = .5
+                gpu_weight = .255
         parts = {}
         budget_remaining = starting_budget
 
@@ -103,27 +109,30 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
         # CPU, FAN, MOTHERBOARD #
         #########################
         # finds best CPU Motherboard combo based on overall performance AND performance ratios (performance divided by total cost)
-        cpu_brand_attempts = 0
         while True:
-            mobo_objs = MOBO.objects.filter(price__isnull=False, price__lte=cpu_weight * starting_budget)
+            cpu_brands= []
+            for brand in brand_preferences:
+                if brand == 'Intel':
+                    cpu_brands.append('Intel')
+                elif brand == 'AMD':
+                    cpu_brands.append('AMD')
+            if len(cpu_brands) == 1:
+                if cpu_brands[0] == 'Intel':
+                    mobo_objs = MOBO.objects.filter(price__isnull=False, chipset__startswith='LGA', price__lte=cpu_weight * starting_budget)
+                else:
+                    mobo_objs = MOBO.objects.filter(price__isnull=False, price__lte=cpu_weight * starting_budget).exclude(chipset__startswith='LGA')
+            else:
+                mobo_objs = MOBO.objects.filter(price__isnull=False, price__lte=cpu_weight * starting_budget)
 
             # filters cpus based on brand preferences (only sees if possible twice)
-            if cpu_brand_attempts <= 1:
-                print('Brand preferences:',brand_preferences)
-                cpu_objs = CPU.objects.none()
-
-                for brand in brand_preferences: # creates query set of ALL CPUs with the preferred brands
+            print('Brand preferences:',brand_preferences)
+            cpu_objs = CPU.objects.none()
+            for brand in brand_preferences: # creates query set of ALL CPUs with the preferred brands
                     cpu_objs = cpu_objs.union(CPU.objects.filter(price__isnull=False,
                                                                  name__startswith=brand,
                                                                  price__lte=cpu_weight * starting_budget))
-
-                if cpu_objs:
-                    cpu_brand_attempts += 1
-                else: # if brand preference is always gonna be empty, no point in doing it again
-                    cpu_brand_attempts = 2
-            else: # brand preference attempts failed
+            if not cpu_objs: # brand preference attempts failed
                 cpu_objs = CPU.objects.filter(price__isnull=False, price__lte=cpu_weight * starting_budget)
-
             best_cpu = None
             best_mobo = None
             best_fan = None
@@ -139,29 +148,31 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
                     if cpu.cpu_fan == False:
                         fan = FAN.objects.filter(price__isnull = False).order_by('price')[0]
                         fan_price = fan.price
-                    for mobo in mobo_objs:
-                        if cpu.platform == mobo.chipset:
-                            if (type_ == 'streaming' and cpu.combined_perf > cpu_best_combined_perf - 2 and
-                                cpu.combined_perf / (cpu.price+mobo.price+fan_price) > best_perf_ratio): # combined perf ratio
-                                best_perf_ratio = cpu.combined_perf / (cpu.price+mobo.price+fan_price)
-                                best_cpu = cpu
-                                best_mobo = mobo
-                                best_fan = fan
-                                best_fan_price = fan_price
-                            elif (type_ == 'gaming' and cpu.gaming_perf > cpu_best_gaming_perf - 2 and
-                                cpu.gaming_perf / (cpu.price+mobo.price+fan_price) > best_perf_ratio): # gaming perf ratio
-                                best_perf_ratio = cpu.gaming_perf / (cpu.price + mobo.price + fan_price)
-                                best_cpu = cpu
-                                best_mobo = mobo
-                                best_fan = fan
-                                best_fan_price = fan_price
-                            elif (type_ == 'production' and cpu.workstation_perf > cpu_best_workstation_perf - 2 and
-                                cpu.workstation_perf / (cpu.price+mobo.price+fan_price) > best_perf_ratio): # workstation perf ratio
-                                best_perf_ratio = cpu.workstation_perf / (cpu.price + mobo.price + fan_price)
-                                best_cpu = cpu
-                                best_mobo = mobo
-                                best_fan = fan
-                                best_fan_price = fan_price
+                    temp_mobo = mobo_objs.filter(chipset=cpu.platform)
+                    if temp_mobo:
+                        for mobo in temp_mobo:
+                            if cpu.platform == mobo.chipset:
+                                if (type_ == 'streaming' and cpu.combined_perf > cpu_best_combined_perf - 2 and
+                                    cpu.combined_perf / (cpu.price+mobo.price+fan_price) > best_perf_ratio): # combined perf ratio
+                                    best_perf_ratio = cpu.combined_perf / (cpu.price+mobo.price+fan_price)
+                                    best_cpu = cpu
+                                    best_mobo = mobo
+                                    best_fan = fan
+                                    best_fan_price = fan_price
+                                elif (type_ == 'gaming' and cpu.gaming_perf > cpu_best_gaming_perf - 2 and
+                                    cpu.gaming_perf / (cpu.price+mobo.price+fan_price) > best_perf_ratio): # gaming perf ratio
+                                    best_perf_ratio = cpu.gaming_perf / (cpu.price + mobo.price + fan_price)
+                                    best_cpu = cpu
+                                    best_mobo = mobo
+                                    best_fan = fan
+                                    best_fan_price = fan_price
+                                elif (type_ == 'production' and cpu.workstation_perf > cpu_best_workstation_perf - 2 and
+                                    cpu.workstation_perf / (cpu.price+mobo.price+fan_price) > best_perf_ratio): # workstation perf ratio
+                                    best_perf_ratio = cpu.workstation_perf / (cpu.price + mobo.price + fan_price)
+                                    best_cpu = cpu
+                                    best_mobo = mobo
+                                    best_fan = fan
+                                    best_fan_price = fan_price
 
             # ensures CPU + MOBO combination creator did not fail before checking parts
             if not(best_cpu is None or best_mobo is None or best_fan is None) and \

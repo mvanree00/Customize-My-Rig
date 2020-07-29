@@ -1,7 +1,7 @@
 import requests
 import bs4
 from datetime import datetime,timezone
-from homepage.models import *
+#from homepage.models import *
 def getLink(extension): # extension is the object 'links' attribute
     #proxies = {"https": "http://140.227.175.225:1000"}
     #res = requests.get('https://pcpartpicker.com/product/'+extension+'/',proxies=proxies)
@@ -50,7 +50,7 @@ def checkPart(obj): # makes sure price is actually correct and in stock
             return True
         obj.price=output[1]
         obj.save()
-    elif obj.webpage==None:
+    elif output[1] == obj.price or obj.webpage==None:
         obj.webpage=output[0]
         obj.save()
         return True
