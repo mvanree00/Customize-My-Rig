@@ -7,7 +7,7 @@ References:
 TODO:
 - account for PSU power ratings
 - pick fan based upon power needs (more power = more heat)
-- brainstorm better methodology for picking RAM
+- m.2 vs sata SSD selections
 """
 
 from homepage.models import *
