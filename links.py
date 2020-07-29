@@ -81,11 +81,11 @@ def checkMem(obj): # makes sure price is actually correct and in stock
         obj.save()
         if output[1]<obj.price:
             obj.price=output[1]
-            obj.speedperdollar=1/(obj.price*obj.realspeed)*10000
+            obj.speedperdollar=round(1/(obj.price*obj.realspeed)*10000)
             obj.save()
             return True
         obj.price=output[1]
-        obj.speedperdollar=1/(obj.price*obj.realspeed)*10000
+        obj.speedperdollar=round(1/(obj.price*obj.realspeed)*10000)
         obj.save()
     elif output[1] == obj.price or obj.webpage==None:
         obj.webpage=output[0]
