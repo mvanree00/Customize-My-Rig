@@ -36,11 +36,11 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
                 cpu_weight = .35
         elif type_ == 'gaming':
             if starting_budget <= 850:
-                cpu_weight = 0.35
+                cpu_weight = 0.375
             elif starting_budget < 1650:
-                cpu_weight = 0.325
+                cpu_weight = 0.35
             else:
-                cpu_weight = .3
+                cpu_weight = .325
         else:
             if starting_budget < 1650:
                 cpu_weight = 0.6
@@ -67,8 +67,8 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
                         break
             elif types=='HDD':
                 while True:
-                    storage = STORAGE.objects.filter(price__lte=budget_remaining,kind=types,
-                                                    capacity__gte=hdd_storage_amount*.95).order_by('price')
+                    storage = STORAGE.objects.filter(price__lte=budget_remaining,
+                                                    capacity__gte=hdd_storage_amount*.95).order_by('price').exclude(kind='SSD')
                     if storage and checkPart(storage[0]):
                         best_hdd = storage[0]
                         budget_remaining -= storage[0].price
@@ -353,13 +353,12 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
                                     pwr = pwr_bronze[0]
                 if checkPart(pwr):
                     break
-        else:
-            budget_remaining -= pwr.price
+        budget_remaining -= pwr.price
         # Adding CPU, fan, GPU, motherboard, memory, case, and power to parts list
         parts.update({'CPU' : best_cpu, 'FAN' : best_fan, 'GPU' : best_gpu, 'MOBO' : best_mobo, 'MEM' : mem, 'CASE': case_obj, 'PWR' : pwr})
         if best_ssd:
             parts.update({'STORAGE' : best_ssd})
-        elif best_hdd:
+        if best_hdd:
             parts.update({'EXTRA' : best_hdd})
         parts.update({'BUILD COST' : round(starting_budget-budget_remaining,2)})
         return parts
