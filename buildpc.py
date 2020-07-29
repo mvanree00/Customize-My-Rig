@@ -5,7 +5,6 @@ References:
 - Django Queries: https://docs.djangoproject.com/en/3.0/ref/models/querysets/
 
 TODO:
-- account for PSU power ratings
 - pick fan based upon power needs (more power = more heat)
 - m.2 vs sata SSD selections
 """
@@ -30,37 +29,58 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
         # weighting pc parts based upon pc type selection
         if type_ == 'streaming':
             if starting_budget <= 850:
-                cpu_weight = 0.3
-                gpu_weight = 0.325
+                cpu_weight = .45
             elif starting_budget < 1650:
-                cpu_weight = 0.35
-                gpu_weight = 0.35
+                cpu_weight = 0.4
             else:
-                cpu_weight = .385
-                gpu_weight = .375
+                cpu_weight = .35
         elif type_ == 'gaming':
             if starting_budget <= 850:
-                cpu_weight = 0.25
-                gpu_weight = 0.375
+                cpu_weight = 0.35
             elif starting_budget < 1650:
-                cpu_weight = 0.3
-                gpu_weight = 0.4
+                cpu_weight = 0.325
             else:
-                cpu_weight = .315
-                gpu_weight = .44
-        else: #FIXME: weights, production
-            if starting_budget <= 850:
-                cpu_weight = 0.425
-                gpu_weight = 0.2
-            elif starting_budget < 1650:
-                cpu_weight = 0.475
-                gpu_weight = 0.225
+                cpu_weight = .3
+        else:
+            if starting_budget < 1650:
+                cpu_weight = 0.6
             else:
-                cpu_weight = .5
-                gpu_weight = .255
+                cpu_weight = .66
         parts = {}
         budget_remaining = starting_budget
-
+        ###########
+        # STORAGE #
+        ###########
+        # Meet the desired storage preferences, if not specified give 500gb ssd
+        storage_amount *= 1000
+        hdd_storage_amount *= 1000
+        best_ssd = None
+        best_hdd = None
+        for types in storage_type:
+            if types=='SSD':
+                while True:
+                    storage = STORAGE.objects.filter(price__lte=budget_remaining,kind=types,
+                                                    capacity__gte=storage_amount*.95).order_by('price')
+                    if storage and checkPart(storage[0]):
+                        best_ssd=storage[0]
+                        budget_remaining -= storage[0].price
+                        break
+            elif types=='HDD':
+                while True:
+                    storage = STORAGE.objects.filter(price__lte=budget_remaining,kind=types,
+                                                    capacity__gte=hdd_storage_amount*.95).order_by('price')
+                    if storage and checkPart(storage[0]):
+                        best_hdd = storage[0]
+                        budget_remaining -= storage[0].price
+                        break
+            elif types == 'auto' and len(storage_type) == 1:
+                while True:
+                    storage = STORAGE.objects.filter(price__lte=budget_remaining,kind='SSD',
+                                                    capacity__gte=500*.95).order_by('price')
+                    if storage and checkPart(storage[0]):
+                        best_ssd = storage[0]
+                        budget_remaining -= storage[0].price
+                        break
         ########
         # CASE #
         ########
@@ -110,6 +130,70 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
 
         budget_remaining -= case_obj.price
 
+        ##########
+        # MEMORY #
+        ##########
+        while True:
+            if starting_budget >= 1200:
+                mem = MEM.objects.filter(price__isnull = False, modules='32 GB', realspeed__isnull = False).order_by('-speedperdollar','price')[0]
+            elif starting_budget >= 700:
+                mem = MEM.objects.filter(price__isnull = False, modules='16 GB', realspeed__isnull = False).order_by('-speedperdollar','price')[0]
+            else:
+                mem = MEM.objects.filter(price__isnull = False, modules=' 8 GB', realspeed__isnull = False).order_by('-speedperdollar','price')[0]
+            if checkMem(mem):
+                break
+        budget_remaining -= mem.price
+
+        #########
+        # POWER #
+        #########
+        estimated_wattage = 0
+        actual_wattage = 0
+        while True:
+            if type_=='gaming' or type_=='streaming':
+                estimated_wattage=525
+            else:
+                estimated_wattage=450
+            if overclock:
+                    estimated_wattage += 75
+            pwr_objs = PWR.objects.filter(price__isnull = False, wattage__gte=estimated_wattage).order_by('price')
+
+            # base power supply
+            pwr = pwr_objs[0]
+            price_cap = pwr.price * 0.10 + pwr.price
+
+            # Titanium
+            pwr_titanium = pwr_objs.filter(rating='80+ Titanium',
+                                    price__lte=price_cap).order_by('price')
+            if pwr_titanium:
+                pwr = pwr_titanium[0]
+            else:
+                # Platinum
+                pwr_platinum = pwr_objs.filter(rating='80+ Platinum',
+                                            price__lte=price_cap).order_by('price')
+                if pwr_platinum:
+                    pwr = pwr_platinum[0]
+                else:
+                    # Gold
+                    pwr_gold = pwr_objs.filter(rating='80+ Gold',
+                                                price__lte=price_cap).order_by('price')
+                    if pwr_gold:
+                        pwr = pwr_gold[0]
+                    else:
+                        # Silver
+                        pwr_silver = pwr_objs.filter(rating='80+ Silver',
+                                                price__lte=price_cap).order_by('price')
+                        if pwr_silver:
+                            pwr = pwr_silver[0]
+                        else:
+                            # Bronze
+                            pwr_bronze = pwr_objs.filter(rating='80+ Bronze',
+                                                        price__lte=price_cap).order_by('price')
+                            if pwr_bronze:
+                                pwr = pwr_bronze[0]
+            if checkPart(pwr):
+                break
+        mainBudget=budget_remaining-pwr.price
         #########################
         # CPU, FAN, MOTHERBOARD #
         #########################
@@ -123,21 +207,21 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
                     cpu_brands.append('AMD')
             if len(cpu_brands) == 1:
                 if cpu_brands[0] == 'Intel':
-                    mobo_objs = MOBO.objects.filter(price__isnull=False, chipset__startswith='LGA', price__lte=cpu_weight * starting_budget)
+                    mobo_objs = MOBO.objects.filter(price__isnull=False, chipset__startswith='LGA', price__lte=cpu_weight * mainBudget)
                 else:
-                    mobo_objs = MOBO.objects.filter(price__isnull=False, price__lte=cpu_weight * starting_budget).exclude(chipset__startswith='LGA')
+                    mobo_objs = MOBO.objects.filter(price__isnull=False, price__lte=cpu_weight * mainBudget).exclude(chipset__startswith='LGA')
             else:
-                mobo_objs = MOBO.objects.filter(price__isnull=False, price__lte=cpu_weight * starting_budget)
+                mobo_objs = MOBO.objects.filter(price__isnull=False, price__lte=cpu_weight * mainBudget)
 
             # filters cpus based on brand preferences (only sees if possible twice)
             print('Brand preferences:',brand_preferences)
             cpu_objs = CPU.objects.none()
             for brand in brand_preferences: # creates query set of ALL CPUs with the preferred brands
                     cpu_objs = cpu_objs.union(CPU.objects.filter(price__isnull=False,
-                                                                 name__startswith=brand,
-                                                                 price__lte=cpu_weight * starting_budget))
+                                                                name__startswith=brand,
+                                                                price__lte=cpu_weight * mainBudget))
             if not cpu_objs: # brand preference attempts failed
-                cpu_objs = CPU.objects.filter(price__isnull=False, price__lte=cpu_weight * starting_budget)
+                cpu_objs = CPU.objects.filter(price__isnull=False, price__lte=cpu_weight * mainBudget)
             best_cpu = None
             best_mobo = None
             best_fan = None
@@ -186,7 +270,9 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
         budget_remaining -= best_cpu.price
         budget_remaining -= best_mobo.price
         budget_remaining -= best_fan_price
-
+        mainBudget -= best_cpu.price
+        mainBudget -= best_mobo.price
+        mainBudget -= best_fan_price
         #######
         # GPU #
         #######
@@ -205,9 +291,9 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
             for brand in gpu_brands:
                 gpu_objs = gpu_objs.union(GPU.objects.filter(price__isnull = False,
                                                              chipset__startswith=brand,
-                                                             price__lte=gpu_weight * starting_budget))
+                                                             price__lte=mainBudget))
             if not gpu_objs:
-                gpu_objs=GPU.objects.filter(price__isnull=False, price__lte=gpu_weight * starting_budget)
+                gpu_objs=GPU.objects.filter(price__isnull=False, price__lte=mainBudget)
             if gpu_objs: # if gpus in price range
                 best_gpu_perf = gpu_objs.order_by('gaming_perf').reverse()[0].gaming_perf
                 best_gpu = None
@@ -226,115 +312,55 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
             if checkPart(best_gpu):
                 break
         budget_remaining -= best_gpu.price
+        actual_wattage=best_cpu.tdp + best_gpu.tdp + 175
+        if overclock:
+            actual_wattage+=50
+        if pwr.wattage < actual_wattage*.95:
+            while True:
+                pwr_objs = PWR.objects.filter(price__isnull = False, wattage__gte=actual_wattage).order_by('price')
+                            # base power supply
+                pwr = pwr_objs[0]
+                price_cap = pwr.price * 0.10 + pwr.price
 
-        ##########
-        # MEMORY #
-        ##########
-        while True:
-            if starting_budget >= 1200:
-                mem = MEM.objects.filter(price__isnull = False, modules='32 GB', realspeed__isnull = False).order_by('-speedperdollar','price')[0]
-            elif starting_budget >= 700:
-                mem = MEM.objects.filter(price__isnull = False, modules='16 GB', realspeed__isnull = False).order_by('-speedperdollar','price')[0]
-            else:
-                mem = MEM.objects.filter(price__isnull = False, modules=' 8 GB', realspeed__isnull = False).order_by('-speedperdollar','price')[0]
-            if checkMem(mem):
-                break
-        budget_remaining -= mem.price
-
-        #########
-        # POWER #
-        #########
-        while True:
-            pwr_required = best_cpu.tdp + best_gpu.tdp + 175
-            pwr_objs = PWR.objects.filter(price__isnull = False, wattage__gte=pwr_required).order_by('price')
-
-            # base power supply
-            pwr = pwr_objs[0]
-            price_cap = pwr.price * 0.10 + pwr.price
-
-            # Titanium
-            pwr_titanium = pwr_objs.filter(rating='80+ Titanium',
-                                      price__lte=price_cap).order_by('price')
-            if pwr_titanium:
-                pwr = pwr_titanium[0]
-            else:
-                # Platinum
-                pwr_platinum = pwr_objs.filter(rating='80+ Platinum',
-                                               price__lte=price_cap).order_by('price')
-                if pwr_platinum:
-                    pwr = pwr_platinum[0]
+                # Titanium
+                pwr_titanium = pwr_objs.filter(rating='80+ Titanium',
+                                        price__lte=price_cap).order_by('price')
+                if pwr_titanium:
+                    pwr = pwr_titanium[0]
                 else:
-                    # Gold
-                    pwr_gold = pwr_objs.filter(rating='80+ Gold',
-                                                   price__lte=price_cap).order_by('price')
-                    if pwr_gold:
-                        pwr = pwr_gold[0]
+                    # Platinum
+                    pwr_platinum = pwr_objs.filter(rating='80+ Platinum',
+                                                price__lte=price_cap).order_by('price')
+                    if pwr_platinum:
+                        pwr = pwr_platinum[0]
                     else:
-                        # Silver
-                        pwr_silver = pwr_objs.filter(rating='80+ Silver',
-                                                   price__lte=price_cap).order_by('price')
-                        if pwr_silver:
-                            pwr = pwr_silver[0]
+                        # Gold
+                        pwr_gold = pwr_objs.filter(rating='80+ Gold',
+                                                    price__lte=price_cap).order_by('price')
+                        if pwr_gold:
+                            pwr = pwr_gold[0]
                         else:
-                            # Bronze
-                            pwr_bronze = pwr_objs.filter(rating='80+ Bronze',
-                                                         price__lte=price_cap).order_by('price')
-                            if pwr_bronze:
-                                pwr = pwr_bronze[0]
-
-            if checkPart(pwr):
-                break
-        budget_remaining -= pwr.price
-
+                            # Silver
+                            pwr_silver = pwr_objs.filter(rating='80+ Silver',
+                                                    price__lte=price_cap).order_by('price')
+                            if pwr_silver:
+                                pwr = pwr_silver[0]
+                            else:
+                                # Bronze
+                                pwr_bronze = pwr_objs.filter(rating='80+ Bronze',
+                                                            price__lte=price_cap).order_by('price')
+                                if pwr_bronze:
+                                    pwr = pwr_bronze[0]
+                if checkPart(pwr):
+                    break
+        else:
+            budget_remaining -= pwr.price
         # Adding CPU, fan, GPU, motherboard, memory, case, and power to parts list
         parts.update({'CPU' : best_cpu, 'FAN' : best_fan, 'GPU' : best_gpu, 'MOBO' : best_mobo, 'MEM' : mem, 'CASE': case_obj, 'PWR' : pwr})
-
-        ###########
-        # STORAGE #
-        ###########
-        # Spending remaining money on storage
-        # if budget remaining is lower than cheapest part, they need the part anyways so have to add
-        storage_amount *= 1000
-
-        cheapest_storage = STORAGE.objects.filter(price__isnull=False).order_by('price')[0]
-        if budget_remaining <= cheapest_storage.price:
-            parts.update({'STORAGE' : cheapest_storage})
-            budget_remaining -= cheapest_storage.price
-        else:
-            i = 1
-            total_storage = 0
-            while STORAGE.objects.filter(price__lte=budget_remaining).exists() and total_storage < storage_amount and i <= 2:
-                while True:
-                    storage = None
-                    if storage_type == 'SSD' or storage_type == 'HDD': # specific type filtered
-                        storage = STORAGE.objects.filter(price__lte=budget_remaining,kind=storage_type,
-                                                         capacity__gte=storage_amount*.95).order_by('price')
-                    else: # no type filtered
-                        storage = STORAGE.objects.filter(price__lte=budget_remaining,kind='SSD',
-                                                         capacity__gte=storage_amount * .95).order_by('price')
-
-                    if not storage: # if no preferred disk type at price, gets whatever with at least storage needed
-                        storage = STORAGE.objects.filter(price__lte=budget_remaining,
-                                                         capacity__gte=storage_amount*.95).order_by('price')
-                    if storage and checkPart(storage[0]):
-                        break
-                    elif not storage: # can't find drive at this price and capacity, choose highest capacity of any drive type
-                        while True:
-                            temp = STORAGE.objects.filter(price__lte=budget_remaining).aggregate(mx=Max('capacity'))
-                            storage = STORAGE.objects.filter(price__lte=budget_remaining,
-                                                             capacity__gte=temp['mx'] * .95).order_by('price')
-                            if storage and checkPart(storage[0]):
-                                break
-                        break
-                if i == 1:
-                    parts.update({'STORAGE' : storage[0]})
-                    budget_remaining -= storage[0].price
-                    total_storage += storage[0].capacity
-                else:
-                    parts.update({'EXTRA': storage[0]})
-                    budget_remaining -= storage[0].price
-                i += 1
-
+        if best_ssd:
+            parts.update({'STORAGE' : best_ssd})
+        elif best_hdd:
+            parts.update({'EXTRA' : best_hdd})
         parts.update({'BUILD COST' : round(starting_budget-budget_remaining,2)})
         return parts
     except AttributeError as e:  # if there is no part at budget given, won't cause crash due to none being found when part.price
