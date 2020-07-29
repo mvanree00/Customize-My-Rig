@@ -70,11 +70,13 @@ def importMEM(browser):
                 realspeed = float(realspeed.replace(' ns',''))
                 links = section[9].find_element_by_tag_name('button').get_attribute('data-product-tag')
                 img = section[1].find_element_by_tag_name('a').find_element_by_tag_name('div').find_element_by_tag_name('div').find_element_by_tag_name('img').get_attribute('src')
+                speedperdollar = int((realspeed/float(price))*1000)
                 temp = MEM.objects.all().filter(links=links)
                 if temp:
                     temp.update(price=price)
+                    temp.update(speedperdollar=speedperdollar)
                 else:
-                    mem = MEM(name=name,speed=speed,cas=cas,modules=modules,price=price,links=links,img=img,color=color,realspeed=realspeed)
+                    mem = MEM(name=name,speed=speed,cas=cas,modules=modules,price=price,links=links,img=img,color=color,realspeed=realspeed,speedperdollar=speedperdollar)
                     mem.save()
         if i != 5:
             browser.find_element_by_css_selector('.pagination').find_element_by_link_text(str(i+1)).click()

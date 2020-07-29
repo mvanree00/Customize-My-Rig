@@ -6,7 +6,6 @@ References:
 
 TODO:
 - account for PSU power ratings
-- adjust weights
 - pick fan based upon power needs (more power = more heat)
 - brainstorm better methodology for picking RAM
 """
@@ -14,7 +13,7 @@ TODO:
 from homepage.models import *
 from django.db.models import Max
 from django.db.models import Q
-from links import checkPart
+from links import checkPart,checkMem
 
 def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], storage_amount=0.5, storage_type='either'):
     try:
@@ -209,7 +208,7 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
                 best_gpu_mem = 0
                 best_gpu_perf_ratio = 0
                 for gpu in gpu_objs:
-                    if type_ == 'production' and gpu.mem > best_gpu_mem and gpu.gaming_perf > best_gpu_perf - 10:
+                    if type_ == 'production' and gpu.mem >= best_gpu_mem and gpu.gaming_perf >= best_gpu_perf - 5:
                         best_gpu = gpu
                         best_gpu_mem = gpu.mem
                     elif (type_ == 'streaming' or type_ == 'gaming') and gpu.gaming_perf > best_gpu_perf - 5 and gpu.gaming_perf / gpu.price > best_gpu_perf_ratio:
@@ -227,12 +226,12 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
         ##########
         while True:
             if starting_budget >= 1200:
-                mem = MEM.objects.filter(price__isnull = False, modules='32 GB').order_by('price')[0]
+                mem = MEM.objects.filter(price__isnull = False, modules='32 GB').order_by('-speedperdollar','price')[0]
             elif starting_budget >= 700:
-                mem = MEM.objects.filter(price__isnull = False, modules='16 GB').order_by('price')[0]
+                mem = MEM.objects.filter(price__isnull = False, modules='16 GB').order_by('-speedperdollar','price')[0]
             else:
-                mem = MEM.objects.filter(price__isnull = False, modules=' 8 GB').order_by('price')[0]
-            if checkPart(mem):
+                mem = MEM.objects.filter(price__isnull = False, modules=' 8 GB').order_by('-speedperdollar','price')[0]
+            if checkMem(mem):
                 break
         budget_remaining -= mem.price
 
