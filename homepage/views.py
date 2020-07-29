@@ -79,10 +79,14 @@ def brand(request):
         return render(request, 'homepage/brand.html')
 
 def hardware(request):
-    if (request.method == 'GET' and ('storage_type' in request.GET)):
+    if (request.method == 'GET' and ('SSD' in request.GET or 'HDD' in request.GET or 'auto' in request.GET)):
         try:
+            ssd_space = float(request.GET['ssdamount'])
+            hdd_space = float(request.GET['hddamount'])
             storage_space = float(request.GET['amount'])
-            if storage_space < 0.5:
+            if ssd_space < 0.5 or ssd_space > 4:
+                raise ValueError
+            if hdd_space < 1 or hdd_space > 8:
                 raise ValueError
 
             request.session['storage_amount'] = storage_space
@@ -100,6 +104,7 @@ def hardware(request):
             return redirect('/hardware')
     else:
         return render(request, 'homepage/hardware.html')
+
 
 def results(request, build_ID=0):
     # for new build
