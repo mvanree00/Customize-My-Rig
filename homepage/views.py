@@ -73,6 +73,18 @@ def brand(request):
         if ('AMD' in request.GET and request.GET['AMD'] == 'on'):
             brand_preferences.append('AMD')
         request.session['brand_preferences'] = brand_preferences
+        
+        if 'overclock' in request.GET and request.GET['overclock'] == 'overclock':
+            request.session['overclock'] = True
+        else:
+            request.session['overclock'] = False
+
+        if 'cooling' in request.GET and request.GET['cooling'] == 'watercool':
+            request.session['cooling'] = 'water'
+        elif 'cooling' in request.GET and request.GET['cooling'] == 'aircool':
+            request.session['cooling'] = 'air'
+        else:
+            request.session['cooling'] = 'either'
 
         return redirect('/hardware')
     else:
@@ -82,9 +94,7 @@ def hardware(request):
     if (request.method == 'GET' and ('HDD' in request.GET or 'SSD' in request.GET or 'auto' in request.GET)):
         try:
             ssd_space = float(request.GET['ssdamount'])
-            print(ssd_space)
             hdd_space = float(request.GET['hddamount'])
-            print(hdd_space)
             if ssd_space < 0.5 or ssd_space > 4:
                 raise ValueError
             if hdd_space < 1 or hdd_space > 8:
@@ -120,7 +130,8 @@ def results(request, build_ID=0):
     if(build_ID == 0 or build_ID == BUILD.objects.latest('build_ID').build_ID + 1):
         build = getBuild(request.session['budget'], request.session['pc_type'], request.session['case_preferences'],
                         request.session['brand_preferences'], request.session['ssd_storage_amount'],
-                        request.session['hdd_storage_amount'], request.session['storage'])
+                        request.session['hdd_storage_amount'], request.session['storage'], request.session['overclock'],
+                        request.session['cooling'])
         try:
             build.items()
         except AttributeError as e:

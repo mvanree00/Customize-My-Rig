@@ -15,10 +15,14 @@ from django.db.models import Max
 from django.db.models import Q
 from links import checkPart,checkMem
 
-def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], storage_amount=0.5, hdd_storage_amount=1.0, storage_type=[]):
+def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], storage_amount=0.5, hdd_storage_amount=1.0,
+             storage_type=[], overclock=False, cooling='either'):
     try:
+        print('=======PREFERENCE INFO=======')
         print('Storage Choice:',storage_type)
         print('Storage Amounts (SSD and HDD):',storage_amount,hdd_storage_amount)
+        print('Overclocking:', overclock)
+        print('Cooling Choice:', cooling)
         ###########
         # WEIGHTS #
         ###########
