@@ -63,11 +63,11 @@ def type(request):
         return render(request, 'homepage/type.html')
 
 def brand(request):
-    if (request.method == 'GET' and ('intel' in request.GET or 'nvidia' in request.GET or 'AMD' in request.GET
+    if (request.method == 'GET' and ('Intel' in request.GET or 'nvidia' in request.GET or 'AMD' in request.GET
                                      or 'no_brand' in request.GET)):
         brand_preferences = []
-        if ('intel' in request.GET and request.GET['intel'] == 'on'):
-            brand_preferences.append('intel')
+        if ('Intel' in request.GET and request.GET['Intel'] == 'on'):
+            brand_preferences.append('Intel')
         if ('nvidia' in request.GET and request.GET['nvidia'] == 'on'):
             brand_preferences.append('nvidia')
         if ('AMD' in request.GET and request.GET['AMD'] == 'on'):

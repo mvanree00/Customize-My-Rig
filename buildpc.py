@@ -114,7 +114,7 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
 
                 for brand in brand_preferences: # creates query set of ALL CPUs with the preferred brands
                     cpu_objs = cpu_objs.union(CPU.objects.filter(price__isnull=False,
-                                                                 name__icontains=brand,
+                                                                 name__startswith=brand,
                                                                  price__lte=cpu_weight * starting_budget))
 
                 if cpu_objs:
@@ -176,20 +176,20 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
         #######
         # for streaming/gaming PCs, gaming performance benchmark used with performance ratio
         # for production, video memory important so considered here (https://nerdtechy.com/workstation-vs-gaming-pc)
-        gpu_brand_attempts = 0
+        gpu_brands= []
+        for brand in brand_preferences:
+            if brand == 'nvidia':
+                gpu_brands.append('GeForce')
+            elif brand == 'AMD':
+                gpu_brands.append('Radeon')
+
         while True:
             # filters gpus based on brand preferences (attempts finding brand matches maximum of twice)
             gpu_objs = GPU.objects.filter(price__isnull=False, price__lte=gpu_weight * starting_budget)
-            if gpu_brand_attempts <= 1:
-                for brand in brand_preferences:
-                    gpu_objs = gpu_objs.union(GPU.objects.filter(price__isnull = False,
-                                                                 manufacturer__icontains=brand,
-                                                                 price__lte=gpu_weight * starting_budget))
-                if gpu_objs:
-                    gpu_brand_attempts += 1
-                else:
-                    gpu_brand_attempts = 2
-
+            for brand in gpu_brands:
+                gpu_objs = gpu_objs.union(GPU.objects.filter(price__isnull = False,
+                                                             chipset__startswith=brand,
+                                                             price__lte=gpu_weight * starting_budget))
             if gpu_objs: # if gpus in price range
                 best_gpu_perf = gpu_objs.order_by('gaming_perf').reverse()[0].gaming_perf
                 best_gpu = None
