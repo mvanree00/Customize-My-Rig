@@ -79,18 +79,28 @@ def brand(request):
         return render(request, 'homepage/brand.html')
 
 def hardware(request):
-    if (request.method == 'GET' and ('SSD' in request.GET or 'HDD' in request.GET or 'auto' in request.GET)):
+    if (request.method == 'GET' and ('HDD' in request.GET or 'SSD' in request.GET or 'auto' in request.GET)):
         try:
             ssd_space = float(request.GET['ssdamount'])
+            print(ssd_space)
             hdd_space = float(request.GET['hddamount'])
-            storage_space = float(request.GET['amount'])
+            print(hdd_space)
             if ssd_space < 0.5 or ssd_space > 4:
                 raise ValueError
             if hdd_space < 1 or hdd_space > 8:
                 raise ValueError
 
-            request.session['storage_amount'] = storage_space
-            request.session['storage'] = request.GET['storage_type']
+            request.session['ssd_storage_amount'] = ssd_space
+            request.session['hdd_storage_amount'] = hdd_space
+            storage_type = []
+            if 'auto' in request.GET and request.GET['auto'] == 'on':
+                storage_type.append('auto')
+            else:
+                if 'HDD' in request.GET and request.GET['HDD'] == 'on':
+                    storage_type.append('HDD')
+                if 'SSD' in request.GET and request.GET['SSD'] == 'on':
+                    storage_type.append('SSD')
+            request.session['storage'] = storage_type
             try:
                 build = BUILD.objects.filter()[0]
                 ID = BUILD.objects.latest('build_ID').build_ID + 1
@@ -98,7 +108,6 @@ def hardware(request):
             except IndexError:
                 path = '/results'
                 
-                    
             return redirect(path)
         except ValueError:
             return redirect('/hardware')
@@ -110,8 +119,8 @@ def results(request, build_ID=0):
     # for new build
     if(build_ID == 0 or build_ID == BUILD.objects.latest('build_ID').build_ID + 1):
         build = getBuild(request.session['budget'], request.session['pc_type'], request.session['case_preferences'],
-                        request.session['brand_preferences'], request.session['storage_amount'],
-                        request.session['storage'])
+                        request.session['brand_preferences'], request.session['ssd_storage_amount'],
+                        request.session['hdd_storage_amount'], request.session['storage'])
         try:
             build.items()
         except AttributeError as e:

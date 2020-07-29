@@ -15,8 +15,10 @@ from django.db.models import Max
 from django.db.models import Q
 from links import checkPart,checkMem
 
-def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], storage_amount=0.5, storage_type='either'):
+def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], storage_amount=0.5, hdd_storage_amount=1.0, storage_type=[]):
     try:
+        print('Storage Choice:',storage_type)
+        print('Storage Amounts (SSD and HDD):',storage_amount,hdd_storage_amount)
         ###########
         # WEIGHTS #
         ###########
