@@ -246,7 +246,42 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
         #########
         while True:
             pwr_required = best_cpu.tdp + best_gpu.tdp + 175
-            pwr = PWR.objects.filter(price__isnull = False, wattage__gte=pwr_required).order_by('price')[0]
+            pwr_objs = PWR.objects.filter(price__isnull = False, wattage__gte=pwr_required).order_by('price')
+
+            # base power supply
+            pwr = pwr_objs[0]
+            price_cap = pwr.price * 0.10 + pwr.price
+
+            # Titanium
+            pwr_titanium = pwr_objs.filter(rating='80+ Titanium',
+                                      price__lte=price_cap).order_by('price')
+            if pwr_titanium:
+                pwr = pwr_titanium[0]
+            else:
+                # Platinum
+                pwr_platinum = pwr_objs.filter(rating='80+ Platinum',
+                                               price__lte=price_cap).order_by('price')
+                if pwr_platinum:
+                    pwr = pwr_platinum[0]
+                else:
+                    # Gold
+                    pwr_gold = pwr_objs.filter(rating='80+ Gold',
+                                                   price__lte=price_cap).order_by('price')
+                    if pwr_gold:
+                        pwr = pwr_gold[0]
+                    else:
+                        # Silver
+                        pwr_silver = pwr_objs.filter(rating='80+ Silver',
+                                                   price__lte=price_cap).order_by('price')
+                        if pwr_silver:
+                            pwr = pwr_silver[0]
+                        else:
+                            # Bronze
+                            pwr_bronze = pwr_objs.filter(rating='80+ Bronze',
+                                                         price__lte=price_cap).order_by('price')
+                            if pwr_bronze:
+                                pwr = pwr_bronze[0]
+
             if checkPart(pwr):
                 break
         budget_remaining -= pwr.price
