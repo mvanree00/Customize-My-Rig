@@ -1,7 +1,7 @@
 import requests
 import bs4
 from datetime import datetime,timezone
-#from homepage.models import *
+from homepage.models import *
 def getLink(extension): # extension is the object 'links' attribute
     #proxies = {"https": "http://140.227.175.225:1000"}
     #res = requests.get('https://pcpartpicker.com/product/'+extension+'/',proxies=proxies)
