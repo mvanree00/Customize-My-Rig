@@ -232,11 +232,11 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
         ##########
         while True:
             if starting_budget >= 1200:
-                mem = MEM.objects.filter(price__isnull = False, modules='32 GB').order_by('-speedperdollar','price')[0]
+                mem = MEM.objects.filter(price__isnull = False, modules='32 GB', realspeed__isnull = False).order_by('-speedperdollar','price')[0]
             elif starting_budget >= 700:
-                mem = MEM.objects.filter(price__isnull = False, modules='16 GB').order_by('-speedperdollar','price')[0]
+                mem = MEM.objects.filter(price__isnull = False, modules='16 GB', realspeed__isnull = False).order_by('-speedperdollar','price')[0]
             else:
-                mem = MEM.objects.filter(price__isnull = False, modules=' 8 GB').order_by('-speedperdollar','price')[0]
+                mem = MEM.objects.filter(price__isnull = False, modules=' 8 GB', realspeed__isnull = False).order_by('-speedperdollar','price')[0]
             if checkMem(mem):
                 break
         budget_remaining -= mem.price

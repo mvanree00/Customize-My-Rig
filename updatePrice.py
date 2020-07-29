@@ -70,7 +70,7 @@ def importMEM(browser):
                 realspeed = float(realspeed.replace(' ns',''))
                 links = section[9].find_element_by_tag_name('button').get_attribute('data-product-tag')
                 img = section[1].find_element_by_tag_name('a').find_element_by_tag_name('div').find_element_by_tag_name('div').find_element_by_tag_name('img').get_attribute('src')
-                speedperdollar = int((realspeed/float(price))*1000)
+                speedperdollar =1/(price*realspeed)*10000
                 temp = MEM.objects.all().filter(links=links)
                 if temp:
                     temp.update(price=price)
