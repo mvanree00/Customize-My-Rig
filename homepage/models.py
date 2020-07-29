@@ -40,6 +40,7 @@ class MEM(models.Model):
     img = models.CharField(max_length=100, null=True)
     color = models.CharField(max_length=30, null = True)
     webpage = models.CharField(max_length=100,null=True)
+    realspeed = models.FloatField(null=True)
     last_updated = models.DateTimeField(null=True)
     def __str__(self):
         return self.name

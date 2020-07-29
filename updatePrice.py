@@ -50,7 +50,7 @@ def importGPU(browser):
 def importMEM(browser):
     sleep(.5)
     MEM.objects.all().update(last_updated=None)
-    for i in range(1,5):
+    for i in range(1,6):
         menu = WebDriverWait(browser,1).until(presence_of_element_located((By.CSS_SELECTOR,'#category_content')))
         sleep(.5)
         items = menu.find_elements_by_tag_name('tr')
@@ -65,16 +65,18 @@ def importMEM(browser):
                 price = section[9].text
                 price = price.replace('Add','')
                 price = price[1:]
-                color = section[6].text
+                color = section[5].text
+                realspeed = section[6].text
+                realspeed = float(realspeed.replace(' ns',''))
                 links = section[9].find_element_by_tag_name('button').get_attribute('data-product-tag')
                 img = section[1].find_element_by_tag_name('a').find_element_by_tag_name('div').find_element_by_tag_name('div').find_element_by_tag_name('img').get_attribute('src')
                 temp = MEM.objects.all().filter(links=links)
                 if temp:
                     temp.update(price=price)
                 else:
-                    mem = MEM(name=name,speed=speed,cas=cas,modules=modules,price=price,links=links,img=img,color=color)
+                    mem = MEM(name=name,speed=speed,cas=cas,modules=modules,price=price,links=links,img=img,color=color,realspeed=realspeed)
                     mem.save()
-        if i != 4:
+        if i != 5:
             browser.find_element_by_css_selector('.pagination').find_element_by_link_text(str(i+1)).click()
 def importSTORAGE(browser):
     browser.get('https://pcpartpicker.com/products/internal-hard-drive/#page=1')
