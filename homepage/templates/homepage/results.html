@@ -36,6 +36,7 @@ References:
                         {{obj.name}}<br>
                         {{obj.cores}} Cores<br>
                         {{obj.platform}} Socket<br>
+                        {{obj.tdp}}W TDP<br>
                         {% if obj.cpu_fan %}
                             CPU Fan Included<br>
                         {%endif%}
@@ -67,6 +68,7 @@ References:
                         {{obj.chipset}}<br>
                         {{obj.manufacturer}}<br>
                         {{obj.mem}} GB VRAM<br>
+                        {{obj.tdp}}W TDP<br>
                     </td>
                     <td><a href={{obj.webpage}} target="_blank">${{obj.price|floatformat:2}}</a></td>
                 </tr>

@@ -185,11 +185,13 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
 
         while True:
             # filters gpus based on brand preferences (attempts finding brand matches maximum of twice)
-            gpu_objs = GPU.objects.filter(price__isnull=False, price__lte=gpu_weight * starting_budget)
+            gpu_objs=GPU.objects.none()
             for brand in gpu_brands:
                 gpu_objs = gpu_objs.union(GPU.objects.filter(price__isnull = False,
                                                              chipset__startswith=brand,
                                                              price__lte=gpu_weight * starting_budget))
+            if not gpu_objs:
+                gpu_objs=GPU.objects.filter(price__isnull=False, price__lte=gpu_weight * starting_budget)
             if gpu_objs: # if gpus in price range
                 best_gpu_perf = gpu_objs.order_by('gaming_perf').reverse()[0].gaming_perf
                 best_gpu = None
