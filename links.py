@@ -43,12 +43,17 @@ def checkPart(obj): # makes sure price is actually correct and in stock
         obj.save()
     elif output[1] != obj.price: # if not same price as updated
         obj.webpage=output[0]
+        obj.save()
         if output[1]<obj.price:
             obj.price=output[1]
             obj.save()
             return True
         obj.price=output[1]
         obj.save()
+    elif obj.webpage==None:
+        obj.webpage=output[0]
+        obj.save()
+        return True
     else:
         return True
     return False
