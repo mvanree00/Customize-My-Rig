@@ -147,6 +147,8 @@ def lower_results(request, build_ID=0):
         }
         return render(request, 'homepage/lower_results.html', full)
     # takes the links from the build and saves them into the db
+    S_link = None
+    E_link = None
     for part, obj in build.items():
         if (part == 'BUILD COST'):
             cost = obj
@@ -173,7 +175,7 @@ def lower_results(request, build_ID=0):
         if (part == 'CASE'):
             Case_link = obj.links
     ID = BUILD.objects.count() + 1
-    try:
+    if S_link is not None and E_link is not None:
         b = BUILD(
             build_ID=ID,
             build_Cost=cost,
@@ -187,7 +189,7 @@ def lower_results(request, build_ID=0):
             MOBO_links=Mobo_link,
             FAN_links=Fan_link
         )
-    except NameError:
+    elif S_link is not None:
         b = BUILD(
             build_ID=ID,
             build_Cost=cost,
@@ -195,6 +197,19 @@ def lower_results(request, build_ID=0):
             GPU_links=Gpu_link,
             MEM_links=Mem_link,
             STORAGE_links=S_link,
+            PWR_links=Pwr_link,
+            CASE_links=Case_link,
+            MOBO_links=Mobo_link,
+            FAN_links=Fan_link
+        )
+    elif E_link is not None:
+        b = BUILD(
+            build_ID=ID,
+            build_Cost=cost,
+            CPU_links=Cpu_link,
+            GPU_links=Gpu_link,
+            MEM_links=Mem_link,
+            EXTRA_links=E_link,
             PWR_links=Pwr_link,
             CASE_links=Case_link,
             MOBO_links=Mobo_link,
@@ -232,6 +247,8 @@ def upper_results(request, build_ID=0):
         }
         return render(request, 'homepage/upper_results.html', full)
     # takes the links from the build and saves them into the db
+    S_link = None
+    E_link = None
     for part, obj in build.items():
         if (part == 'BUILD COST'):
             cost = obj
@@ -258,7 +275,7 @@ def upper_results(request, build_ID=0):
         if (part == 'CASE'):
             Case_link = obj.links
     ID = BUILD.objects.count() + 1
-    try:
+    if S_link is not None and E_link is not None:
         b = BUILD(
             build_ID=ID,
             build_Cost=cost,
@@ -272,7 +289,7 @@ def upper_results(request, build_ID=0):
             MOBO_links=Mobo_link,
             FAN_links=Fan_link
         )
-    except NameError:
+    elif S_link is not None:
         b = BUILD(
             build_ID=ID,
             build_Cost=cost,
@@ -280,6 +297,19 @@ def upper_results(request, build_ID=0):
             GPU_links=Gpu_link,
             MEM_links=Mem_link,
             STORAGE_links=S_link,
+            PWR_links=Pwr_link,
+            CASE_links=Case_link,
+            MOBO_links=Mobo_link,
+            FAN_links=Fan_link
+        )
+    elif E_link is not None:
+        b = BUILD(
+            build_ID=ID,
+            build_Cost=cost,
+            CPU_links=Cpu_link,
+            GPU_links=Gpu_link,
+            MEM_links=Mem_link,
+            EXTRA_links=E_link,
             PWR_links=Pwr_link,
             CASE_links=Case_link,
             MOBO_links=Mobo_link,
@@ -327,6 +357,8 @@ def results(request, build_ID=0):
             request.session['original_build'] = build_ID
             return render(request, 'homepage/results.html', full)
         # takes the links from the build and saves them into the db
+        S_link = None
+        E_link = None
         for part, obj in build.items():
             if (part == 'BUILD COST'):
                 cost = obj
@@ -359,8 +391,7 @@ def results(request, build_ID=0):
             ID = build_ID
             if (build_ID == 0):
                 ID += 1
-        try:
-            E_link
+        if S_link is not None and E_link is not None:
             b = BUILD(
                 build_ID=ID,
                 build_Cost=cost,
@@ -374,7 +405,7 @@ def results(request, build_ID=0):
                 MOBO_links=Mobo_link,
                 FAN_links=Fan_link
             )
-        except NameError:
+        elif S_link is not None:
             b = BUILD(
                 build_ID=ID,
                 build_Cost=cost,
@@ -387,6 +418,20 @@ def results(request, build_ID=0):
                 MOBO_links=Mobo_link,
                 FAN_links=Fan_link
             )
+        elif E_link is not None:
+            b = BUILD(
+                build_ID=ID,
+                build_Cost=cost,
+                CPU_links=Cpu_link,
+                GPU_links=Gpu_link,
+                MEM_links=Mem_link,
+                EXTRA_links=E_link,
+                PWR_links=Pwr_link,
+                CASE_links=Case_link,
+                MOBO_links=Mobo_link,
+                FAN_links=Fan_link
+            )
+
         numBuilds = BUILD.objects.filter(build_ID=ID).count()
         if numBuilds == 0:
             b.save()
@@ -410,7 +455,7 @@ def results(request, build_ID=0):
             Fan_links = FAN.objects.filter(links=Fan_links)[0]
         except IndexError:
             Fan_links = pastBuild.FAN_links
-        if pastBuild.EXTRA_links:
+        if pastBuild.STORAGE_links and pastBuild.EXTRA_links:
             build = {
                 'CPU': CPU.objects.filter(links=pastBuild.CPU_links)[0],
                 'FAN': Fan_links,
@@ -447,6 +492,47 @@ def results(request, build_ID=0):
                 GPU_links=build["GPU"].links,
                 MEM_links=build["MEM"].links,
                 STORAGE_links=build["STORAGE"].links,
+                EXTRA_links=build["EXTRA"].links,
+                PWR_links=build["PWR"].links,
+                CASE_links=build["CASE"].links,
+                MOBO_links=build["MOBO"].links,
+                FAN_links=Fan_link
+            )
+        elif pastBuild.EXTRA_links:
+            build = {
+                'CPU': CPU.objects.filter(links=pastBuild.CPU_links)[0],
+                'FAN': Fan_links,
+                'GPU': GPU.objects.filter(links=pastBuild.GPU_links)[0],
+                'MOBO': MOBO.objects.filter(links=pastBuild.MOBO_links)[0],
+                'MEM': MEM.objects.filter(links=pastBuild.MEM_links)[0],
+                'CASE': CASE.objects.filter(links=pastBuild.CASE_links)[0],
+                'PWR': PWR.objects.filter(links=pastBuild.PWR_links)[0],
+                'EXTRA': STORAGE.objects.filter(links=pastBuild.EXTRA_links)[0],
+                'BUILD COST': pastBuild.build_Cost
+            }
+            updatedCost = 0
+            for part, obj in build.items():
+                if (part == 'BUILD COST'):
+                    continue
+                if (part == 'FAN'):
+                    try:
+                        obj.links
+                        checkPart(obj)
+                        Fan_link = obj.links
+                    except AttributeError:
+                        Fan_link = obj
+                        continue
+                checkPart(obj)
+                build[part] = obj
+                if obj.price:
+                    updatedCost += obj.price
+
+            build["BUILD COST"] = updatedCost
+            BUILD.objects.filter(build_ID=build_ID).update(
+                build_Cost=build["BUILD COST"],
+                CPU_links=build["CPU"].links,
+                GPU_links=build["GPU"].links,
+                MEM_links=build["MEM"].links,
                 EXTRA_links=build["EXTRA"].links,
                 PWR_links=build["PWR"].links,
                 CASE_links=build["CASE"].links,
