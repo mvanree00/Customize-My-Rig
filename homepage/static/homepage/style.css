@@ -21,7 +21,7 @@ body {
 }
 
 .form3 {
-    background-color: floralwhite;
+    background-color: lightgrey;
     width: 45%;
     border: #1bc5da;
     border-style: solid;
@@ -273,7 +273,7 @@ li a:hover:not(.active) {
 }
 
 .dropdown:hover .dropdown-content {
-    display: block;
+    display: flex;
 }
 
 .colorpicker {
