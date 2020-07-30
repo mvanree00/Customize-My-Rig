@@ -3,7 +3,6 @@ PC Parts List Webpage
 
 References:
 - blocks and extends: https://simpleisbetterthancomplex.com/series/2017/09/25/a-complete-beginners-guide-to-django-part-4.html
-- side by side buttons: https://www.sololearn.com/Discuss/148016/how-to-make-two-forms-side-by-side-in-html
 -->
 {% extends 'homepage/index.html' %}
 {% load static %}
@@ -13,14 +12,10 @@ References:
     <br><h1 style="text-align: center;font-size:300%">Sorry, it looks like the current specs cannot be made into a build. Please try again.</h1><br>
 {%else%}
 
-    <br><h1 style="text-align: center">Here's your new PC!</h1><br>
+    <br><h1 style="text-align: center">Here's your higher cost PC!</h1><br>
     <table class="resultstable">
         <tr>
-            {%if build_ID != 0%}
-                <th colspan=5 style="background-color:#1bc5da; color:white;">Share your results: {{ request.build_absolute_uri }}{{ object.get_absolute_url }}</th>
-            {%else%}
-                <th colspan=5 style="background-color:#1bc5da; color:white;">Share your results: {{ request.build_absolute_uri }}{{ object.get_absolute_url }}/1</th>
-            {%endif%}
+            <th colspan=5 style="background-color:#1bc5da; color:white;">Share your results: http://localhost:8000/results/{{ build_ID }}</th>
         </tr>
         <tr>
             <th></th>
@@ -154,13 +149,5 @@ References:
             {%endif%}
         {% endfor %}
     </table>
-    <div style="text-align:center;width:35%;margin:auto;">
-        <form>
-            <button class="button button1" type="submit" id="lower" name="lower" value="lower" style="display: inline; color: #ff0000; float:left;">Spend 10% less</input>
-        </form>
-        <form>
-            <button class="button button1" type="submit" id="higher" name="higher" value="higher" style="display: inline; color: #00FF00; float:right;">Spend 10% more</input>
-        </form>
-    </div>
 {%endif%}
 {% endblock %}

@@ -14,7 +14,7 @@ from django.db.models import Max
 from django.db.models import Q
 from links import checkPart,checkMem
 
-def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], storage_amount=0.5, hdd_storage_amount=1.0,
+def getBuild(starting_budget, type_='gaming', case='any', brand_preferences=[], storage_amount=0.5, hdd_storage_amount=1.0,
              storage_type=[], overclock=False, cooling='either'):
     try:
         print('=======PREFERENCE INFO=======')
@@ -85,46 +85,7 @@ def getBuild(starting_budget, type_='gaming', case=[], brand_preferences=[], sto
         # CASE #
         ########
         while True:
-            if 'idc' in case: # no case preference, lowest price case chosen
-                case_obj = CASE.objects.filter(price__isnull = False).order_by('price')[0]
-            else: # case preferences, spending no more than 10% of budget
-                case_objs = CASE.objects.filter(price__isnull = False).filter(price__lte=starting_budget*0.10)\
-                    .order_by('price')
-
-                # Narrow by color selections
-                if 'white' in case and 'black' in case: # White AND/OR black case
-                    case_objs = case_objs.filter(Q(color__contains='White') | Q(color__contains='Black'))
-                elif 'white' in case:
-                    case_objs = case_objs.filter(color__contains = 'White')
-                elif 'black' in case:
-                    case_objs = case_objs.filter(color__contains = 'Black')
-
-                # Narrow by solid colors
-                if 'solid' in case:
-                    case_objs = case_objs.exclude(color__contains='/')
-
-                # Narrow by panel
-                if 'glass' in case:
-                    case_objs = case_objs.filter(panel = True)
-
-                if case_objs.exists():
-                    case_obj = case_objs[0]
-                else:
-                    case_obj = None
-
-                # If all options cannot be fulfilled, at the bare minimum get the color correct
-                if case_obj is None:
-                    case_objs = CASE.objects.filter(price__isnull=False).order_by('price')
-
-                    if 'white' in case and 'black' in case:
-                        case_objs = case_objs.filter(Q(color__contains='White') | Q(color__contains='Black'))\
-                            .filter(price__lte=starting_budget * 0.10)
-                    elif 'white' in case:
-                        case_objs = case_objs.filter(color__contains='White').filter(price__lte=starting_budget * 0.10)
-                    elif 'black' in case:
-                        case_objs = case_objs.filter(color__contains='Black').filter(price__lte=starting_budget * 0.10)
-
-                    case_obj = case_objs.order_by('price')[0]
+            case_obj = CASE.objects.filter(links=case)[0]
             if checkPart(case_obj):
                 break
 

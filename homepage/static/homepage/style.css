@@ -22,11 +22,12 @@ body {
 
 .form3 {
     background-color: floralwhite;
-    width: 20%;
+    width: 45%;
     border: #1bc5da;
     border-style: solid;
     margin: auto;
     padding: 10px;
+    text-align: center;
 }
 
 .form4 {
@@ -453,3 +454,16 @@ ul.ks-cboxtags li input[type="checkbox"] {
 ul.ks-cboxtags li input[type="checkbox"]:focus + label {
     border: 1px solid black;
 }
+
+/**************** Case Radio Buttons ******************/
+label.case-radios input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    transform(0);
+}
+
+label.case-radios input[type="radio"]:checked + img {
+    outline: 4px solid #12bbd4;
+}
+
+/**************** End Case Radio Buttons ******************/
