@@ -109,11 +109,10 @@ def hardware(request):
             storage_type = []
             if 'auto' in request.GET and request.GET['auto'] == 'on':
                 storage_type.append('auto')
-            else:
-                if 'HDD' in request.GET and request.GET['HDD'] == 'on':
-                    storage_type.append('HDD')
-                if 'SSD' in request.GET and request.GET['SSD'] == 'on':
-                    storage_type.append('SSD')
+            if 'HDD' in request.GET and request.GET['HDD'] == 'on':
+                storage_type.append('HDD')
+            if 'SSD' in request.GET and request.GET['SSD'] == 'on':
+                storage_type.append('SSD')
             request.session['storage'] = storage_type
             try:
                 build = BUILD.objects.filter()[0]
