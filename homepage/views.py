@@ -35,6 +35,12 @@ def index(request):
     return render(request, 'homepage/index.html')
 
 def case(request):
+    # get a case of each color from the database
+    white = [(case.name, case.img) for case in CASE.objects.filter(color='White')][0]
+    black = [(case.name, case.img) for case in CASE.objects.filter(color='Black')][0]
+    solid = [(case.name, case.img) for case in CASE.objects.filter(color='Red / Black')][0]
+    glass = [(case.name, case.img) for case in CASE.objects.filter(name='Meshify C Tempered')][0]
+    
     if (request.method == 'GET' and ('solid' in request.GET or 'glass' in request.GET or 'white' in request.GET
                                      or 'black' in request.GET or 'idc' in request.GET)):
         case_preferences = []
@@ -52,6 +58,7 @@ def case(request):
 
         return redirect('/type')
     else:
+        request.cases = dict([white, black, solid, glass])
         return render(request, 'homepage/case.html')
 
 def type(request):
@@ -105,7 +112,6 @@ def results(request):
         return redirect('index')
 
     return render(request, 'homepage/results.html', full)
-
 
 def info(request):
     return render(request, 'homepage/info.html')
