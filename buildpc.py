@@ -18,6 +18,7 @@ def getBuild(starting_budget, type_='gaming', case='any', brand_preferences=[], 
              storage_type=[], overclock=False, cooling='either'):
     try:
         print('=======PREFERENCE INFO=======')
+        print('PC Type:',type_)
         print('Storage Choice:',storage_type)
         print('Storage Amounts (SSD and HDD):',storage_amount,hdd_storage_amount)
         print('Overclocking:', overclock)
@@ -223,6 +224,36 @@ def getBuild(starting_budget, type_='gaming', case='any', brand_preferences=[], 
                                     best_mobo = mobo
                                     best_fan = fan
                                     best_fan_price = fan_price
+                                    
+                if best_cpu is None: # if the highest performance is too high and there is no chipset match, just choose the highest performance with a chipset match without price consideration
+                    best_perf = 0.0
+                    for cpu in cpu_objs:
+                        temp_mobo = mobo_objs.filter(chipset=cpu.platform).order_by('price')
+
+                        if temp_mobo:
+                            temp_mobo = temp_mobo[0]
+                            if cpu.cpu_fan == False:
+                                fan = FAN.objects.filter(price__isnull=False).order_by('price')[0]
+                                fan_price = fan.price
+
+                            if type_ == 'streaming' and best_perf < cpu.combined_perf:
+                                best_perf = cpu.combined_perf
+                                best_cpu = cpu
+                                best_mobo = mobo
+                                best_fan = fan
+                                best_fan_price = fan_price
+                            elif type_ == 'gaming' and best_perf < cpu.gaming_perf:
+                                best_perf = cpu.gaming_perf
+                                best_cpu = cpu
+                                best_mobo = mobo
+                                best_fan = fan
+                                best_fan_price = fan_price
+                            elif type_ == 'production' and best_perf < cpu.workstation_perf:
+                                best_perf = cpu.workstation_perf
+                                best_cpu = cpu
+                                best_mobo = mobo
+                                best_fan = fan
+                                best_fan_price = fan_price
 
             # ensures CPU + MOBO combination creator did not fail before checking parts
             if not(best_cpu is None or best_mobo is None or best_fan is None) and \
