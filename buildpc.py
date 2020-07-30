@@ -82,7 +82,7 @@ def getBuild(starting_budget, type_='gaming', case='any', brand_preferences=[], 
             elif types=='HDD':
                 while True:
                     storage = STORAGE.objects.filter(price__lte=budget_remaining, price__isnull = False,
-                                                    capacity__gte=hdd_storage_amount*.95).order_by('price').exclude(kind='SSD')
+                                                    capacity__gte=hdd_storage_amount*.95).order_by('price')
                     if storage and checkPart(storage[0]):
                         best_hdd = storage[0]
                         budget_remaining -= storage[0].price
@@ -210,8 +210,22 @@ def getBuild(starting_budget, type_='gaming', case='any', brand_preferences=[], 
                     fan = 'Built-in'
                     fan_price = 0
                     if cpu.cpu_fan == False:
-                        fan = FAN.objects.filter(price__isnull = False).order_by('price')[0]
-                        fan_price = fan.price
+                        if cooling != 'water':
+                            fan = FAN.objects.filter(price__isnull = False,kind='air').order_by('price')[0]
+                            fan_price = fan.price
+                        else:
+                            fan = FAN.objects.filter(price__isnull = False,kind='water').order_by('price')[0]
+                            fan_price = fan.price
+                    elif overclock:
+                        if cooling != 'water':
+                            fan = FAN.objects.filter(price__isnull = False,kind='air').order_by('price')[0]
+                            fan_price = fan.price
+                        elif starting_budget >= 1500:
+                            fan = FAN.objects.filter(price__isnull = False,kind='water',price__gte=90).order_by('price')[0]
+                            fan_price = fan.price
+                        else:
+                            fan = FAN.objects.filter(price__isnull = False,kind='water').order_by('price')[0]
+                            fan_price = fan.price
                     temp_mobo = mobo_objs.filter(chipset=cpu.platform)
                     if temp_mobo:
                         for mobo in temp_mobo:

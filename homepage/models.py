@@ -91,7 +91,7 @@ class MOBO(models.Model):
     def __str__(self):
         return self.name
 class FAN(models.Model):
-    name =  models.CharField(max_length=20)
+    name =  models.CharField(max_length=50)
     price = models.FloatField(null=True)
     links = models.CharField(max_length=50,null=True)
     img = models.CharField(max_length=110, null=True)
