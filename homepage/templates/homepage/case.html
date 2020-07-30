@@ -33,34 +33,64 @@ References:
     <list>
         <tr>
             <label class="case-radios" for="case0">
-                <input type="radio" id="case0" name="case" value="case0">
-                <td><img src={{case0.img}} alt="Case_Image" style="width:250px;height:200px;"></td>
+                <div class="dropdown">
+                    <input type="radio" id="case0" name="case" value="case0">
+                    <img src={{case0.img}} alt="Case_Image" style="width:250px;height:200px;">
+                    <div class="dropdown-content"; style="min-width:50px">
+                        $ {{case0.price}}
+                    </div>
+                </div>
             </label>
             <label class="case-radios" for="case1">
-                <input type="radio" id="case1" name="case" value="case1">
-                <td><img src={{case1.img}} alt="Case_Image" style="width:250px;height:200px;"></td>
+                <div class="dropdown">
+                    <input type="radio" id="case1" name="case" value="case1">
+                    <img src={{case1.img}} alt="Case_Image" style="width:250px;height:200px;">
+                    <div class="dropdown-content"; style="min-width:50px">
+                        $ {{case1.price}}
+                    </div>
+                </div>
             </label>
             <label class="case-radios" for="case2">
-                <input type="radio" id="case2" name="case" value="case2">
-                <td><img src={{case2.img}} alt="Case_Image" style="width:250px;height:200px;"></td>
+                <div class="dropdown">
+                    <input type="radio" id="case2" name="case" value="case2">
+                    <td><img src={{case2.img}} alt="Case_Image" style="width:250px;height:200px;"></td>
+                    <div class="dropdown-content"; style="min-width:50px">
+                        $ {{case2.price}}
+                    </div>
+                </div>
             </label>
         </tr>
         {% if case_num > 3 %}
             <tr>
                 <label class="case-radios" for="case3">
-                    <input type="radio" id="case3" name="case" value="case3">
-                    <td><img src={{case3.img}} alt="Case_Image" style="width:250px;height:200px;"></td>
+                    <div class="dropdown">
+                        <input type="radio" id="case3" name="case" value="case3">
+                        <img src={{case3.img}} alt="Case_Image" style="width:250px;height:200px;">
+                        <div class="dropdown-content"; style="min-width:50px">
+                            $ {{case3.price}}
+                        </div>
+                    </div>
                 </label>
                 {% if case_num > 4 %}
                 <label class="case-radios" for="case4">
-                    <input type="radio" id="case4" name="case" value="case4">
-                    <td><img src={{case4.img}} alt="Case_Image" style="width:250px;height:200px;"></td>
+                    <div class="dropdown">
+                        <input type="radio" id="case4" name="case" value="case4">
+                        <img src={{case4.img}} alt="Case_Image" style="width:250px;height:200px;">
+                        <div class="dropdown-content"; style="min-width:50px">
+                            $ {{case4.price}}
+                        </div>
+                    </div>
                 </label>
                 {% endif %}
                 {% if case_num > 5 %}
                 <label class="case-radios" for="case5">
-                    <input type="radio" id="case5" name="case" value="case5">
-                    <td><img src={{case5.img}} alt="Case_Image" style="width:250px;height:200px;"></td>
+                    <div class="dropdown">
+                        <input type="radio" id="case5" name="case" value="case5">
+                        <img src={{case5.img}} alt="Case_Image" style="width:250px;height:200px;">
+                        <div class="dropdown-content"; style="min-width:50px">
+                            $ {{case5.price}}
+                        </div>
+                    </div>
                 </label>
                 {% endif %}
             </tr>

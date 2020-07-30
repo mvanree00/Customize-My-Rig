@@ -56,7 +56,9 @@ def case(request):
         for case in cases:
             case_ids.append(case.links)
         request.session['case_choices'] = case_ids
-
+        for key,case in cases_dict.items():
+            if not isinstance(case,int):
+                checkPart(case)
         return render(request, 'homepage/case.html', cases_dict)
 
 def type(request):
