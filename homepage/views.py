@@ -128,6 +128,9 @@ def hardware(request):
         return render(request, 'homepage/hardware.html')
 
 def lower_results(request, build_ID=0):
+    if request.method == 'GET' and 'back' in request.GET:
+        return redirect('/results/'+ str(request.session['original_build']))
+
     build_ID=BUILD.objects.count() + 1
     build = getBuild(request.session['budget_modified'], request.session['pc_type'], request.session['case'],
                      request.session['brand_preferences'], request.session['ssd_storage_amount'],
@@ -210,6 +213,9 @@ def lower_results(request, build_ID=0):
     return render(request, 'homepage/lower_results.html', full)
 
 def upper_results(request, build_ID=0):
+    if request.method == 'GET' and 'back' in request.GET:
+        return redirect('/results/'+ str(request.session['original_build']))
+
     build_ID=BUILD.objects.count() + 1
     build = getBuild(request.session['budget_modified'], request.session['pc_type'], request.session['case'],
                      request.session['brand_preferences'], request.session['ssd_storage_amount'],
@@ -318,6 +324,7 @@ def results(request, build_ID=0):
                 'build_info': build,
                 'build_ID': build_ID
             }
+            request.session['original_build'] = build_ID
             return render(request, 'homepage/results.html', full)
         # takes the links from the build and saves them into the db
         for part, obj in build.items():
@@ -387,6 +394,7 @@ def results(request, build_ID=0):
             'build_info': build,
             'build_ID': build_ID
         }
+        request.session['original_build'] = build_ID
         return render(request, 'homepage/results.html', full)
     # for past builds
     else:
@@ -492,6 +500,7 @@ def results(request, build_ID=0):
             'build_info': build,
             'build_ID': pastBuild.build_ID
         }
+        request.session['original_build'] = build_ID
         return render(request, 'homepage/results.html', full)
 
 def info(request):
