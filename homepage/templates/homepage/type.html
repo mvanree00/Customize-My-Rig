@@ -4,6 +4,7 @@ Case Picking
 References:
 - Checkboxes https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
 - Checkbox Sizing https://www.geeksforgeeks.org/how-to-set-checkbox-size-in-html-css/
+- Dropdown Next to Header : https://stackoverflow.com/questions/4980525/css-center-display-inline-block
 -->
 
 {% extends 'homepage/index.html' %}
@@ -30,28 +31,38 @@ References:
     <table class="typetable" style="border: none">
         <tr>
             <th>
-                <div class="dropdown">
-                    <span><h5 style="text-align: center;">Gaming PC</h5></span>
-                    <div class="dropdown-content">
-                        <p>If you plan on using your computer primarily for video games, you will want to spend
-                            more on the GPU and CPU</p>
+                <div style="display:flex;justify-content:center;">
+                    <h5 style="text-align: center;">Gaming PC</h5>
+                    <div class="dropdown">
+                        <img src="{% static 'homepage/help.png' %}" alt="help icon" style="height:20px;width:20px;">
+                        <div class="dropdown-content" style="min-width:350px;">
+                            <p style="font-size:100%;">If you plan on using your computer primarily for video games, you
+                                will want to spend more on the GPU and CPU.</p>
+                        </div>
                     </div>
                 </div>
                 <br></th>
             <th>
-                <div class="dropdown">
-                    <span><h5 style="text-align: center;">Gaming & Streaming PC</h5></span>
-                    <div class="dropdown-content">
-                        <p>Similar to a gaming PC with more of an emphasis on CPU quality and RAM quantity</p>
+                <div style="display:flex;justify-content:center;">
+                    <h5 style="text-align: center;">Gaming & Streaming PC</h5>
+                    <div class="dropdown">
+                        <img src="{% static 'homepage/help.png' %}" alt="help icon" style="height:20px;width:20px;">
+                        <div class="dropdown-content" style="min-width:350px;">
+                            <p style="font-size:100%;">Similar to a gaming PC with more of an emphasis on CPU quality
+                                and RAM quantity.</p>
+                        </div>
                     </div>
                 </div>
                 <br></th>
             <th>
-                <div class="dropdown">
-                    <span><h5 style="text-align: center;">Production PC</h5></span>
-                    <div class="dropdown-content">
-                        <p>If you plan on doing processor heavy tasks like video editing, 3D modeling, or game
-                            development. You will want to spend more on CPU, RAM, and GPU</p>
+                <div style="display:flex;justify-content:center;">
+                    <h5 style="text-align: center;">Production PC</h5>
+                    <div class="dropdown">
+                        <img src="{% static 'homepage/help.png' %}" alt="help icon" style="height:20px;width:20px;">
+                        <div class="dropdown-content" style="min-width:350px;">
+                            <p style="font-size:100%;">If you plan on doing processor heavy tasks like video editing,
+                                3D modeling, or game development, you will want to spend more on CPU, RAM, and GPU.</p>
+                        </div>
                     </div>
                 </div>
                 <br></th>
