@@ -1,3 +1,9 @@
+<!--
+Miscellaneous Picking
+
+References:
+- Dropdown Next to Header : https://stackoverflow.com/questions/4980525/css-center-display-inline-block
+-->
 
 {% extends 'homepage/index.html' %}
 {% load static %}
@@ -29,7 +35,16 @@
                 </li>
             </ul>
 
-            <h4 style="text-align: center">Will you be overclocking?</h4>
+            <div style="display:flex;justify-content:center;">
+                <h4>Will you be overclocking?</h4>
+                <div class="dropdown">
+                    <img src="{% static 'homepage/help.png' %}" alt="help icon" style="height:18px;width:18px;">
+                    <div class="dropdown-content" style="min-width:350px;">
+                    <p style="font-size:60%;">Overclocking allows you to push your GPU/CPU over its designed limits,
+                        increasing performance. This reduces part lifespan, requires more energy, and may void warranties.</p>
+                    </div>
+                </div>
+            </div>
             <div class="radio-wrapper">
                 <p style="text-align: center">
                     <input type="radio" class="hardware" id="overclock" name="overclock" value="overclock"
@@ -43,7 +58,15 @@
                 </p>
             </div><br>
 
-            <h4 style="text-align: center">Water or air cooling?</h4>
+            <div style="display:flex;justify-content:center;">
+                <h4>Water or air cooling?</h4>
+                <div class="dropdown">
+                    <img src="{% static 'homepage/help.png' %}" alt="help icon" style="height:18px;width:18px;">
+                    <div class="dropdown-content" style="min-width:350px;">
+                    <p style="font-size:60%;">Water cooling removes heat better than air cooling; however, water cooling is considerably more expensive.</p>
+                    </div>
+                </div>
+            </div>
             <div class="radio-wrapper">
                 <p style="text-align: center">
                     <input type="radio" class="hardware" id="watercool" name="cooling" value="watercool"
