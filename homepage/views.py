@@ -346,6 +346,8 @@ def results(request, build_ID=0):
                          request.session['hdd_storage_amount'], request.session['storage'],
                          request.session['overclock'],
                          request.session['cooling'])
+        if not build:
+            return render(request, 'homepage/results.html', None)
         try:
             build.items()
         except AttributeError as e:

@@ -60,9 +60,9 @@ def getBuild(starting_budget, type_='gaming', case='any', brand_preferences=[], 
         for types in storage_type:
             if types=='SSD':
                 while True:
-                    storage = STORAGE.objects.filter(price__lte=budget_remaining,kind=types, price__isnull = False,
+                    storage = STORAGE.objects.filter(kind=types, price__isnull = False,
                                                     capacity__gte=storage_amount*.95).order_by('price')
-                    storage2 = STORAGE.objects.filter(price__lte=budget_remaining,form='M.2 (M)', price__isnull = False,
+                    storage2 = STORAGE.objects.filter(form='M.2 (M)', price__isnull = False,
                                                     capacity__gte=storage_amount*.95).order_by('price')
                     if storage2 and storage and storage[0].price*1.1 < storage2[0].price:
                         if storage and checkPart(storage[0]):
@@ -81,7 +81,7 @@ def getBuild(starting_budget, type_='gaming', case='any', brand_preferences=[], 
                             break
             elif types=='HDD':
                 while True:
-                    storage = STORAGE.objects.filter(price__lte=budget_remaining, price__isnull = False,
+                    storage = STORAGE.objects.filter(price__isnull = False,
                                                     capacity__gte=hdd_storage_amount*.95).order_by('price')
                     if storage and checkPart(storage[0]):
                         best_hdd = storage[0]
@@ -89,7 +89,7 @@ def getBuild(starting_budget, type_='gaming', case='any', brand_preferences=[], 
                         break
             elif types == 'auto' and len(storage_type) == 1:
                 while True:
-                    storage = STORAGE.objects.filter(price__lte=budget_remaining,kind='SSD',price__isnull = False,
+                    storage = STORAGE.objects.filter(kind='SSD',price__isnull = False,
                                                     capacity__gte=500*.95).order_by('price')
                     if storage and checkPart(storage[0]):
                         best_ssd = storage[0]
@@ -104,7 +104,8 @@ def getBuild(starting_budget, type_='gaming', case='any', brand_preferences=[], 
                 break
 
         budget_remaining -= case_obj.price
-
+        if budget_remaining < 390:
+            return None
         ##########
         # MEMORY #
         ##########
