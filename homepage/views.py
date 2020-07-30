@@ -23,10 +23,10 @@ def index(request):
     if (request.method == 'GET' and 'amount' in request.GET):
         try:
             budget = float(request.GET['amount'])
-            if (budget < 550):
+            if (budget < 500):
                 raise ValueError
-            elif (budget > 2500):
-                budget = 2500
+            elif (budget > 3000):
+                budget = 3000
 
             request.session['budget'] = budget
             return redirect('/case')
@@ -305,8 +305,8 @@ def results(request, build_ID=0):
         return redirect('/lower_results')
     elif request.method == 'GET' and 'higher' in request.GET:
         request.session['budget_modified'] = request.session['budget'] + request.session['budget'] * 0.10
-        if request.session['budget_modified'] > 2500.0:
-            request.session['budget_modified'] = 2500.0
+        if request.session['budget_modified'] > 3000.0:
+            request.session['budget_modified'] = 3000.0
         return redirect('/upper_results')
 
     # for new build
