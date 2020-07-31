@@ -10,15 +10,21 @@ References:
 {% extends 'homepage/index.html' %}
 {% load static %}
 
-{% block navbar %}
-
-<ul class="bar">
-  <li class="barlist"><a href="/" class="active">Home</a></li>
-  <li class="barlist"><a href="info.html">More Info</a></li>
-  <li class="barlist" style="float:right"><a href="{% url 'about' %}">About</a></li>
-</ul>
-
-{% endblock %}
+    {% block navbar %}
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Customize My PC</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <div class="navbar-nav mr-auto">
+            <a class="nav-item nav-link" href="/">Home</a>
+            <a class="nav-item nav-link" href="{% url 'info' %}">More Info</a>
+            <a class="nav-item nav-link" href="{% url 'about'%}">About</a>
+          </div>
+        </div>
+      </nav>
+    {% endblock %}
 
 {% block content %}
 
