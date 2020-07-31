@@ -1,9 +1,8 @@
 <!--
-Case Picking
+Miscellaneous Picking
 
 References:
-- Checkboxes https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
-- Checkbox Sizing https://www.geeksforgeeks.org/how-to-set-checkbox-size-in-html-css/
+- Dropdown Next to Header : https://stackoverflow.com/questions/4980525/css-center-display-inline-block
 -->
 
 {% extends 'homepage/index.html' %}
@@ -11,32 +10,82 @@ References:
 
 {% block navbar %}
 
-<ul class="bar">
-  <li class="barlist"><a href="/" class="active">Home</a></li>
-  <li class="barlist"><a href="info.html">More Info</a></li>
-  <li class="barlist" style="float:right"><a href="{% url 'about' %}">About</a></li>
-</ul>
+    <ul class="bar">
+        <li class="barlist"><a href="/" class="active">Home</a></li>
+        <li class="barlist"><a href="info.html">More Info</a></li>
+        <li class="barlist" style="float:right"><a href="{% url 'about' %}">About</a></li>
+    </ul>
 
 {% endblock %}
 
 {% block content %}
 
-<br>
-<h1 style="text-align: center"><b>Brand Preference?</b></h1>
-<h4 style="text-align: center">Do you have a brand you prefer over others?</h4>
+    <br>
+    <h1 style="text-align: center"><b>Miscellaneous</b></h1>
 
-<br>
-<form class="form4">
-    <div class="container">
-      <ul class="ks-cboxtags" style="text-align: center">
-        <li><input type="checkbox" name="intel" id="intel"><label for="intel">Intel</label></li>
-        <li><input type="checkbox" name="nvidia" id="nvidia"><label for="nvidia">Nvidia</label></li>
-        <li><input type="checkbox" name="AMD" id="AMD"><label for="AMD">AMD</label></li>
-        <li><input type="checkbox" name="no_brand" id="no_brand"><label for="no_brand">No Preference</label></li>
-      </ul>
-        <button class="button button2" type="submit">Continue</button>
-    </div>
-</form>
+    <br>
+    <form class="form2">
+        <h4 style="text-align: center">Do you have a brand you prefer over others?</h4>
+        <div class="container">
+            <ul class="ks-cboxtags" style="text-align: center">
+                <li><input type="checkbox" name="Intel" id="Intel"><label for="Intel">Intel</label></li>
+                <li><input type="checkbox" name="nvidia" id="nvidia"><label for="nvidia">Nvidia</label></li>
+                <li><input type="checkbox" name="AMD" id="AMD"><label for="AMD">AMD</label></li>
+                <li><input type="checkbox" name="no_brand" id="no_brand"><label for="no_brand">No Preference</label>
+                </li>
+            </ul>
+        </div>
+            <div style="display:flex;justify-content:center;">
+                <h4 style="text-align: center;">Will you be overclocking?&nbsp;</h4>
+                <div class="dropdown">
+                    <img src="{% static 'homepage/help.png' %}" alt="help icon" style="height:18px;width:18px;">
+                    <div class="dropdown-content" style="min-width:350px;">
+                    Overclocking allows you to push your GPU/CPU over its designed limits,
+                        increasing performance. This reduces part lifespan, requires more energy, and may void warranties.
+                    </div>
+                </div>
+            </div>
+            <div class="radio-wrapper">
+                <p style="text-align: center">
+                    <input type="radio" class="hardware" id="overclock" name="overclock" value="overclock"
+                           style="vertical-align: middle; margin: 0px;">
+                    <label for="overclock">Yes</label>&nbsp;&nbsp;&nbsp;
+
+                    <input type="radio" class="hardware" id="noclock" name="overclock" value="noclock"
+                           style="vertical-align: middle; margin: 0px;">
+                    <label for="noclock">No / Not Sure</label>&nbsp;&nbsp;
+
+                </p>
+            </div><br>
+
+            <div style="display:flex;justify-content:center;">
+                <h4 style="text-align: center;">Water or air cooling?&nbsp;</h4>
+                <div class="dropdown" >
+                    <img src="{% static 'homepage/help.png' %}" alt="help icon" style="height:18px;width:18px;">
+                    <div class="dropdown-content" style="min-width:350px;">
+                    Water cooling removes heat better than air cooling; however, water cooling is considerably more expensive.
+                    </div>
+                </div>
+            </div>
+            <div class="radio-wrapper">
+                <p style="text-align: center">
+                    <input type="radio" class="hardware" id="watercool" name="cooling" value="watercool"
+                           style="vertical-align: middle; margin: 0px;">
+                    <label for="watercool">Water Cooling</label>&nbsp;&nbsp;&nbsp;
+
+                    <input type="radio" class="hardware" id="aircool" name="cooling" value="aircool"
+                           style="vertical-align: middle; margin: 0px;">
+                    <label for="aircool">Air Cooling</label>&nbsp;&nbsp;
+
+                    <input type="radio" class="hardware" id="nocool" name="cooling" value="nocool"
+                           style="vertical-align: middle; margin: 0px;">
+                    <label for="nocool">Not Sure</label>&nbsp;&nbsp;
+                </p>
+            </div><br>
+
+            <button class="button button2" type="submit">Continue</button>
+    </form>
+
 <h6 style="position: fixed; bottom: 0; width:100%; text-align: center">Mostly Michaels Copyright © 2020, Customize My Rig. All Rights Reserved</h6>
 
 {% endblock %}

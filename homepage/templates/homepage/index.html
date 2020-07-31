@@ -47,13 +47,13 @@ References:
     <h2 style="text-align: center; margin-top: 60px;">How much do you want to spend on your new PC?</h2>
     <div class="slidecontainer" style="margin-top: 40px;">
         <form>
-            <input type="range" min="550" max="2500" value="1525" class="slider" id="myRange" oninput="amount.value=myRange.value" step = "5" />
+            <input type="range" min="500" max="3000" value="1750" class="slider" id="myRange" oninput="amount.value=myRange.value" step = "5" />
             <div style="overflow: hidden;">
-                <h3 style="float: left; margin-left: 15%">$550</h3>
-                <h3 style="float: right; margin-right: 15%">$2500</h3>
+                <h3 style="float: left; margin-left: 15%">$500</h3>
+                <h3 style="float: right; margin-right: 15%">$3000</h3>
             </div>
-            <input type="text" class="amount" id="amount" name="amount" oninput="myRange.value=amount.value" value="1525"><br>
-            <button class="button button1">Show me my PC!</button>
+            <input type="number" class="amount" id="amount" name="amount" min="500" max="3000" oninput="myRange.value=amount.value" value="1750" step = "5"><br>
+            <button class="button button2">Customize My Rig</button>
         </form>
     </div>
     </div><br><br>

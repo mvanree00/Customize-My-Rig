@@ -12,8 +12,9 @@ class CPU(models.Model): # add in core/boost clocks?
     tdp = models.PositiveSmallIntegerField()
     links = models.CharField(max_length=50,null=True)
     img = models.CharField(max_length=100, null=True)
-    webpage = models.CharField(max_length=100,null=True)
+    webpage = models.CharField(max_length=125,null=True)
     last_updated = models.DateTimeField(null=True)
+    combined_perf = models.PositiveSmallIntegerField(null=True)
     def __str__(self):
         return self.name
 class GPU(models.Model): # add in core/boost clocks?
@@ -25,7 +26,7 @@ class GPU(models.Model): # add in core/boost clocks?
     tdp = models.PositiveSmallIntegerField(null=True)
     links = models.CharField(max_length=50,null=True)
     img = models.CharField(max_length=100, null=True)
-    webpage = models.CharField(max_length=100,null=True)
+    webpage = models.CharField(max_length=125,null=True)
     last_updated = models.DateTimeField(null=True)
     def __str__(self):
         return self.manufacturer+' '+self.chipset
@@ -38,7 +39,9 @@ class MEM(models.Model):
     links = models.CharField(max_length=50,null=True)
     img = models.CharField(max_length=100, null=True)
     color = models.CharField(max_length=30, null = True)
-    webpage = models.CharField(max_length=100,null=True)
+    webpage = models.CharField(max_length=125,null=True)
+    realspeed = models.FloatField(null=True)
+    speedperdollar = models.PositiveSmallIntegerField(null=True)
     last_updated = models.DateTimeField(null=True)
     def __str__(self):
         return self.name
@@ -50,7 +53,7 @@ class STORAGE(models.Model):
     kind = models.CharField(max_length=10)
     links = models.CharField(max_length=50,null=True)
     img = models.CharField(max_length=100, null=True)
-    webpage = models.CharField(max_length=100,null=True)
+    webpage = models.CharField(max_length=125,null=True)
     last_updated = models.DateTimeField(null=True)
     def __str__(self):
         return self.name
@@ -61,7 +64,7 @@ class PWR(models.Model):
     rating = models.CharField(max_length=10)
     links = models.CharField(max_length=50,null=True)
     img = models.CharField(max_length=100, null=True)
-    webpage = models.CharField(max_length=100,null=True)
+    webpage = models.CharField(max_length=125,null=True)
     last_updated = models.DateTimeField(null=True)
     def __str__(self):
         return self.name
@@ -73,7 +76,7 @@ class CASE(models.Model):
     img = models.CharField(max_length=100, null=True)
     color = models.CharField(max_length=30, null = True)
     panel = models.BooleanField(default=False)
-    webpage = models.CharField(max_length=100,null=True)
+    webpage = models.CharField(max_length=125,null=True)
     last_updated = models.DateTimeField(null=True)
     def __str__(self):
         return self.name
@@ -83,17 +86,32 @@ class MOBO(models.Model):
     chipset = models.CharField(max_length=50)
     links = models.CharField(max_length=50,null=True)
     img = models.CharField(max_length=100, null=True)
-    webpage = models.CharField(max_length=100,null=True)
+    webpage = models.CharField(max_length=125,null=True)
     last_updated = models.DateTimeField(null=True)
     def __str__(self):
         return self.name
 class FAN(models.Model):
-    name =  models.CharField(max_length=20)
+    name =  models.CharField(max_length=50)
     price = models.FloatField(null=True)
     links = models.CharField(max_length=50,null=True)
     img = models.CharField(max_length=110, null=True)
     kind = models.CharField(max_length=20)
-    webpage = models.CharField(max_length=100,null=True)
+    webpage = models.CharField(max_length=125,null=True)
     last_updated = models.DateTimeField(null=True)
     def __str__(self):
         return self.name
+
+class BUILD(models.Model):
+    build_ID = models.IntegerField(null=True)
+    build_Cost = models.FloatField(null=True)
+    CPU_links = models.CharField(max_length=50, null=True)
+    GPU_links = models.CharField(max_length=50, null=True)
+    MEM_links = models.CharField(max_length=50, null=True)
+    STORAGE_links = models.CharField(max_length=50, null=True)
+    EXTRA_links = models.CharField(max_length=50, null=True)
+    PWR_links = models.CharField(max_length=50, null=True)
+    CASE_links = models.CharField(max_length=50, null=True)
+    MOBO_links = models.CharField(max_length=50, null=True)
+    FAN_links = models.CharField(max_length=50, null=True)
+    def __str__(self):
+        return str(self.build_ID)

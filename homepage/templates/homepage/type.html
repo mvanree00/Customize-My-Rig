@@ -4,6 +4,7 @@ Case Picking
 References:
 - Checkboxes https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
 - Checkbox Sizing https://www.geeksforgeeks.org/how-to-set-checkbox-size-in-html-css/
+- Dropdown Next to Header : https://stackoverflow.com/questions/4980525/css-center-display-inline-block
 -->
 
 {% extends 'homepage/index.html' %}
@@ -22,33 +23,43 @@ References:
 {% block content %}
 
     <!--Begin Form-->
+<br>
+<h1 style="text-align: center"><b>PC Type</b></h1>
+<h4 style="text-align: center">What type of PC are you interested in?</h4>
+<br>
 <form class="form2" style="text-align: center">
-<h2 style="text-align: center; margin-top: 30px;">What type of PC are you interested in?</h2><br><br>
     <table class="typetable" style="border: none">
         <tr>
             <th>
-                <div class="dropdown">
-                    <span><h5 style="text-align: center;">Gaming PC</h5></span>
-                    <div class="dropdown-content">
-                        <p>If you plan on using your computer primarily for video games, you will want to spend
-                            more on the GPU and CPU</p>
+                <div style="display:flex;justify-content:center;">
+                    <h5 style="text-align: center;">Gaming PC&nbsp;</h5>
+                    <div class="dropdown">
+                        <img src="{% static 'homepage/help.png' %}" alt="help icon" style="height:20px;width:20px;">
+                        <div class="dropdown-content" style="min-width:350px;">
+                            If you plan on using your computer primarily for video games, you will want to spend more on the GPU and CPU.
+                        </div>
                     </div>
                 </div>
                 <br></th>
             <th>
-                <div class="dropdown">
-                    <span><h5 style="text-align: center;">Streaming PC</h5></span>
-                    <div class="dropdown-content">
-                        <p>Similar to a gaming PC with more of an emphasis on CPU quality and RAM quantity</p>
+                <div style="display:flex;justify-content:center;">
+                    <h5 style="text-align: center;">Gaming & Streaming PC&nbsp;</h5>
+                    <div class="dropdown">
+                        <img src="{% static 'homepage/help.png' %}" alt="help icon" style="height:20px;width:20px;">
+                        <div class="dropdown-content" style="min-width:350px;">
+                            Similar to a gaming PC with more of an emphasis on CPU quality and RAM quantity.
+                        </div>
                     </div>
                 </div>
                 <br></th>
             <th>
-                <div class="dropdown">
-                    <span><h5 style="text-align: center;">Production PC</h5></span>
-                    <div class="dropdown-content">
-                        <p>If you plan on doing processor heavy tasks like video editing, 3D modeling, or game
-                            development. You will want to spend more on CPU, RAM, and GPU</p>
+                <div style="display:flex;justify-content:center;">
+                    <h5 style="text-align: center;">Production PC&nbsp;</h5>
+                    <div class="dropdown">
+                        <img src="{% static 'homepage/help.png' %}" alt="help icon" style="height:20px;width:20px;">
+                        <div class="dropdown-content" style="min-width:350px;">
+                            If you plan on doing processor heavy tasks like video editing, 3D modeling, or game development, you will want to spend more on CPU, RAM, and GPU.
+                        </div>
                     </div>
                 </div>
                 <br></th>
@@ -76,8 +87,7 @@ References:
 <button class="button button2" type="submit">Continue</button>
 </form>
 
-<br>
-<h6 style="position: relative; bottom: 0; width:100%; text-align: center">Mostly Michaels Copyright © 2020, Customize My Rig. All Rights Reserved</h6>
+<h6 style="position: fixed; bottom: 0; width:100%; text-align: center">Mostly Michaels Copyright © 2020, Customize My Rig. All Rights Reserved</h6>
 
 
 {% endblock %}

@@ -4,6 +4,9 @@ Case Picking
 References:
 - Checkboxes https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
 - Checkbox Sizing https://www.geeksforgeeks.org/how-to-set-checkbox-size-in-html-css/
+- Pictures as Radio Buttons https://stackoverflow.com/questions/17541614/use-images-instead-of-radio-buttons
+- Centering Cases https://stackoverflow.com/questions/8603914/center-image-in-table-td-in-css/8603927
+- Hover to Case Images https://www.w3schools.com/cssref/css3_pr_filter.asp
 -->
 
 {% extends 'homepage/index.html' %}
@@ -23,7 +26,7 @@ References:
 
 <br>
 <h1 style="text-align: center"><b>Computer Case</b></h1>
-<h4 style="text-align: center">Choose the styles that best suit you.</h4>
+<h4 style="text-align: center">Choose the case that best suits you.</h4>
 
 <br>
 <div class="container">
@@ -72,32 +75,75 @@ References:
 
 {% comment %} <form class="form3">
     <list>
-        <div>
-            <input type="checkbox" id="solid" name="solid" style="transform:scale(1.3)">
-                <label style="margin: 20px" for="solid"><h5><b>Solid Color</b></h5></label>
-        </div>
-        <div>
-            <input type="checkbox" id="glass" name="glass" style="transform:scale(1.3)">
-                <label style="margin: 20px" for="glass"><h5><b>Glass Panel</b></h5></label>
-        </div>
-        <div>
-            <input type="checkbox" id="white" name="white" style="transform:scale(1.3)">
-                <label style="margin: 20px" for="white"><h5><b>White</b></h5></label>
-        </div>
-        <div>
-            <input type="checkbox" id="black" name="black" style="transform:scale(1.3)">
-                <label style="margin: 20px" for="black"><h5><b>Black</b></h5></label>
-        </div>
-        <div>
-            <input type="checkbox" id="idc" name="idc" style="transform:scale(1.3)">
-                <label style="margin: 20px" for="idc"><h5><b>Don't Care</b></h5></label>
-        </div>
-
+        <tr>
+            <label class="case-radios" for="case0">
+                <div class="dropdown">
+                    <input type="radio" id="case0" name="case" value="case0">
+                    <img src={{case0.img}} alt="Case_Image" style="width:250px;height:200px;">
+                    <div class="dropdown-content"; style="min-width:50px">
+                        $ {{case0.price}}
+                    </div>
+                </div>
+            </label>
+            <label class="case-radios" for="case1">
+                <div class="dropdown">
+                    <input type="radio" id="case1" name="case" value="case1">
+                    <img src={{case1.img}} alt="Case_Image" style="width:250px;height:200px;">
+                    <div class="dropdown-content"; style="min-width:50px">
+                        $ {{case1.price}}
+                    </div>
+                </div>
+            </label>
+            <label class="case-radios" for="case2">
+                <div class="dropdown">
+                    <input type="radio" id="case2" name="case" value="case2">
+                    <td><img src={{case2.img}} alt="Case_Image" style="width:250px;height:200px;"></td>
+                    <div class="dropdown-content"; style="min-width:50px">
+                        $ {{case2.price}}
+                    </div>
+                </div>
+            </label>
+        </tr>
+        {% if case_num > 3 %}
+            <tr>
+                <label class="case-radios" for="case3">
+                    <div class="dropdown">
+                        <input type="radio" id="case3" name="case" value="case3">
+                        <img src={{case3.img}} alt="Case_Image" style="width:250px;height:200px;">
+                        <div class="dropdown-content"; style="min-width:50px">
+                            $ {{case3.price}}
+                        </div>
+                    </div>
+                </label>
+                {% if case_num > 4 %}
+                <label class="case-radios" for="case4">
+                    <div class="dropdown">
+                        <input type="radio" id="case4" name="case" value="case4">
+                        <img src={{case4.img}} alt="Case_Image" style="width:250px;height:200px;">
+                        <div class="dropdown-content"; style="min-width:50px">
+                            $ {{case4.price}}
+                        </div>
+                    </div>
+                </label>
+                {% endif %}
+                {% if case_num > 5 %}
+                <label class="case-radios" for="case5">
+                    <div class="dropdown">
+                        <input type="radio" id="case5" name="case" value="case5">
+                        <img src={{case5.img}} alt="Case_Image" style="width:250px;height:200px;">
+                        <div class="dropdown-content"; style="min-width:50px">
+                            $ {{case5.price}}
+                        </div>
+                    </div>
+                </label>
+                {% endif %}
+            </tr>
+        {% endif %}
         <button class="button button2" type="submit">Continue</button>
     </list>
-</form> {% endcomment %}
+</form><br>
 
 
-<h6 style="position: fixed; bottom: 0; width:100%; text-align: center">Mostly Michaels Copyright © 2020, Customize My Rig. All Rights Reserved</h6>
+<h6 style="position: relative; bottom: 0; width:100%; text-align: center">Mostly Michaels Copyright © 2020, Customize My Rig. All Rights Reserved</h6>
 
 {% endblock %}
